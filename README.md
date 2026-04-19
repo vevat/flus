@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flus
 
-## Getting Started
+En vakker, superenkel app som gjør sparing forståelig og motiverende for ungdom (14+) og voksne i Norge.
 
-First, run the development server:
+## Hovedidé
+
+Velg avatar, alder og hvor mye du sparer per dag. Se umiddelbart hvor mye pengene dine kan vokse til når du blir 18, 25, 30, 40, 50, 60, 70 eller 80 år. Avataren din samler mynter, sedler, gull og pengesekker etter hvert som formuen vokser.
+
+Innebygde regler:
+
+- Forventet avkastning: 7% i året (realistisk aksjefond)
+- Forventet inflasjon: 2,5% i året (Norges Banks mål)
+- Sparebeløpet justeres opp med inflasjon hvert år automatisk
+- Alle utregninger gjøres med ekte rentes-rente-formler
+
+## Kjøre lokalt
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Åpne http://localhost:3000 i nettleseren.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Next.js 16](https://nextjs.org/) (App Router) + TypeScript
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/) – animasjoner
+- [Recharts](https://recharts.org/) – verdi-graf
+- [Zustand](https://zustand-demo.pmnd.rs/) + localStorage – state
+- PWA-konfigurert (kan installeres på iPhone/Android home-screen)
 
-## Learn More
+## Filstruktur
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  layout.tsx       – fonter, viewport, manifest-lenke
+  page.tsx         – velger Onboarding eller Home
+  globals.css      – fargepalett + slider-styling
+components/
+  Onboarding.tsx   – navn + alder + avatar på én skjerm
+  Home.tsx         – hovedskjerm med slidere, graf, avatar
+  Avatar.tsx       – 6 illustrerte SVG-avatarer + rikdoms-elementer
+  SavingsSlider.tsx
+  AgeTimeline.tsx
+  WealthChart.tsx
+  TipCard.tsx
+lib/
+  finance.ts       – rentes-rente + inflasjon-utregninger
+  store.ts         – Zustand-store med localStorage
+  cn.ts            – klasse-utility
+public/
+  manifest.json
+  icon.svg
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Anbefalt: [Vercel](https://vercel.com) – gratis og to klikk å sette opp.
