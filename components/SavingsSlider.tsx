@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getRelatable, formatNok, DEFAULTS } from "@/lib/finance";
 
@@ -9,6 +10,8 @@ type Props = {
   min?: number;
   max?: number;
   step?: number;
+  /** Variable-step stops — overrides min/max/step when provided */
+  stops?: number[];
   label?: string;
 };
 
@@ -18,11 +21,29 @@ export function SavingsSlider({
   min = 0,
   max = 300,
   step = 5,
+  stops,
   label = "Jeg sparer",
 }: Props) {
   const monthly = value * DEFAULTS.daysPerMonth;
   const relatable = getRelatable(value);
-  const pct = ((value - min) / (max - min)) * 100;
+
+  const useStops = stops && stops.length > 1;
+  const stopIndex = useMemo(
+    () => (useStops ? nearestIndex(stops, value) : 0),
+    [useStops, stops, value],
+  );
+
+  const pct = useStops
+    ? (stopIndex / (stops.length - 1)) * 100
+    : ((value - min) / (max - min)) * 100;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (useStops) {
+      onChange(stops[Number(e.target.value)]);
+    } else {
+      onChange(Number(e.target.value));
+    }
+  };
 
   return (
     <div className="w-full space-y-2.5">
@@ -58,11 +79,11 @@ export function SavingsSlider({
         />
         <input
           type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
+          min={useStops ? 0 : min}
+          max={useStops ? stops.length - 1 : max}
+          step={useStops ? 1 : step}
+          value={useStops ? stopIndex : value}
+          onChange={handleChange}
           className="relative z-10"
           aria-label="Daglig sparebeløp"
         />
@@ -83,4 +104,17 @@ export function SavingsSlider({
       </AnimatePresence>
     </div>
   );
+}
+
+function nearestIndex(stops: number[], value: number): number {
+  let best = 0;
+  let bestDist = Math.abs(stops[0] - value);
+  for (let i = 1; i < stops.length; i++) {
+    const d = Math.abs(stops[i] - value);
+    if (d < bestDist) {
+      best = i;
+      bestDist = d;
+    }
+  }
+  return best;
 }

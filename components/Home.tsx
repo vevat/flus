@@ -19,6 +19,13 @@ import { CostOfWaiting } from "./CostOfWaiting";
 const DEFAULT_PROJECTION_END = 80;
 const ALL_MILESTONES = [25, 30, 40, 50, 60, 70];
 
+// 40–100 à 10, 125–400 à 25, 500–1000 à 100
+const DAILY_STOPS = [
+  ...Array.from({ length: 7 }, (_, i) => 40 + i * 10),   // 40..100
+  ...Array.from({ length: 12 }, (_, i) => 125 + i * 25),  // 125..400
+  ...Array.from({ length: 6 }, (_, i) => 500 + i * 100),  // 500..1000
+];
+
 /** Standard alder å vise verdi for. 50 år er en fin balanse mellom
  *  "innen pensjon" og "fortsatt overskuelig tidshorisont". */
 function defaultSelectedAge(currentAge: number): number {
@@ -167,11 +174,9 @@ export function Home() {
       {/* Sparing-slider (sentral) */}
       <div className="mt-3 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
         <SavingsSlider
-          value={Math.max(15, initialDaily)}
+          value={Math.max(40, initialDaily)}
           onChange={setInitialDaily}
-          min={15}
-          max={100}
-          step={5}
+          stops={DAILY_STOPS}
         />
       </div>
 
