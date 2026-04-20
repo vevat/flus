@@ -40,9 +40,9 @@ export function Onboarding() {
           <span className="text-[var(--primary)]">Pengebingen</span>
         </div>
         <p className="mt-1 text-[var(--muted)] text-sm text-center">
-          Bygg generational wealth – enkelt, uten risiko,
+          Hemmeligheten til å bli millionær, enkelt og risikofritt.
           <br />
-          uten å miste nattesøvnen.
+          Bli med i den eksklusive klubben som vet hvordan å bli ekte rik.
         </p>
       </motion.div>
 
