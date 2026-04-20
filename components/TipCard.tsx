@@ -23,6 +23,13 @@ export type TipContext = {
 
 const TIPS: Tip[] = [
   {
+    id: "cant-lose",
+    emoji: "🎯",
+    title: "Du kan ikke unngå å bli rik",
+    body: "Følger du planen over tid, er det matematisk umulig å ikke bygge formue. Rentes rente + tid + lave gebyrer = garantert vekst.",
+    shouldShow: () => true,
+  },
+  {
     id: "top-01",
     emoji: "🏆",
     title: "Du er blant topp 0,1%",
@@ -33,30 +40,22 @@ const TIPS: Tip[] = [
     id: "generational-wealth",
     emoji: "🏛️",
     title: "Generational wealth",
-    body: "Du bygger ikke bare for deg selv – du bygger for barna dine, og deres barn. Det starter med én beslutning: å begynne.",
-    shouldShow: ({ selectedAge, age }) => selectedAge - age >= 20,
+    body: "Du bygger ikke bare for deg selv – du bygger en hel familie-formue. Det starter med én beslutning: å begynne.",
+    shouldShow: () => true,
   },
   {
     id: "rule-of-7",
     emoji: "✨",
-    title: "Rentes-rente er magisk",
-    body: "Pengene dine dobler seg omtrent hvert 9. år. Det betyr at det du sparer nå, er verdt dobbelt før du fyller 25.",
-    shouldShow: ({ selectedAge, age }) => selectedAge - age >= 10,
+    title: "Rentes rente – verdens 8. underverk",
+    body: "\"Rentes rente er det kraftigste i universet\" – Albert Einstein. Pengene dine dobler seg omtrent hvert 9. år. Start nå, og tiden gjør jobben.",
+    shouldShow: () => true,
   },
   {
-    id: "half-from-interest",
-    emoji: "🪄",
+    id: "time-in-market",
+    emoji: "⏳",
     title: "Pengene jobber for deg",
-    body: "Over halvparten av formuen din kommer fra avkastning – ikke det du har spart selv. Tid i markedet slår alt.",
-    shouldShow: ({ nominal, contributed }) =>
-      nominal > 0 && contributed / nominal < 0.5,
-  },
-  {
-    id: "small-amounts",
-    emoji: "🌱",
-    title: "Små beløp, stor formue",
-    body: "Selv 30 kr om dagen blir til hundretusener. Warren Buffett startet med å selge tyggegummi. Det viktigste er å starte.",
-    shouldShow: ({ daily }) => daily > 0 && daily < 50,
+    body: "\"Time in the market beats timing the market.\" Over halvparten av formuen din kommer fra avkastning – ikke det du sparer selv. De som selger seg ut og prøver å kjøpe tilbake billig, taper nesten alltid. Ingen slår markedet over tid.",
+    shouldShow: () => true,
   },
   {
     id: "sleep-well",
@@ -66,25 +65,18 @@ const TIPS: Tip[] = [
     shouldShow: () => true,
   },
   {
-    id: "forbes-book",
-    emoji: "📖",
-    title: "Hyllet av Forbes",
-    body: "\"Money: Master the Game\" av Tony Robbins er kalt en av de viktigste bøkene om personlig økonomi. All Weather-strategien er kjernen.",
-    shouldShow: () => true,
-  },
-  {
     id: "inflation",
     emoji: "📉",
     title: "Inflasjon spiser i det stille",
-    body: "100 kr i dag er verdt mindre om 10 år. Pengebingen justerer for inflasjon automatisk, slik at du ser den reelle verdien.",
+    body: "Legger du sparepengene i banken, taper du kjøpekraft hvert eneste år. Over tid går du glipp av millioner. Invester – ikke la pengene råtne.",
     shouldShow: () => true,
   },
   {
-    id: "cant-lose",
-    emoji: "🎯",
-    title: "Du kan ikke unngå å bli rik",
-    body: "Følger du planen over tid, er det matematisk umulig å ikke bygge formue. Rentes rente + tid + lave gebyrer = garantert vekst.",
-    shouldShow: ({ selectedAge, age }) => selectedAge - age >= 30,
+    id: "forbes-book",
+    emoji: "📖",
+    title: "Hyllet av Forbes",
+    body: "\"Money: Master the Game\" av Tony Robbins er kalt en av de viktigste bøkene om personlig økonomi noensinne. All Weather-strategien er kjernen.",
+    shouldShow: () => true,
   },
 ];
 
