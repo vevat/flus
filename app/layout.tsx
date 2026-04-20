@@ -17,7 +17,7 @@ const display = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Pengebingen – Bygg generational wealth",
+  title: "Pengebingen",
   description:
     "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
   applicationName: "Pengebingen",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Pengebingen – Bygg generational wealth",
+    title: "Pengebingen",
     description:
       "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
     url: "https://pengebingen.vercel.app",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pengebingen – Bygg generational wealth",
+    title: "Pengebingen",
     description:
       "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
   },
