@@ -29,24 +29,24 @@ export function Onboarding() {
   };
 
   return (
-    <div className="flex-1 flex flex-col px-6 pt-10 pb-6">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-4">
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="font-display text-3xl font-semibold leading-tight text-center">
+        <div className="font-display text-2xl font-semibold leading-tight text-center">
           Velkommen til{" "}
           <span className="text-[var(--primary)]">Pengebingen</span>
         </div>
-        <p className="mt-1 text-[var(--muted)] text-sm text-center">
+        <p className="mt-1 text-[var(--muted)] text-[13px] text-center leading-snug">
           Hemmeligheten til å bli millionær, enkelt og risikofritt.
           <br />
           Bli med i den eksklusive klubben som vet hvordan.
         </p>
       </motion.div>
 
-      <div className="mt-7 space-y-5">
+      <div className="mt-5 space-y-4">
         {/* Navn */}
         <div>
           <label className="text-sm font-medium text-[var(--muted)]">
@@ -58,7 +58,7 @@ export function Onboarding() {
             onChange={(e) => setLocalName(e.target.value)}
             placeholder="Fornavn"
             autoComplete="given-name"
-            className="mt-1.5 w-full px-4 py-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)] text-base focus:outline-none focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary-soft)] transition-all"
+            className="mt-1 w-full px-4 py-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] text-base focus:outline-none focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary-soft)] transition-all"
           />
         </div>
 
@@ -67,25 +67,25 @@ export function Onboarding() {
           <label className="text-sm font-medium text-[var(--muted)]">
             Hvor gammel er du?
           </label>
-          <div className="mt-1.5 flex items-center gap-4 px-4 py-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+          <div className="mt-1 flex items-center gap-3 px-4 py-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
             <button
               type="button"
               onClick={() => setLocalAge((a) => Math.max(8, a - 1))}
-              className="w-10 h-10 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-xl font-semibold active:scale-95 transition-transform"
+              className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform"
               aria-label="Minus"
             >
               −
             </button>
             <div className="flex-1 text-center">
-              <div className="font-display text-3xl font-semibold tabular-nums leading-none">
+              <div className="font-display text-2xl font-semibold tabular-nums leading-none">
                 {localAge}
               </div>
-              <div className="text-xs text-[var(--muted)] mt-0.5">år</div>
+              <div className="text-[11px] text-[var(--muted)] mt-0.5">år</div>
             </div>
             <button
               type="button"
               onClick={() => setLocalAge((a) => Math.min(80, a + 1))}
-              className="w-10 h-10 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-xl font-semibold active:scale-95 transition-transform"
+              className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform"
               aria-label="Pluss"
             >
               +
@@ -98,7 +98,7 @@ export function Onboarding() {
           <label className="text-sm font-medium text-[var(--muted)]">
             Velg din figur
           </label>
-          <div className="mt-1.5">
+          <div className="mt-1">
             <AvatarPicker selected={localAvatar} onSelect={setLocalAvatar} />
           </div>
         </div>
@@ -111,7 +111,7 @@ export function Onboarding() {
         onClick={submit}
         disabled={!canSubmit}
         whileTap={canSubmit ? { scale: 0.97 } : undefined}
-        className={`mt-8 w-full py-4 rounded-2xl text-base font-semibold transition-colors ${
+        className={`mt-4 w-full py-3.5 rounded-2xl text-base font-semibold transition-colors ${
           canSubmit
             ? "bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-soft)]"
             : "bg-[var(--surface-2)] text-[var(--muted-2)]"
