@@ -165,7 +165,7 @@ export function Family({ readonly, members: externalMembers }: {
   );
 }
 
-const APP_URL = "https://pengebinge.vercel.app";
+const APP_URL = "https://pengebingen.vercel.app";
 
 function encodePlan(members: FamilyMember[]): string {
   const compact = members.map((m) => ({

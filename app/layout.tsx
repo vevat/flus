@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "Pengebingen – Bygg generational wealth",
     description:
       "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
-    url: "https://pengebinge.vercel.app",
+    url: "https://pengebingen.vercel.app",
     siteName: "Pengebingen",
     locale: "nb_NO",
     type: "website",

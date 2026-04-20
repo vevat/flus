@@ -6,7 +6,7 @@ import QRCode from "qrcode";
 import { track } from "@/lib/analytics";
 import { useFlus } from "@/lib/store";
 
-const APP_URL = "https://pengebinge.vercel.app";
+const APP_URL = "https://pengebingen.vercel.app";
 
 type Props = {
   onClose: () => void;
