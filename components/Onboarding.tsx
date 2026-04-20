@@ -42,7 +42,7 @@ export function Onboarding() {
         <p className="mt-1 text-[var(--muted)] text-sm text-center">
           Hemmeligheten til å bli millionær, enkelt og risikofritt.
           <br />
-          Bli med i den eksklusive klubben som vet hvordan å bli ekte rik.
+          Bli med i den eksklusive klubben som vet hvordan.
         </p>
       </motion.div>
 
