@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useFlus, type AvatarId } from "@/lib/store";
 import { AvatarPicker } from "./Avatar";
+import { track } from "@/lib/analytics";
 
 export function Onboarding() {
   const setName = useFlus((s) => s.setName);
@@ -24,6 +25,7 @@ export function Onboarding() {
     setAge(localAge);
     if (localAvatar) setAvatar(localAvatar);
     completeOnboarding();
+    track("onboarding_completed", { age: localAge, avatar: localAvatar });
   };
 
   return (
@@ -33,11 +35,11 @@ export function Onboarding() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="font-display text-3xl font-semibold leading-tight">
+        <div className="font-display text-3xl font-semibold leading-tight text-center">
           Velkommen til{" "}
           <span className="text-[var(--primary)]">Flus</span>
         </div>
-        <p className="mt-1 text-[var(--muted)] text-sm">
+        <p className="mt-1 text-[var(--muted)] text-sm text-center">
           La oss se hvor stor formue DU kan bygge!
         </p>
       </motion.div>

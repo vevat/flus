@@ -13,6 +13,7 @@ import {
 import { DEFAULTS, formatNok } from "@/lib/finance";
 import { useFlus } from "@/lib/store";
 import { Donut } from "./Donut";
+import { track } from "@/lib/analytics";
 
 export function InvestGuide() {
   const goals = useFlus((s) => s.goals);
@@ -182,7 +183,10 @@ export function InvestGuide() {
               <motion.button
                 key={p.id}
                 type="button"
-                onClick={() => setProvider(p.id)}
+                onClick={() => {
+                  setProvider(p.id);
+                  track("provider_selected", { provider: p.id });
+                }}
                 whileTap={{ scale: 0.95 }}
                 className={`px-2 py-2.5 rounded-2xl text-[12px] font-semibold transition-colors ${
                   active

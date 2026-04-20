@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
+import { track } from "@/lib/analytics";
 import {
   FREQUENCY_LABELS,
   HACKS,
@@ -159,7 +160,10 @@ export function Boost() {
               on={acceptedHacks.includes(hack.id)}
               fromAge={age}
               toAge={targetAge}
-              onToggle={() => toggleHack(hack.id)}
+              onToggle={() => {
+                toggleHack(hack.id);
+                track("hack_toggled", { hack: hack.id, category: hack.category });
+              }}
             />
           ))}
         </AnimatePresence>

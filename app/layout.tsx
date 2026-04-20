@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { TabBar } from "@/components/TabBar";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -15,9 +17,9 @@ const display = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Flus – Se sparingen din vokse",
+  title: "Flus – Hvorfor har ingen fortalt meg dette før?",
   description:
-    "Flus gjør sparing forståelig og gøy. Se hva små beløp blir til over tid med rentes-rente.",
+    "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til med rentes rente.",
   applicationName: "Flus",
   appleWebApp: {
     capable: true,
@@ -28,6 +30,21 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
+  },
+  openGraph: {
+    title: "Flus – Hvorfor har ingen fortalt meg dette før?",
+    description:
+      "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til.",
+    url: "https://flus-lake.vercel.app",
+    siteName: "Flus",
+    locale: "nb_NO",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flus – Hvorfor har ingen fortalt meg dette før?",
+    description:
+      "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til.",
   },
 };
 
@@ -50,6 +67,8 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <AnalyticsProvider />
+        <Analytics />
         <div className="mx-auto w-full max-w-md flex-1 flex flex-col">
           <main className="flex-1 flex flex-col">{children}</main>
           <TabBar />

@@ -15,6 +15,8 @@ import { WealthChart } from "./WealthChart";
 import { TipCarousel } from "./TipCard";
 import { GoalsList } from "./GoalsList";
 import { CostOfWaiting } from "./CostOfWaiting";
+import { ShareSheet } from "./ShareSheet";
+import { track } from "@/lib/analytics";
 
 const DEFAULT_PROJECTION_END = 80;
 const ALL_MILESTONES = [25, 30, 40, 50, 60, 70];
@@ -44,6 +46,7 @@ export function Home() {
 
   const [selectedAge, setSelectedAge] = useState(() => defaultSelectedAge(age));
   const [showSettings, setShowSettings] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [milestoneOpen, setMilestoneOpen] = useState(false);
   const [delayYears, setDelayYears] = useState(10);
 
@@ -94,14 +97,31 @@ export function Home() {
           Hei <span className="font-semibold text-[var(--foreground)]">{name}</span>
           <span className="text-[var(--muted-2)] ml-2">{age} år</span>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowSettings((v) => !v)}
-          className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
-          aria-label="Innstillinger"
-        >
-          ⋯
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setShowShare(true);
+              track("share_opened");
+            }}
+            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
+            aria-label="Del"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowSettings((v) => !v)}
+            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
+            aria-label="Innstillinger"
+          >
+            ⋯
+          </button>
+        </div>
       </div>
 
       {/* Hero: avatar + stort tall + graf */}
@@ -175,7 +195,10 @@ export function Home() {
       <div className="mt-3 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
         <SavingsSlider
           value={Math.max(40, initialDaily)}
-          onChange={setInitialDaily}
+          onChange={(v) => {
+            setInitialDaily(v);
+            track("daily_amount_changed", { amount: v });
+          }}
           stops={DAILY_STOPS}
         />
       </div>
@@ -229,6 +252,7 @@ export function Home() {
             onClose={() => setMilestoneOpen(false)}
             onSave={(fromAge, daily) => {
               addMilestoneGoal(fromAge, daily);
+              track("milestone_added", { fromAge, daily });
               setMilestoneOpen(false);
             }}
             options={milestoneOptions}
@@ -236,6 +260,16 @@ export function Home() {
             previousDaily={
               goals[goals.length - 1]?.dailyAmount ?? initialDaily
             }
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Share sheet */}
+      <AnimatePresence>
+        {showShare && (
+          <ShareSheet
+            onClose={() => setShowShare(false)}
+            shareText={`Visste du at ${initialDaily} kr om dagen kan bli til ${formatNok(nominal, { compact: true })} innen du er ${selectedAge}? Sjekk hva din sparing kan bli til!`}
           />
         )}
       </AnimatePresence>
