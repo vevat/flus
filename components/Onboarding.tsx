@@ -37,10 +37,12 @@ export function Onboarding() {
       >
         <div className="font-display text-3xl font-semibold leading-tight text-center">
           Velkommen til{" "}
-          <span className="text-[var(--primary)]">Flus</span>
+          <span className="text-[var(--primary)]">Pengebingen</span>
         </div>
         <p className="mt-1 text-[var(--muted)] text-sm text-center">
-          La oss se hvor stor formue DU kan bygge!
+          Bygg generational wealth – enkelt, uten risiko,
+          <br />
+          uten å miste nattesøvnen.
         </p>
       </motion.div>
 

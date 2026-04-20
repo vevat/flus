@@ -182,12 +182,12 @@ function ShareFamilyButton({ members }: { members: FamilyMember[] }) {
   const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
 
   const shareUrl = `${APP_URL}/familie?plan=${encodePlan(members)}`;
-  const shareText = `Se familieplanen vår på Flus! Vi sparer sammen for fremtiden.`;
+  const shareText = `Se familieplanen vår på Pengebingen! Vi sparer sammen for fremtiden.`;
 
   const share = async () => {
     if (canNativeShare) {
       try {
-        await navigator.share({ title: "Flus familieplan", text: shareText, url: shareUrl });
+        await navigator.share({ title: "Pengebingen familieplan", text: shareText, url: shareUrl });
         track("family_plan_shared", { method: "native", memberCount: members.length });
       } catch { /* cancelled */ }
     } else {

@@ -44,7 +44,7 @@ export function ShareSheet({ onClose, shareText }: Props) {
   const nativeShare = async () => {
     try {
       await navigator.share({
-        title: "Flus – Se sparingen din vokse",
+        title: "Pengebingen",
         text: shareText,
         url: APP_URL,
       });
@@ -67,7 +67,7 @@ export function ShareSheet({ onClose, shareText }: Props) {
 
   const sharePlan = async () => {
     const planUrl = encodePlanLink();
-    const planText = "Se spareplanen min på Flus! Sjekk hva din sparing kan bli til.";
+    const planText = "Se spareplanen min på Pengebingen! Sjekk hva din sparing kan bli til.";
     if (canNativeShare) {
       try {
         await navigator.share({ title: "Min spareplan", text: planText, url: planUrl });
@@ -119,7 +119,7 @@ export function ShareSheet({ onClose, shareText }: Props) {
         </div>
 
         <p className="mt-3 text-center text-[11px] text-[var(--muted-2)]">
-          Skann for å åpne Flus
+          Skann for å åpne Pengebingen
         </p>
 
         {/* Share text preview */}

@@ -42,7 +42,7 @@ function FamilieContent() {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="font-display text-3xl font-semibold text-[var(--primary)]">
-          Flus
+          Pengebingen
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ export default function FamiliePage() {
       fallback={
         <div className="flex-1 flex items-center justify-center">
           <div className="font-display text-3xl font-semibold text-[var(--primary)]">
-            Flus
+            Pengebingen
           </div>
         </div>
       }

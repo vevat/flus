@@ -330,6 +330,10 @@ export function InvestGuide() {
             tilbake til målfordelingen ved å kjøpe mer av det som har sunket.
           </Step>
         </ol>
+        <p className="mt-3 text-[12px] text-[var(--primary-strong)] leading-snug italic">
+          Gjør du dette nå, investerer du blant topp 0,1% i verden. Følg planen,
+          gi den tid, og du kan ikke unngå å bygge en formue.
+        </p>
       </div>
 
       {/* Disclaimer */}

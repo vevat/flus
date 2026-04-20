@@ -17,14 +17,14 @@ const display = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Flus – Hvorfor har ingen fortalt meg dette før?",
+  title: "Pengebingen – Bygg generational wealth",
   description:
-    "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til med rentes rente.",
-  applicationName: "Flus",
+    "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
+  applicationName: "Pengebingen",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Flus",
+    title: "Pengebingen",
   },
   manifest: "/manifest.json",
   icons: {
@@ -32,19 +32,19 @@ export const metadata: Metadata = {
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "Flus – Hvorfor har ingen fortalt meg dette før?",
+    title: "Pengebingen – Bygg generational wealth",
     description:
-      "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til.",
-    url: "https://flus-lake.vercel.app",
-    siteName: "Flus",
+      "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
+    url: "https://pengebinge.vercel.app",
+    siteName: "Pengebingen",
     locale: "nb_NO",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flus – Hvorfor har ingen fortalt meg dette før?",
+    title: "Pengebingen – Bygg generational wealth",
     description:
-      "50 kr om dagen kan bli til over 4 millioner. Sjekk hva din sparing kan bli til.",
+      "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
   },
 };
 

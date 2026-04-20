@@ -23,33 +23,68 @@ export type TipContext = {
 
 const TIPS: Tip[] = [
   {
-    id: "inflation",
-    emoji: "📉",
-    title: "Inflasjon spiser litt hvert år",
-    body: "100 kr i dag er verdt mindre om 10 år. Vi har lagt inn 2,5% inflasjon, og øker sparingen din litt hvert år automatisk.",
+    id: "top-01",
+    emoji: "🏆",
+    title: "Du er blant topp 0,1%",
+    body: "Gjør du dette nå, investerer du smartere enn 99,9% av befolkningen. De fleste starter aldri. Du har allerede begynt.",
     shouldShow: () => true,
+  },
+  {
+    id: "generational-wealth",
+    emoji: "🏛️",
+    title: "Generational wealth",
+    body: "Du bygger ikke bare for deg selv – du bygger for barna dine, og deres barn. Det starter med én beslutning: å begynne.",
+    shouldShow: ({ selectedAge, age }) => selectedAge - age >= 20,
   },
   {
     id: "rule-of-7",
     emoji: "✨",
     title: "Rentes-rente er magisk",
-    body: "Pengene dine dobler seg omtrent hvert 10. år når du sparer i fond. Med høyere avkastning, enda raskere.",
+    body: "Pengene dine dobler seg omtrent hvert 9. år. Det betyr at det du sparer nå, er verdt dobbelt før du fyller 25.",
     shouldShow: ({ selectedAge, age }) => selectedAge - age >= 10,
   },
   {
     id: "half-from-interest",
     emoji: "🪄",
-    title: "Halvparten kommer fra renter",
-    body: "Når du blir eldre, kommer det meste av pengene dine fra avkastningen - ikke det du har spart selv. Det er derfor det lønner seg å starte tidlig.",
+    title: "Pengene jobber for deg",
+    body: "Over halvparten av formuen din kommer fra avkastning – ikke det du har spart selv. Tid i markedet slår alt.",
     shouldShow: ({ nominal, contributed }) =>
       nominal > 0 && contributed / nominal < 0.5,
   },
   {
     id: "small-amounts",
     emoji: "🌱",
-    title: "Små beløp blir store",
-    body: "Selv 30 kr om dagen blir til hundretusener over tid. Det viktigste er å begynne, og holde ut.",
+    title: "Små beløp, stor formue",
+    body: "Selv 30 kr om dagen blir til hundretusener. Warren Buffett startet med å selge tyggegummi. Det viktigste er å starte.",
     shouldShow: ({ daily }) => daily > 0 && daily < 50,
+  },
+  {
+    id: "sleep-well",
+    emoji: "😴",
+    title: "Sov godt om natten",
+    body: "All Weather-strategien er designet for å tåle alt – krakk, inflasjon, deflasjon. Du trenger ikke stresse når markedet faller.",
+    shouldShow: () => true,
+  },
+  {
+    id: "forbes-book",
+    emoji: "📖",
+    title: "Hyllet av Forbes",
+    body: "\"Money: Master the Game\" av Tony Robbins er kalt en av de viktigste bøkene om personlig økonomi. All Weather-strategien er kjernen.",
+    shouldShow: () => true,
+  },
+  {
+    id: "inflation",
+    emoji: "📉",
+    title: "Inflasjon spiser i det stille",
+    body: "100 kr i dag er verdt mindre om 10 år. Pengebingen justerer for inflasjon automatisk, slik at du ser den reelle verdien.",
+    shouldShow: () => true,
+  },
+  {
+    id: "cant-lose",
+    emoji: "🎯",
+    title: "Du kan ikke unngå å bli rik",
+    body: "Følger du planen over tid, er det matematisk umulig å ikke bygge formue. Rentes rente + tid + lave gebyrer = garantert vekst.",
+    shouldShow: ({ selectedAge, age }) => selectedAge - age >= 30,
   },
 ];
 

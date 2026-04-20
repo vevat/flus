@@ -1,5 +1,5 @@
 /**
- * Flus – finansutregninger
+ * Pengebingen – finansutregninger
  *
  * Antagelser (kan justeres senere uten å endre callsites):
  *  - Forventet nominell årlig avkastning: 8% (realistisk for et globalt aksjefond)
