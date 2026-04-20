@@ -44,11 +44,17 @@ export function Home() {
   const addMilestoneGoal = useFlus((s) => s.addMilestoneGoal);
   const reset = useFlus((s) => s.reset);
 
-  const [selectedAge, setSelectedAge] = useState(() => defaultSelectedAge(age));
+  const ui = useFlus((s) => s.ui);
+  const setUi = useFlus((s) => s.setUi);
+
+  const selectedAge = ui.selectedAge ?? defaultSelectedAge(age);
+  const setSelectedAge = (v: number) => setUi({ selectedAge: v });
+  const delayYears = ui.delayYears;
+  const setDelayYears = (v: number) => setUi({ delayYears: v });
+
   const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [milestoneOpen, setMilestoneOpen] = useState(false);
-  const [delayYears, setDelayYears] = useState(10);
 
   const initialDaily = goals[0]?.dailyAmount ?? 50;
 
@@ -95,7 +101,6 @@ export function Home() {
       <div className="flex items-center justify-between">
         <div className="text-[13px] text-[var(--muted)]">
           Hei <span className="font-semibold text-[var(--foreground)]">{name}</span>
-          <span className="text-[var(--muted-2)] ml-2">{age} år</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -140,7 +145,7 @@ export function Home() {
           )}
           <div className="flex-1 min-w-0">
             <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
-              Når du er {selectedAge} år har {name || "din"} Holding vokst til
+              Når du er {selectedAge} år har <strong className="font-bold text-[var(--foreground)]">{name ? `${name}'s` : "din"} Holding</strong> vokst til
             </div>
             <AnimatePresence mode="wait">
               <motion.div

@@ -25,6 +25,15 @@ export type Goal = {
   dailyAmount: number;
 };
 
+export type FamilyMember = {
+  id: string;
+  name: string;
+  age: number;
+  dailyAmount: number;
+  /** Ekstra kr/mnd foreldrene sparer for dette medlemmet */
+  parentContribution: number;
+};
+
 type FlusState = {
   hasOnboarded: boolean;
   name: string;
@@ -36,6 +45,20 @@ type FlusState = {
   seenTips: string[];
   /** Sparehacks brukeren har sagt "skal" gjøre (bygger fremtidsverdi i Boost) */
   acceptedHacks: string[];
+  /** Familiemedlemmer */
+  familyMembers: FamilyMember[];
+
+  /** UI-preferanser som huskes mellom sidevisninger */
+  ui: {
+    selectedAge: number | null;
+    delayYears: number;
+    boostTargetAge: number | null;
+    boostCategory: string;
+    investProvider: string;
+    investMonthly: number | null;
+    goalMillions: number;
+    goalTargetAge: number | null;
+  };
 
   setName: (name: string) => void;
   setAge: (age: number) => void;
@@ -46,6 +69,10 @@ type FlusState = {
   completeOnboarding: () => void;
   markTipSeen: (id: string) => void;
   toggleHack: (id: string) => void;
+  addFamilyMember: (member: Omit<FamilyMember, "id">) => void;
+  updateFamilyMember: (id: string, updates: Partial<Omit<FamilyMember, "id">>) => void;
+  removeFamilyMember: (id: string) => void;
+  setUi: (patch: Partial<FlusState["ui"]>) => void;
   reset: () => void;
 };
 
@@ -61,6 +88,17 @@ export const useFlus = create<FlusState>()(
       goals: [{ fromAge: 14, dailyAmount: DEFAULT_DAILY }],
       seenTips: [],
       acceptedHacks: [],
+      familyMembers: [],
+      ui: {
+        selectedAge: null,
+        delayYears: 10,
+        boostTargetAge: null,
+        boostCategory: "all",
+        investProvider: "nordnet",
+        investMonthly: null,
+        goalMillions: 10,
+        goalTargetAge: null,
+      },
 
       setName: (name) => set({ name }),
       setAge: (age) =>
@@ -114,6 +152,25 @@ export const useFlus = create<FlusState>()(
             ? s.acceptedHacks.filter((h) => h !== id)
             : [...s.acceptedHacks, id],
         })),
+      addFamilyMember: (member) =>
+        set((s) => ({
+          familyMembers: [
+            ...s.familyMembers,
+            { ...member, id: crypto.randomUUID() },
+          ],
+        })),
+      updateFamilyMember: (id, updates) =>
+        set((s) => ({
+          familyMembers: s.familyMembers.map((m) =>
+            m.id === id ? { ...m, ...updates } : m,
+          ),
+        })),
+      removeFamilyMember: (id) =>
+        set((s) => ({
+          familyMembers: s.familyMembers.filter((m) => m.id !== id),
+        })),
+      setUi: (patch) =>
+        set((s) => ({ ui: { ...s.ui, ...patch } })),
       reset: () =>
         set({
           hasOnboarded: false,
@@ -123,16 +180,42 @@ export const useFlus = create<FlusState>()(
           goals: [{ fromAge: 14, dailyAmount: DEFAULT_DAILY }],
           seenTips: [],
           acceptedHacks: [],
+          familyMembers: [],
+          ui: {
+            selectedAge: null,
+            delayYears: 10,
+            boostTargetAge: null,
+            boostCategory: "all",
+            investProvider: "nordnet",
+            investMonthly: null,
+            goalMillions: 10,
+            goalTargetAge: null,
+          },
         }),
     }),
     {
       name: "flus-storage",
       storage: createJSONStorage(() => localStorage),
-      version: 2,
+      version: 4,
       migrate: (persistedState, version) => {
         const s = (persistedState ?? {}) as Partial<FlusState>;
         if (version < 2 && !Array.isArray(s.acceptedHacks)) {
           s.acceptedHacks = [];
+        }
+        if (version < 3 && !Array.isArray(s.familyMembers)) {
+          s.familyMembers = [];
+        }
+        if (version < 4 && !s.ui) {
+          s.ui = {
+            selectedAge: null,
+            delayYears: 10,
+            boostTargetAge: null,
+            boostCategory: "all",
+            investProvider: "nordnet",
+            investMonthly: null,
+            goalMillions: 10,
+            goalTargetAge: null,
+          };
         }
         return s as FlusState;
       },

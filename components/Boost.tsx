@@ -22,12 +22,14 @@ export function Boost() {
   const acceptedHacks = useFlus((s) => s.acceptedHacks);
   const toggleHack = useFlus((s) => s.toggleHack);
 
-  const [activeCat, setActiveCat] = useState<HackCategory | "all">("all");
-  const [targetAge, setTargetAge] = useState<number>(() => {
-    if (age >= 60) return 70;
-    if (age >= 40) return 60;
-    return 50;
-  });
+  const ui = useFlus((s) => s.ui);
+  const setUi = useFlus((s) => s.setUi);
+
+  const defaultBoostAge = age >= 60 ? 70 : age >= 40 ? 60 : 50;
+  const activeCat = (ui.boostCategory ?? "all") as HackCategory | "all";
+  const setActiveCat = (v: HackCategory | "all") => setUi({ boostCategory: v });
+  const targetAge = ui.boostTargetAge ?? defaultBoostAge;
+  const setTargetAge = (v: number) => setUi({ boostTargetAge: v });
 
   const accepted = useMemo(
     () => HACKS.filter((h) => acceptedHacks.includes(h.id)),
@@ -54,13 +56,14 @@ export function Boost() {
   return (
     <div className="flex-1 flex flex-col px-5 pt-5 pb-3 gap-4">
       {/* Header */}
-      <div>
+      <div className="text-center">
         <h1 className="font-display text-[22px] font-semibold leading-tight">
           Hvor finner du pengene{name ? `, ${name}` : ""}?
         </h1>
         <p className="text-[13px] text-[var(--muted)] leading-snug mt-1">
-          Velg det du faktisk kan kutte eller tjene. Vi regner ut hva det blir
-          verdt.
+          Velg det du faktisk kan kutte eller tjene.
+          <br />
+          Små beløp blir til store med rentes rente.
         </p>
       </div>
 

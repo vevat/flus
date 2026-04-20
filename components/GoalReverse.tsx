@@ -18,12 +18,17 @@ export function GoalReverse() {
   const name = useFlus((s) => s.name);
   const age = useFlus((s) => s.age);
 
-  const [targetMillions, setTargetMillions] = useState(10);
-  const [targetAge, setTargetAge] = useState<number>(() => {
-    // Standard: nærmeste tiår over alder + 30 år, fallback til høyeste gyldige
+  const ui = useFlus((s) => s.ui);
+  const setUi = useFlus((s) => s.setUi);
+
+  const defaultGoalAge = (() => {
     const candidates = TARGET_AGE_OPTIONS.filter((a) => a > age);
     return candidates.find((a) => a >= age + 30) ?? candidates[candidates.length - 1] ?? age + 1;
-  });
+  })();
+  const targetMillions = ui.goalMillions ?? 10;
+  const setTargetMillions = (v: number) => setUi({ goalMillions: v });
+  const targetAge = ui.goalTargetAge ?? defaultGoalAge;
+  const setTargetAge = (v: number) => setUi({ goalTargetAge: v });
 
   const targetAmount = targetMillions * 1_000_000;
 

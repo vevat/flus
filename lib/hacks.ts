@@ -50,7 +50,7 @@ export const HACKS: Hack[] = [
     id: "cut-vannflaske",
     emoji: "💧",
     title: "Ta med vannflaske",
-    blurb: "Slipp å betale 30 kr for vann i butikken.",
+    blurb: "Dropp å betale 30 kr for flaskevann og brus i butikken.",
     amount: 30,
     frequency: "daily",
     category: "cut",
@@ -99,8 +99,8 @@ export const HACKS: Hack[] = [
   {
     id: "cut-rema",
     emoji: "🛒",
-    title: "Bytt til Rema eller Joker",
-    blurb: "Samme handlevogn, 30–50 kr billigere per tur.",
+    title: "Bytt til Rema eller Kiwi",
+    blurb: "Samme handlevogn, billigere per tur. Husk Trumf og Trippeltrumf!",
     amount: 30,
     frequency: "weekly",
     category: "cut",
@@ -218,7 +218,7 @@ export function futureValueOfHack({
   hack,
   fromAge,
   toAge,
-  annualReturn = 0.07,
+  annualReturn = 0.08,
   annualInflation = 0.025,
 }: {
   hack: Hack;

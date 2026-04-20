@@ -4,17 +4,32 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import QRCode from "qrcode";
 import { track } from "@/lib/analytics";
+import { useFlus } from "@/lib/store";
 
-const APP_URL = "https://flus-lake.vercel.app";
+const APP_URL = "https://pengebinge.vercel.app";
 
 type Props = {
   onClose: () => void;
   shareText: string;
 };
 
+function encodePlanLink(): string {
+  const { name, age, goals } = useFlus.getState();
+  const daily = goals[0]?.dailyAmount ?? 50;
+  const member = {
+    name,
+    age,
+    dailyAmount: daily,
+    parentContribution: 0,
+  };
+  const encoded = btoa(JSON.stringify([member]));
+  return `${APP_URL}/familie?plan=${encoded}`;
+}
+
 export function ShareSheet({ onClose, shareText }: Props) {
   const [qrSvg, setQrSvg] = useState("");
   const [copied, setCopied] = useState(false);
+  const [planCopied, setPlanCopied] = useState(false);
   const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
 
   useEffect(() => {
@@ -50,6 +65,24 @@ export function ShareSheet({ onClose, shareText }: Props) {
     }
   };
 
+  const sharePlan = async () => {
+    const planUrl = encodePlanLink();
+    const planText = "Se spareplanen min på Flus! Sjekk hva din sparing kan bli til.";
+    if (canNativeShare) {
+      try {
+        await navigator.share({ title: "Min spareplan", text: planText, url: planUrl });
+        track("plan_shared", { method: "native" });
+      } catch { /* cancelled */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(`${planText}\n\n${planUrl}`);
+        setPlanCopied(true);
+        track("plan_shared", { method: "copy" });
+        setTimeout(() => setPlanCopied(false), 2000);
+      } catch { /* ignored */ }
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -80,7 +113,7 @@ export function ShareSheet({ onClose, shareText }: Props) {
         {/* QR Code */}
         <div className="mt-5 flex justify-center">
           <div
-            className="w-[180px] h-[180px] rounded-2xl bg-white p-3 border border-[var(--border)]"
+            className="w-[180px] h-[180px] rounded-2xl bg-white p-4 border border-[var(--border)] flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
             dangerouslySetInnerHTML={{ __html: qrSvg }}
           />
         </div>
@@ -95,26 +128,47 @@ export function ShareSheet({ onClose, shareText }: Props) {
         </div>
 
         {/* Actions */}
-        <div className="mt-4 flex gap-2.5">
-          {canNativeShare && (
-            <button
-              type="button"
-              onClick={nativeShare}
-              className="flex-1 py-3.5 rounded-2xl bg-[var(--primary)] text-white font-semibold active:scale-[0.98] transition-transform"
-            >
-              Del
-            </button>
-          )}
+        <div className="mt-4 space-y-2.5">
           <button
             type="button"
-            onClick={copyLink}
-            className={`${canNativeShare ? "flex-1" : "w-full"} py-3.5 rounded-2xl font-semibold active:scale-[0.98] transition-all ${
-              copied
+            onClick={canNativeShare ? nativeShare : copyLink}
+            className="w-full py-3.5 rounded-2xl bg-[var(--primary)] text-white font-semibold active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+            Del med venner
+          </button>
+          <button
+            type="button"
+            onClick={sharePlan}
+            className={`w-full py-3 rounded-2xl text-[13px] font-semibold active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 ${
+              planCopied
                 ? "bg-[var(--primary-soft)] text-[var(--primary-strong)]"
                 : "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)]"
             }`}
           >
-            {copied ? "Kopiert!" : "Kopier tekst"}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            {planCopied ? "Lenke kopiert!" : "Del min spareplan"}
+          </button>
+          <button
+            type="button"
+            onClick={copyLink}
+            className={`w-full py-3 rounded-2xl text-[13px] font-medium active:scale-[0.98] transition-all ${
+              copied
+                ? "bg-[var(--primary-soft)] text-[var(--primary-strong)]"
+                : "text-[var(--muted)]"
+            }`}
+          >
+            {copied ? "Kopiert!" : "Eller kopier lenke"}
           </button>
         </div>
       </motion.div>

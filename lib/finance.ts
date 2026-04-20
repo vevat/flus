@@ -2,14 +2,14 @@
  * Flus – finansutregninger
  *
  * Antagelser (kan justeres senere uten å endre callsites):
- *  - Forventet nominell årlig avkastning: 7% (realistisk for et globalt aksjefond)
+ *  - Forventet nominell årlig avkastning: 8% (realistisk for et globalt aksjefond)
  *  - Forventet årlig inflasjon: 2.5% (Norges Banks målsetting)
  *  - Sparebeløpet justeres opp med inflasjon hvert år (slik at kjøpekraft holdes)
  *  - Bidrag skjer månedlig på slutten av hver måned
  */
 
 export const DEFAULTS = {
-  annualReturn: 0.07,
+  annualReturn: 0.08,
   annualInflation: 0.025,
   daysPerMonth: 30.4375,
 } as const;

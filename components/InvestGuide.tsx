@@ -10,7 +10,7 @@ import {
   type Product,
   type ProviderId,
 } from "@/lib/products";
-import { DEFAULTS, formatNok } from "@/lib/finance";
+import { DEFAULTS, formatNok, projectWealth, getAtAge } from "@/lib/finance";
 import { useFlus } from "@/lib/store";
 import { Donut } from "./Donut";
 import { track } from "@/lib/analytics";
@@ -20,11 +20,49 @@ export function InvestGuide() {
   const initialDaily = goals[0]?.dailyAmount ?? 50;
   const savedMonthly = Math.round(initialDaily * DEFAULTS.daysPerMonth);
 
-  const [provider, setProvider] = useState<ProviderId>("nordnet");
-  const [customMonthly, setCustomMonthly] = useState<number | null>(null);
+  const ui = useFlus((s) => s.ui);
+  const setUi = useFlus((s) => s.setUi);
+
+  const provider = (ui.investProvider ?? "nordnet") as ProviderId;
+  const setProvider = (v: ProviderId) => setUi({ investProvider: v });
+  const customMonthly = ui.investMonthly;
+  const setCustomMonthly = (v: number) => setUi({ investMonthly: v });
   const monthly =
     customMonthly ?? Math.max(200, Math.round(savedMonthly / 100) * 100);
   const [highlight, setHighlight] = useState<AssetClass | null>(null);
+
+  const age = useFlus((s) => s.age);
+  const endAge = 67;
+
+  const feeYears = 50;
+  const feeCost = useMemo(() => {
+    const dailyFromSlider = monthly / DEFAULTS.daysPerMonth;
+    const feeEndAge = age + feeYears;
+    const withoutFees = getAtAge(
+      projectWealth({
+        currentAge: age,
+        endAge: feeEndAge,
+        contributions: [{ fromAge: age, dailyAmount: dailyFromSlider }],
+        annualReturn: DEFAULTS.annualReturn,
+      }),
+      feeEndAge,
+    );
+    const withFees = getAtAge(
+      projectWealth({
+        currentAge: age,
+        endAge: feeEndAge,
+        contributions: [{ fromAge: age, dailyAmount: dailyFromSlider }],
+        annualReturn: DEFAULTS.annualReturn - 0.02,
+      }),
+      feeEndAge,
+    );
+    if (!withoutFees || !withFees) return null;
+    return {
+      without: withoutFees.nominal,
+      with: withFees.nominal,
+      lost: withoutFees.nominal - withFees.nominal,
+    };
+  }, [age, monthly, feeYears]);
 
   const productsForProvider = useMemo(
     () => PRODUCTS.filter((p) => p.provider === provider),
@@ -52,9 +90,11 @@ export function InvestGuide() {
           All Weather
         </h1>
         <p className="text-[13px] text-[var(--muted)] mt-1 leading-snug">
-          En portefølje som tåler alt slags vær - oppgang, nedgang, inflasjon
-          og deflasjon. Utviklet av Ray Dalio (Bridgewater) og populært på norsk
-          gjennom Tony Robbins&apos; bok &quot;Money: Master the Game&quot;.
+          En portefølje som tåler alt slags vær – oppgang, nedgang, inflasjon
+          og deflasjon. Utviklet av Ray Dalio – en legende og en av verdens
+          beste kapitalforvaltere. Strategien er hyllet verden over, og følger
+          du den er du blant de 1% beste i verden over tid. Det tar tid, men
+          følger du planen kan du ikke unngå å bli rik.
         </p>
       </div>
 
@@ -208,6 +248,47 @@ export function InvestGuide() {
           {PROVIDERS.find((p) => p.id === provider)?.blurb}
         </div>
       </div>
+
+      {/* Gebyr-advarsel */}
+      {feeCost && (
+        <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
+          <div className="font-display text-base font-semibold mb-1.5">
+            Hvorfor lave gebyrer er nøkkelen
+          </div>
+          <p className="text-[13px] text-[var(--muted)] leading-snug">
+            Velger du produkter med høye gebyrer – typisk populære fond hos banker
+            – spiser det opp formuen din over tid. Mange fond tar 1,5–2% i
+            årlig gebyr. Det høres lite ut, men over {feeYears} år
+            er forskjellen enorm:
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-2.5">
+            <div className="rounded-2xl bg-[var(--primary-soft)] p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[var(--primary-strong)] font-semibold">
+                Lave gebyrer (0,2%)
+              </div>
+              <div className="font-display text-xl font-bold text-[var(--primary-strong)] mt-1">
+                {formatNok(feeCost.without, { compact: true })}
+              </div>
+            </div>
+            <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[var(--muted)] font-semibold">
+                Høye gebyrer (2%)
+              </div>
+              <div className="font-display text-xl font-bold text-[var(--foreground)] mt-1">
+                {formatNok(feeCost.with, { compact: true })}
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 text-center">
+            <span className="text-[13px] font-semibold text-[#ef4444]">
+              Gebyrer koster deg {formatNok(feeCost.lost, { compact: true })}
+            </span>
+            <p className="text-[11px] text-[var(--muted)] mt-0.5">
+              Samme avkastning, samme sparebeløp – men 2% i gebyrer vs 0,2%.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Produkter per asset-klasse */}
       <div className="space-y-2.5">
