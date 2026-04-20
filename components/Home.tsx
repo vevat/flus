@@ -52,7 +52,6 @@ export function Home() {
   const delayYears = ui.delayYears;
   const setDelayYears = (v: number) => setUi({ delayYears: v });
 
-  const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [milestoneOpen, setMilestoneOpen] = useState(false);
 
@@ -120,11 +119,21 @@ export function Home() {
           </button>
           <button
             type="button"
-            onClick={() => setShowSettings((v) => !v)}
+            onClick={() => {
+              if (window.confirm("Er du sikker på at du vil starte på nytt? All data slettes.")) {
+                reset();
+              }
+            }}
             className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
-            aria-label="Innstillinger"
+            aria-label="Start på nytt"
+            title="Start på nytt"
           >
-            ⋯
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
           </button>
         </div>
       </div>
@@ -279,19 +288,6 @@ export function Home() {
         )}
       </AnimatePresence>
 
-      {/* Settings sheet */}
-      <AnimatePresence>
-        {showSettings && (
-          <SettingsSheet
-            onClose={() => setShowSettings(false)}
-            onReset={() => {
-              reset();
-              setShowSettings(false);
-            }}
-            goals={goals}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -381,61 +377,3 @@ function MilestoneModal({
   );
 }
 
-function SettingsSheet({
-  onClose,
-  onReset,
-  goals,
-}: {
-  onClose: () => void;
-  onReset: () => void;
-  goals: { fromAge: number; dailyAmount: number }[];
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        className="w-full max-w-md bg-[var(--background)] rounded-t-3xl p-6 pb-8"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="w-10 h-1 rounded-full bg-[var(--border)] mx-auto mb-5" />
-        <div className="font-display text-2xl font-semibold">Innstillinger</div>
-
-        <div className="mt-5">
-          <div className="text-sm text-[var(--muted)] mb-2">Dine sparemål</div>
-          <div className="space-y-2">
-            {goals.map((g) => (
-              <div
-                key={g.fromAge}
-                className="flex items-center justify-between p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)]"
-              >
-                <div className="text-sm">
-                  Fra <strong>{g.fromAge}</strong> år
-                </div>
-                <div className="text-sm font-semibold tabular-nums">
-                  {g.dailyAmount} kr/dag
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={onReset}
-          className="mt-6 w-full py-4 rounded-2xl bg-[var(--surface-2)] text-[var(--muted)] font-medium active:scale-[0.98] transition-transform"
-        >
-          Start på nytt
-        </button>
-      </motion.div>
-    </motion.div>
-  );
-}
