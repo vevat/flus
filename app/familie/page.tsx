@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useFlus, type FamilyMember } from "@/lib/store";
@@ -23,7 +23,7 @@ function decodePlan(encoded: string): FamilyMember[] | null {
   }
 }
 
-export default function FamiliePage() {
+function FamilieContent() {
   const hasOnboarded = useFlus((s) => s.hasOnboarded);
   const [hydrated, setHydrated] = useState(false);
   const searchParams = useSearchParams();
@@ -72,4 +72,20 @@ export default function FamiliePage() {
   }
 
   return <Family />;
+}
+
+export default function FamiliePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center">
+          <div className="font-display text-3xl font-semibold text-[var(--primary)]">
+            Flus
+          </div>
+        </div>
+      }
+    >
+      <FamilieContent />
+    </Suspense>
+  );
 }
