@@ -1,6 +1,9 @@
 /**
- * All Weather / All Seasons - allokering og konkrete produkter
- * tilgjengelig for norske småsparere på Nordnet, DNB og Sparebank 1.
+ * All Weather / All Seasons - allokering og konkrete produkter.
+ *
+ * Nordnet er eneste leverandør som tilbyr alle nødvendige byggeklosser
+ * (ETF-er for obligasjoner, gull og råvarer) til All Weather-strategien.
+ * DNB og Sparebank 1 mangler 3 av 5 aktivaklasser.
  *
  * Kilde for strategi:
  *  - Ray Dalio (Bridgewater Associates), via Tony Robbins:
@@ -11,6 +14,13 @@
  * MERK: Produktdetaljer (ISIN, TER) bør verifiseres mot leverandøren før kjøp.
  * Tilgjengelighet og kostnader kan endres.
  */
+
+/**
+ * Nordnet affiliate-lenke via Adtraction.
+ * Bytt ut denne med din faktiske tracking-URL når programmet er godkjent.
+ */
+export const NORDNET_AFFILIATE_URL =
+  "https://www.nordnet.no/kampanjer/pengebingen";
 
 export type AssetClass = "stocks" | "longBonds" | "midBonds" | "gold" | "commodities";
 
@@ -74,20 +84,23 @@ export const PROVIDERS: Provider[] = [
   {
     id: "nordnet",
     name: "Nordnet",
-    blurb: "Full tilgang til ETF-er, lave kostnader, eget aksjesparekonto.",
-    url: "https://www.nordnet.no",
+    blurb:
+      "Eneste plattform i Norge med alle byggeklossene til All Weather. 0 kr i kurtasje på fond, gratis aksjesparekonto, og automatisk månedssparing.",
+    url: NORDNET_AFFILIATE_URL,
     recommended: true,
   },
   {
     id: "dnb",
     name: "DNB",
-    blurb: "Norges største bank. Enkelt å sette opp månedlig spareavtale.",
+    blurb:
+      "Har aksjer og obligasjoner, men mangler gull, råvarer og lange statsobligasjoner. Du får kun 2 av 5 aktivaklasser — ikke nok til All Weather.",
     url: "https://www.dnb.no/sparing-og-investering",
   },
   {
     id: "sparebank1",
     name: "Sparebank 1",
-    blurb: "God app, KLP-fond med lave kostnader.",
+    blurb:
+      "Har aksjer og obligasjoner via KLP, men mangler gull, råvarer og lange statsobligasjoner. Du får kun 2 av 5 aktivaklasser.",
     url: "https://www.sparebank1.no/nb/sparing-og-investering",
   },
 ];

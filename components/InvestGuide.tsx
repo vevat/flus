@@ -6,6 +6,7 @@ import {
   ALLOCATIONS,
   PRODUCTS,
   PROVIDERS,
+  NORDNET_AFFILIATE_URL,
   type AssetClass,
   type Product,
   type ProviderId,
@@ -219,6 +220,7 @@ export function InvestGuide() {
         <div className="grid grid-cols-3 gap-2">
           {PROVIDERS.map((p) => {
             const active = provider === p.id;
+            const incomplete = p.id !== "nordnet";
             return (
               <motion.button
                 key={p.id}
@@ -228,9 +230,11 @@ export function InvestGuide() {
                   track("provider_selected", { provider: p.id });
                 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-2 py-2.5 rounded-2xl text-[12px] font-semibold transition-colors ${
+                className={`px-2 py-2.5 rounded-2xl text-[12px] font-semibold transition-colors relative ${
                   active
-                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                    ? incomplete
+                      ? "bg-[var(--surface-2)] border border-[#ef4444]/30 text-[var(--foreground)]"
+                      : "bg-[var(--foreground)] text-[var(--background)]"
                     : "bg-[var(--surface)] border border-[var(--border)] text-[var(--muted)]"
                 }`}
               >
@@ -240,6 +244,11 @@ export function InvestGuide() {
                     Anbefalt
                   </span>
                 )}
+                {incomplete && (
+                  <span className="block text-[9px] font-medium text-[#ef4444] opacity-80">
+                    Mangler produkter
+                  </span>
+                )}
               </motion.button>
             );
           })}
@@ -247,6 +256,29 @@ export function InvestGuide() {
         <div className="mt-2 px-1 text-[12px] text-[var(--muted)] leading-snug">
           {PROVIDERS.find((p) => p.id === provider)?.blurb}
         </div>
+        {provider !== "nordnet" && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-2 rounded-2xl bg-[#ef4444]/10 border border-[#ef4444]/20 p-3"
+          >
+            <p className="text-[12px] text-[#ef4444] font-medium leading-snug">
+              {PROVIDERS.find((p) => p.id === provider)?.name} mangler 3 av 5
+              aktivaklasser som trengs til All Weather-strategien. Vi anbefaler
+              Nordnet for å få tilgang til alle byggeklossene.
+            </p>
+            <motion.a
+              href={NORDNET_AFFILIATE_URL}
+              target="_blank"
+              rel="noreferrer"
+              whileTap={{ scale: 0.97 }}
+              onClick={() => track("affiliate_click", { source: "provider_warning" })}
+              className="mt-2 inline-block px-4 py-2 rounded-xl bg-[var(--primary)] text-white text-[12px] font-semibold"
+            >
+              Bytt til Nordnet &rarr;
+            </motion.a>
+          </motion.div>
+        )}
       </div>
 
       {/* Gebyr-advarsel */}
@@ -316,20 +348,32 @@ export function InvestGuide() {
         </div>
         <ol className="space-y-2 text-[13px]">
           <Step n={1}>
-            Opprett{" "}
-            <strong>aksjesparekonto (ASK)</strong> hos{" "}
-            {PROVIDERS.find((p) => p.id === provider)?.name}. Det gir
-            skattefordel for aksjefond og aksje-ETF.
+            Opprett <strong>gratis konto hos Nordnet</strong> — det tar 2
+            minutter. Du får aksjesparekonto (ASK) med skattefordel og tilgang
+            til alle produktene du trenger.
           </Step>
           <Step n={2}>
             Sett opp <strong>månedlig spareavtale</strong> for hvert produkt
-            etter beløpene over. På Nordnet kan du automatisere dette gratis.
+            etter beløpene over. Nordnet automatiserer dette gratis.
           </Step>
           <Step n={3}>
             <strong>Rebalanser ca 1 gang i året</strong>: justér beholdningene
             tilbake til målfordelingen ved å kjøpe mer av det som har sunket.
           </Step>
         </ol>
+
+        <motion.a
+          href={NORDNET_AFFILIATE_URL}
+          target="_blank"
+          rel="noreferrer"
+          whileTap={{ scale: 0.97 }}
+          onClick={() => track("affiliate_click", { source: "cta_button" })}
+          className="mt-3 flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[var(--primary)] text-white text-[14px] font-bold shadow-lg"
+        >
+          Opprett konto hos Nordnet
+          <span className="text-[18px]">&rarr;</span>
+        </motion.a>
+
         <p className="mt-3 text-[12px] text-[var(--primary-strong)] leading-snug italic">
           Gjør du dette nå, investerer du blant topp 0,1% i verden. Følg planen,
           gi den tid, og du kan ikke unngå å bygge en formue.
@@ -337,23 +381,30 @@ export function InvestGuide() {
       </div>
 
       {/* Disclaimer */}
-      <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-[11px] text-[var(--muted)] leading-snug">
+      <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-[11px] text-[var(--muted)] leading-snug space-y-1.5">
         <div className="font-semibold text-[var(--foreground)] mb-0.5">
           Viktig
         </div>
-        Dette er ikke individuell finansiell rådgivning. Historisk avkastning
-        er ingen garanti for fremtidig avkastning. Snakk med en uavhengig
-        rådgiver eller bruk{" "}
-        <a
-          href="https://www.finansportalen.no"
-          target="_blank"
-          rel="noreferrer"
-          className="text-[var(--primary)] underline"
-        >
-          Finansportalen.no
-        </a>{" "}
-        før du tar store investeringsbeslutninger. Sjekk alltid ISIN, kostnader
-        og tilgjengelighet hos leverandøren før kjøp.
+        <p>
+          Dette er ikke individuell finansiell rådgivning. Historisk avkastning
+          er ingen garanti for fremtidig avkastning. Snakk med en uavhengig
+          rådgiver eller bruk{" "}
+          <a
+            href="https://www.finansportalen.no"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[var(--primary)] underline"
+          >
+            Finansportalen.no
+          </a>{" "}
+          før du tar store investeringsbeslutninger. Sjekk alltid ISIN, kostnader
+          og tilgjengelighet hos leverandøren før kjøp.
+        </p>
+        <p className="text-[10px] opacity-70">
+          Lenker til Nordnet er annonselenker — vi kan motta en godtgjørelse
+          hvis du oppretter konto. Dette påvirker ikke vår anbefaling, som er
+          basert på produkttilgang og kostnader.
+        </p>
       </div>
     </div>
   );
@@ -393,23 +444,32 @@ function ProductCard({
 
   if (!product || product.unavailable) {
     return (
-      <div className="rounded-2xl bg-[var(--surface)] border border-dashed border-[var(--border)] p-3">
+      <div className="rounded-2xl bg-[var(--surface)] border border-dashed border-[#ef4444]/20 p-3">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="w-2.5 h-2.5 rounded-full"
+            className="w-2.5 h-2.5 rounded-full opacity-40"
             style={{ background: allocation.color }}
           />
-          <span className="text-[12px] font-semibold flex-1">
+          <span className="text-[12px] font-semibold flex-1 text-[var(--muted)]">
             {allocation.label}
           </span>
-          <span className="text-[12px] tabular-nums text-[var(--muted)]">
-            {allocation.percent}% · {formatNok(amount)}
+          <span className="text-[11px] font-medium text-[#ef4444]">
+            Mangler
           </span>
         </div>
         <div className="text-[11px] text-[var(--muted)] leading-snug">
           {product?.unavailableNote ??
-            "Ikke tilgjengelig hos denne leverandøren. Vurder Nordnet for full All Weather-eksponering."}
+            "Ikke tilgjengelig hos denne leverandøren."}
         </div>
+        <a
+          href={NORDNET_AFFILIATE_URL}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => track("affiliate_click", { source: "missing_product" })}
+          className="mt-1.5 inline-block text-[11px] font-semibold text-[var(--primary)] underline"
+        >
+          Tilgjengelig på Nordnet &rarr;
+        </a>
       </div>
     );
   }
