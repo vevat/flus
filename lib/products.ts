@@ -29,6 +29,7 @@ export type Allocation = {
   label: string;
   percent: number;
   color: string;
+  colorLight: string;
   why: string;
 };
 
@@ -38,6 +39,7 @@ export const ALLOCATIONS: Allocation[] = [
     label: "Aksjer (verden)",
     percent: 30,
     color: "#c4a87a",
+    colorLight: "#a08050",
     why: "Vekst i gode tider og inflasjonstider med oppgang.",
   },
   {
@@ -45,6 +47,7 @@ export const ALLOCATIONS: Allocation[] = [
     label: "Lange statsobligasjoner",
     percent: 40,
     color: "#9a9a9a",
+    colorLight: "#8a8a8a",
     why: "Beskytter mot deflasjon og økonomisk nedgang.",
   },
   {
@@ -52,6 +55,7 @@ export const ALLOCATIONS: Allocation[] = [
     label: "Mellomlange statsobligasjoner",
     percent: 15,
     color: "#4a4a4a",
+    colorLight: "#5a5a5a",
     why: "Stabiliserer porteføljen i normale markeder.",
   },
   {
@@ -59,6 +63,7 @@ export const ALLOCATIONS: Allocation[] = [
     label: "Gull",
     percent: 7.5,
     color: "#e8c33a",
+    colorLight: "#b89a18",
     why: "Beskytter mot inflasjon og uro.",
   },
   {
@@ -66,6 +71,7 @@ export const ALLOCATIONS: Allocation[] = [
     label: "Råvarer",
     percent: 7.5,
     color: "#6e4a2a",
+    colorLight: "#7a5430",
     why: "Beskytter mot uventet inflasjon.",
   },
 ];

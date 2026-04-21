@@ -7,13 +7,14 @@ type Props = {
   size?: number;
   highlightId?: string | null;
   onSliceClick?: (id: string) => void;
+  useLight?: boolean;
 };
 
-export function Donut({ size = 180, highlightId, onSliceClick }: Props) {
+export function Donut({ size = 180, highlightId, onSliceClick, useLight }: Props) {
   const data = ALLOCATIONS.map((a) => ({
     name: a.label,
     value: a.percent,
-    color: a.color,
+    color: useLight ? a.colorLight : a.color,
     id: a.id,
   }));
 

@@ -16,6 +16,10 @@ import { useFlus } from "@/lib/store";
 import { Donut } from "./Donut";
 import { track } from "@/lib/analytics";
 
+const WARN = "#b05a3a";
+const WARN_SOFT = "rgba(176, 90, 58, 0.1)";
+const WARN_BORDER = "rgba(176, 90, 58, 0.2)";
+
 export function InvestGuide() {
   const goals = useFlus((s) => s.goals);
   const initialDaily = goals[0]?.dailyAmount ?? 50;
@@ -33,6 +37,7 @@ export function InvestGuide() {
   const [highlight, setHighlight] = useState<AssetClass | null>(null);
 
   const age = useFlus((s) => s.age);
+  const isGold = useFlus((s) => s.theme) === "exclusive";
   const endAge = 67;
 
   const feeYears = 50;
@@ -132,10 +137,12 @@ export function InvestGuide() {
           onSliceClick={(id) =>
             setHighlight((h) => (h === id ? null : (id as AssetClass)))
           }
+          useLight={!isGold}
         />
         <div className="mt-3 space-y-1.5">
           {ALLOCATIONS.map((a) => {
             const active = highlight === a.id;
+            const dotColor = isGold ? a.color : a.colorLight;
             return (
               <button
                 key={a.id}
@@ -149,7 +156,7 @@ export function InvestGuide() {
               >
                 <span
                   className="w-3 h-3 rounded-full flex-shrink-0"
-                  style={{ background: a.color }}
+                  style={{ background: dotColor }}
                 />
                 <span className="flex-1 text-[13px] font-medium">
                   {a.label}
@@ -233,10 +240,11 @@ export function InvestGuide() {
                 className={`px-2 py-2.5 rounded-2xl text-[12px] font-semibold transition-colors relative ${
                   active
                     ? incomplete
-                      ? "bg-[var(--surface-2)] border border-[#ef4444]/30 text-[var(--foreground)]"
+                      ? "bg-[var(--surface-2)] border text-[var(--foreground)]"
                       : "bg-[var(--foreground)] text-[var(--background)]"
                     : "bg-[var(--surface)] border border-[var(--border)] text-[var(--muted)]"
                 }`}
+                style={active && incomplete ? { borderColor: WARN_BORDER } : undefined}
               >
                 {p.name}
                 {p.recommended && (
@@ -245,7 +253,7 @@ export function InvestGuide() {
                   </span>
                 )}
                 {incomplete && (
-                  <span className="block text-[9px] font-medium text-[#ef4444] opacity-80">
+                  <span className="block text-[9px] font-medium opacity-80" style={{ color: WARN }}>
                     Mangler produkter
                   </span>
                 )}
@@ -260,9 +268,10 @@ export function InvestGuide() {
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-2 rounded-2xl bg-[#ef4444]/10 border border-[#ef4444]/20 p-3"
+            className="mt-2 rounded-2xl p-3"
+            style={{ background: WARN_SOFT, borderWidth: 1, borderColor: WARN_BORDER }}
           >
-            <p className="text-[12px] text-[#ef4444] font-medium leading-snug">
+            <p className="text-[12px] font-medium leading-snug" style={{ color: WARN }}>
               {PROVIDERS.find((p) => p.id === provider)?.name} mangler 3 av 5
               aktivaklasser som trengs til All Weather-strategien. Vi anbefaler
               Nordnet for å få tilgang til alle byggeklossene.
@@ -312,7 +321,7 @@ export function InvestGuide() {
             </div>
           </div>
           <div className="mt-3 text-center">
-            <span className="text-[13px] font-semibold text-[#ef4444]">
+            <span className="text-[13px] font-semibold" style={{ color: WARN }}>
               Gebyrer koster deg {formatNok(feeCost.lost, { compact: true })}
             </span>
             <p className="text-[11px] text-[var(--muted)] mt-0.5">
@@ -336,6 +345,7 @@ export function InvestGuide() {
               allocation={a}
               product={product}
               amount={amount}
+              isGold={isGold}
             />
           );
         })}
@@ -402,11 +412,14 @@ function ProductCard({
   allocation,
   product,
   amount,
+  isGold,
 }: {
   allocation: (typeof ALLOCATIONS)[number];
   product?: Product;
   amount: number;
+  isGold: boolean;
 }) {
+  const dotColor = isGold ? allocation.color : allocation.colorLight;
   const [copied, setCopied] = useState(false);
 
   const copy = async (val: string) => {
@@ -421,16 +434,16 @@ function ProductCard({
 
   if (!product || product.unavailable) {
     return (
-      <div className="rounded-2xl bg-[var(--surface)] border border-dashed border-[#ef4444]/20 p-3">
+      <div className="rounded-2xl bg-[var(--surface)] border border-dashed p-3" style={{ borderColor: WARN_BORDER }}>
         <div className="flex items-center gap-2 mb-1">
           <span
             className="w-2.5 h-2.5 rounded-full opacity-40"
-            style={{ background: allocation.color }}
+            style={{ background: dotColor }}
           />
           <span className="text-[12px] font-semibold flex-1 text-[var(--muted)]">
             {allocation.label}
           </span>
-          <span className="text-[11px] font-medium text-[#ef4444]">
+          <span className="text-[11px] font-medium" style={{ color: WARN }}>
             Mangler
           </span>
         </div>
@@ -456,7 +469,7 @@ function ProductCard({
       <div className="flex items-center gap-2 mb-1">
         <span
           className="w-2.5 h-2.5 rounded-full"
-          style={{ background: allocation.color }}
+          style={{ background: dotColor }}
         />
         <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)] flex-1">
           {allocation.label}
