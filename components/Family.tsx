@@ -80,7 +80,13 @@ export function Family({ readonly, members: externalMembers }: {
       {/* Members */}
       {members.length === 0 ? (
         <div className="mt-8 text-center">
-          <div className="text-4xl mb-3">👨‍👩‍👧‍👦</div>
+          <div className="w-12 h-12 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+              <circle cx="9" cy="7" r="3" />
+              <circle cx="17" cy="7" r="3" />
+              <path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2M17 10a4 4 0 014 4v2" />
+            </svg>
+          </div>
           <p className="text-[var(--muted)] text-sm leading-snug max-w-[260px] mx-auto">
             Legg til familiemedlemmer for å se hva dere kan oppnå sammen.
           </p>
