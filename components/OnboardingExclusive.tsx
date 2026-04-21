@@ -150,7 +150,9 @@ export function OnboardingExclusive() {
             <div className="h-px flex-1 bg-gradient-to-l from-[#c9a84c]/40 to-transparent" />
           </div>
           <h2 className="font-display text-[17px] font-semibold text-white text-center mt-2 leading-snug">
-            Hemmeligheten til å bli millionær, enkelt og risikofritt.
+            Hemmeligheten til å bli millionær
+            <br />
+            enkelt og risikofritt.
             <br />
             <span className="text-[#b5a890] font-normal text-[14px]">
               Bli med i den eksklusive klubben som vet hvordan.
