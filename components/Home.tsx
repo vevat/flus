@@ -15,7 +15,6 @@ import { WealthChart } from "./WealthChart";
 import { TipCarousel } from "./TipCard";
 import { GoalsList } from "./GoalsList";
 import { CostOfWaiting } from "./CostOfWaiting";
-import { ShareSheet } from "./ShareSheet";
 import { track } from "@/lib/analytics";
 
 const DEFAULT_PROJECTION_END = 80;
@@ -42,8 +41,6 @@ export function Home() {
   const goals = useFlus((s) => s.goals);
   const setInitialDaily = useFlus((s) => s.setInitialDaily);
   const addMilestoneGoal = useFlus((s) => s.addMilestoneGoal);
-  const reset = useFlus((s) => s.reset);
-
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
 
@@ -52,7 +49,6 @@ export function Home() {
   const delayYears = ui.delayYears;
   const setDelayYears = (v: number) => setUi({ delayYears: v });
 
-  const [showShare, setShowShare] = useState(false);
   const [milestoneOpen, setMilestoneOpen] = useState(false);
 
   const initialDaily = goals[0]?.dailyAmount ?? 50;
@@ -97,47 +93,6 @@ export function Home() {
   return (
     <div className="flex-1 flex flex-col px-5 pt-4 pb-3">
       {/* Topp - kompakt */}
-      <div className="flex items-center justify-between">
-        <div className="text-[13px] text-[var(--muted)]">
-          Hei <span className="font-semibold text-[var(--foreground)]">{name}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setShowShare(true);
-              track("share_opened");
-            }}
-            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
-            aria-label="Del"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (window.confirm("Er du sikker på at du vil starte på nytt? All data slettes.")) {
-                reset();
-              }
-            }}
-            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
-            aria-label="Start på nytt"
-            title="Start på nytt"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-              <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8" />
-              <path d="M21 3v5h-5" />
-              <path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16" />
-              <path d="M3 21v-5h5" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
       {/* Hero: avatar + stort tall + graf */}
       <div className="mt-2 rounded-3xl bg-[var(--surface)] border border-[var(--border)] px-3 pt-3 pb-2">
         <div className="flex items-center gap-3">
@@ -274,16 +229,6 @@ export function Home() {
             previousDaily={
               goals[goals.length - 1]?.dailyAmount ?? initialDaily
             }
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Share sheet */}
-      <AnimatePresence>
-        {showShare && (
-          <ShareSheet
-            onClose={() => setShowShare(false)}
-            shareText={`Visste du at ${initialDaily} kr om dagen kan bli til ${formatNok(nominal, { compact: true })} innen du er ${selectedAge}? Sjekk hva din sparing kan bli til!`}
           />
         )}
       </AnimatePresence>

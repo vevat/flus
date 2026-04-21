@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { TabBar } from "@/components/TabBar";
+import { TopBar } from "@/components/TopBar";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 
 const sans = Plus_Jakarta_Sans({
@@ -70,6 +71,7 @@ export default function RootLayout({
         <AnalyticsProvider />
         <Analytics />
         <div className="mx-auto w-full max-w-md flex-1 flex flex-col">
+          <TopBar />
           <main className="flex-1 flex flex-col">{children}</main>
           <TabBar />
         </div>
