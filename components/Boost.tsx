@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import { track } from "@/lib/analytics";
@@ -9,6 +9,7 @@ import {
   HACKS,
   type Hack,
   type HackCategory,
+  type HackIconId,
   futureValueOfHack,
   monthlyAmount,
 } from "@/lib/hacks";
@@ -178,6 +179,50 @@ export function Boost() {
   );
 }
 
+/* ---------- Icon paths ---------- */
+
+const ICON_PATHS: Record<HackIconId, ReactNode> = {
+  zap: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
+  sandwich: <><path d="M3 11h18M5 11V8a7 7 0 0114 0v3" /><path d="M3 11l1 7a2 2 0 002 2h12a2 2 0 002-2l1-7" /></>,
+  droplet: <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0L12 2.69z" />,
+  tv: <><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4" /></>,
+  gamepad: <><path d="M6 12h4M8 10v4" /><circle cx="15" cy="11" r="0.5" fill="currentColor" /><circle cx="17" cy="13" r="0.5" fill="currentColor" /><path d="M2 12a4 4 0 004 4h2l2 3 2-3h2a4 4 0 004-4V9a4 4 0 00-4-4H6a4 4 0 00-4 4z" /></>,
+  dice: <><rect x="3" y="3" width="18" height="18" rx="3" /><circle cx="8.5" cy="8.5" r="0.5" fill="currentColor" /><circle cx="15.5" cy="8.5" r="0.5" fill="currentColor" /><circle cx="12" cy="12" r="0.5" fill="currentColor" /><circle cx="8.5" cy="15.5" r="0.5" fill="currentColor" /><circle cx="15.5" cy="15.5" r="0.5" fill="currentColor" /></>,
+  ban: <><circle cx="12" cy="12" r="10" /><path d="M4.93 4.93l14.14 14.14" /></>,
+  cart: <><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18M16 10a4 4 0 01-8 0" /></>,
+  shirt: <><path d="M20.38 3.46L16 2 12 5 8 2 3.62 3.46a2 2 0 00-1.34 1.88v.7c0 .7.46 1.32 1.13 1.52L8 9l-1 11h10L16 9l4.59-1.44a1.6 1.6 0 001.13-1.52v-.7a2 2 0 00-1.34-1.88z" /></>,
+  baby: <><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 10-16 0" /></>,
+  dog: <><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .137 1.217 0 3 1 3s1.5-1 1.5-1" /><path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.137 1.217 0 3-1 3s-1.5-1-1.5-1" /><path d="M8 14v.5M16 14v.5M11.25 16.25h1.5L12 17l-.75-.75z" /><path d="M4.42 11.247A13.152 13.152 0 004 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 00-.493-3.309" /></>,
+  snowflake: <><path d="M12 2v20M17 7l-10 10M2 12h20M7 7l10 10M17 17l-2-5h4M7 7l2 5H5M12 2l3 5h-6M12 22l-3-5h6M2 12l5-3v6M22 12l-5 3v-6" /></>,
+  bike: <><circle cx="5.5" cy="17.5" r="3.5" /><circle cx="18.5" cy="17.5" r="3.5" /><path d="M15 6a1 1 0 100-2 1 1 0 000 2zM12 17.5V14l-3-3 4-3 2 3h3" /></>,
+  gem: <><path d="M6 3h12l4 6-10 13L2 9z" /><path d="M2 9h20M12 22L6 9M12 22l6-13M12 2l-4 7M12 2l4 7" /></>,
+  gift: <><rect x="3" y="8" width="18" height="4" rx="1" /><rect x="5" y="12" width="14" height="8" rx="1" /><path d="M12 8v12M3 12h18" /><path d="M7.5 8C6.5 6 8 4 9.5 4c1.5 0 2.5 2 2.5 4M16.5 8c1-2-.5-4-2-4s-2.5 2-2.5 4" /></>,
+  utensils: <><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" /></>,
+  recycle: <><path d="M7 19H4.815a1.83 1.83 0 01-1.57-.881 1.785 1.785 0 01-.004-1.784L7.196 9.5" /><path d="M11 19h8.203a1.83 1.83 0 001.556-.89 1.784 1.784 0 00-.009-1.78L16.8 9.5" /><path d="M12 5l3.96 6.84M6.04 11.84L12 5" /><path d="M2 15l4 4 4-4M18 15l4 4-4 4M12 2l3 5H9l3-5" /></>,
+  noodles: <><path d="M4 12c0 4.42 3.58 8 8 8s8-3.58 8-8" /><path d="M5 4v4c0 2.21 1.79 4 4 4" /><path d="M9 4v8" /><path d="M13 4v8" /><path d="M17 4v4c0 2.21 1.79 4 4 4" /><path d="M12 20v2" /></>,
+};
+
+function HackIcon({ icon, color }: { icon: HackIconId; color: string }) {
+  return (
+    <div
+      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+      style={{ background: `${color}18` }}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-3.5 h-3.5"
+      >
+        {ICON_PATHS[icon]}
+      </svg>
+    </div>
+  );
+}
+
 /* ---------- Hack-rad ---------- */
 
 function HackRow({
@@ -233,9 +278,9 @@ function HackRow({
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[15px]">{hack.emoji}</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <HackIcon icon={hack.icon} color={hack.iconColor} />
               <span className="font-display font-semibold text-[14px] leading-tight">
                 {hack.title}
               </span>
@@ -247,10 +292,10 @@ function HackRow({
               </span>
             </span>
           </div>
-          <div className="text-[12px] text-[var(--muted)] leading-snug mt-0.5">
+          <div className="text-[12px] text-[var(--muted)] leading-snug mt-0.5 ml-9">
             {hack.blurb}
           </div>
-          <div className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums mt-1.5">
+          <div className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums mt-1.5 ml-9">
             Verdt {fmtBig(future)} når du er {toAge}
           </div>
         </div>

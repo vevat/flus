@@ -11,24 +11,29 @@
 export type HackCategory = "cut" | "earn" | "hack";
 export type HackFrequency = "daily" | "weekly" | "monthly" | "yearly";
 
+export type HackIconId =
+  | "zap" | "sandwich" | "droplet" | "tv" | "gamepad" | "dice"
+  | "ban" | "cart" | "shirt" | "baby" | "dog" | "snowflake"
+  | "bike" | "gem" | "gift" | "utensils" | "recycle" | "noodles";
+
 export type Hack = {
   id: string;
-  emoji: string;
+  icon: HackIconId;
+  iconColor: string;
   title: string;
-  /** Kort, ungdommelig oneliner */
   blurb: string;
   amount: number;
   frequency: HackFrequency;
   category: HackCategory;
-  /** Hvor lett er det? 1 = veldig lett, 3 = krever litt jobb */
   effort: 1 | 2 | 3;
 };
 
 export const HACKS: Hack[] = [
-  // ---- CUT IT (drop unødvendige utgifter) ----
+  // ---- CUT ----
   {
     id: "cut-energidrikk",
-    emoji: "⚡",
+    icon: "zap",
+    iconColor: "#e8c33a",
     title: "Drop energidrikken",
     blurb: "Du sover bedre, og lommeboka jubler.",
     amount: 35,
@@ -38,7 +43,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-kantine",
-    emoji: "🥪",
+    icon: "sandwich",
+    iconColor: "#d4a76a",
     title: "Smør lunsj hjemme",
     blurb: "Spar 50 spenn per skoledag vs kantina.",
     amount: 50,
@@ -48,7 +54,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-vannflaske",
-    emoji: "💧",
+    icon: "droplet",
+    iconColor: "#5ba8c8",
     title: "Ta med vannflaske",
     blurb: "Dropp å betale 30 kr for flaskevann og brus i butikken.",
     amount: 30,
@@ -58,7 +65,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-streaming",
-    emoji: "📺",
+    icon: "tv",
+    iconColor: "#9b7acc",
     title: "Drop én streaming-tjeneste",
     blurb: "Du rakk uansett ikke å se alt.",
     amount: 129,
@@ -68,7 +76,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-skin",
-    emoji: "🎮",
+    icon: "gamepad",
+    iconColor: "#cc6b6b",
     title: "Hopp over én gaming-skin",
     blurb: "En CS- eller Fortnite-skin = 200 kr som kan vokse.",
     amount: 200,
@@ -78,7 +87,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-lotto",
-    emoji: "🎰",
+    icon: "dice",
+    iconColor: "#6bcc8a",
     title: "Drop Lotto / Eurojackpot",
     blurb: "Sjansen er 1 til 31 millioner. Spar pengene i stedet.",
     amount: 50,
@@ -88,7 +98,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-snus",
-    emoji: "🚭",
+    icon: "ban",
+    iconColor: "#cc8b6b",
     title: "Drop snusen",
     blurb: "Bra for tennene, råbra for fremtidsformuen.",
     amount: 70,
@@ -98,7 +109,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "cut-rema",
-    emoji: "🛒",
+    icon: "cart",
+    iconColor: "#7baacc",
     title: "Bytt til Rema eller Kiwi",
     blurb: "Samme handlevogn, billigere per tur. Husk Trumf og Trippeltrumf!",
     amount: 30,
@@ -106,11 +118,23 @@ export const HACKS: Hack[] = [
     category: "cut",
     effort: 1,
   },
+  {
+    id: "cut-nudler",
+    icon: "noodles",
+    iconColor: "#e8a33a",
+    title: "Mr. Lee-nudler til lunsj",
+    blurb: "En pakke koster 15 kr. Billig, mettende, og millionærvennlig.",
+    amount: 15,
+    frequency: "daily",
+    category: "cut",
+    effort: 1,
+  },
 
-  // ---- EARN IT (tjene mer på siden) ----
+  // ---- EARN ----
   {
     id: "earn-tise",
-    emoji: "👕",
+    icon: "shirt",
+    iconColor: "#cc7eb5",
     title: "Selg gamle klær på Tise",
     blurb: "Gjennomsnittlig 200 kr per uke om du legger ut jevnlig.",
     amount: 200,
@@ -120,7 +144,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "earn-babysit",
-    emoji: "👶",
+    icon: "baby",
+    iconColor: "#e89a7a",
     title: "Tilby babysitting",
     blurb: "200 kr/time. Naboene elsker deg etter første kveld.",
     amount: 600,
@@ -130,7 +155,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "earn-dog",
-    emoji: "🐕",
+    icon: "dog",
+    iconColor: "#a8885c",
     title: "Hundepass etter skolen",
     blurb: "150 kr per tur, 3 dager i uka.",
     amount: 450,
@@ -140,7 +166,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "earn-snow",
-    emoji: "❄️",
+    icon: "snowflake",
+    iconColor: "#8ab8d4",
     title: "Snømåking eller plenklipping",
     blurb: "Bank på naboens dør. 250 kr per jobb, sesongbasert.",
     amount: 1000,
@@ -150,7 +177,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "earn-foodora",
-    emoji: "🚲",
+    icon: "bike",
+    iconColor: "#6bcc6b",
     title: "Foodora / Wolt på sykkel",
     blurb: "Trening + 150–200 kr/time fra du fyller 18.",
     amount: 800,
@@ -158,11 +186,23 @@ export const HACKS: Hack[] = [
     category: "earn",
     effort: 3,
   },
+  {
+    id: "earn-pant",
+    icon: "recycle",
+    iconColor: "#4db87a",
+    title: "Pant 3 flasker om dagen",
+    blurb: "~75 flasker i mnd. 150–225 kr avhengig av 2 eller 3 kr pant.",
+    amount: 6,
+    frequency: "daily",
+    category: "earn",
+    effort: 1,
+  },
 
-  // ---- HACK IT (smarte triks) ----
+  // ---- HACK ----
   {
     id: "hack-vipps",
-    emoji: "💎",
+    icon: "gem",
+    iconColor: "#c9a84c",
     title: "Auto-spar hver fredag",
     blurb: "Sett opp fast overføring til sparekonto/fond. Glem den.",
     amount: 200,
@@ -172,7 +212,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "hack-bursdag",
-    emoji: "🎁",
+    icon: "gift",
+    iconColor: "#cc6b9b",
     title: "Be om penger til bursdag",
     blurb: "I stedet for ting du glemmer i februar.",
     amount: 1500,
@@ -182,7 +223,8 @@ export const HACKS: Hack[] = [
   },
   {
     id: "hack-mealprep",
-    emoji: "🍱",
+    icon: "utensils",
+    iconColor: "#8acc7a",
     title: "Meal prep på søndag",
     blurb: "5 lunsjer for 200 kr. Sparer ~100 kr per dag.",
     amount: 100,
@@ -243,14 +285,13 @@ export function futureValueOfHack({
   return value;
 }
 
-/** Lokaliserte etiketter for kategorier. */
 export const CATEGORY_LABELS: Record<
   HackCategory,
-  { label: string; emoji: string; color: string }
+  { label: string; color: string }
 > = {
-  cut: { label: "Kutt", emoji: "✂️", color: "var(--gold)" },
-  earn: { label: "Tjen", emoji: "💼", color: "var(--primary)" },
-  hack: { label: "Hack", emoji: "🧠", color: "var(--accent)" },
+  cut: { label: "Kutt", color: "var(--gold)" },
+  earn: { label: "Tjen", color: "var(--primary)" },
+  hack: { label: "Hack", color: "var(--accent)" },
 };
 
 export const FREQUENCY_LABELS: Record<HackFrequency, string> = {
