@@ -20,28 +20,28 @@ const GOLD_VARS: Record<string, string> = {
   "--accent-soft": "rgba(201, 168, 76, 0.08)",
 };
 
-const ORIGINAL_VARS: Record<string, string> = {
-  "--background": "#faf9f5",
+const LIGHT_VARS: Record<string, string> = {
+  "--background": "#faf8f4",
   "--surface": "#ffffff",
-  "--surface-2": "#f4f2ec",
-  "--foreground": "#1a1a1a",
-  "--muted": "#6b7280",
-  "--muted-2": "#9ca3af",
-  "--border": "#e8e4d9",
-  "--primary": "#059669",
-  "--primary-soft": "#d1fae5",
-  "--primary-strong": "#047857",
-  "--gold": "#f59e0b",
-  "--gold-soft": "#fef3c7",
-  "--accent": "#6366f1",
-  "--accent-soft": "#e0e7ff",
+  "--surface-2": "#f3f0e8",
+  "--foreground": "#1a1714",
+  "--muted": "#7a7368",
+  "--muted-2": "#9a9488",
+  "--border": "#e4ddd0",
+  "--primary": "#b8952e",
+  "--primary-soft": "rgba(184, 149, 46, 0.1)",
+  "--primary-strong": "#9a7a1e",
+  "--gold": "#b8952e",
+  "--gold-soft": "rgba(184, 149, 46, 0.1)",
+  "--accent": "#b8952e",
+  "--accent-soft": "rgba(184, 149, 46, 0.06)",
 };
 
 function applyTheme(theme: string) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
   const body = document.body;
-  const vars = theme === "exclusive" ? GOLD_VARS : ORIGINAL_VARS;
+  const vars = theme === "exclusive" ? GOLD_VARS : LIGHT_VARS;
 
   for (const [key, val] of Object.entries(vars)) {
     root.style.setProperty(key, val, "important");
