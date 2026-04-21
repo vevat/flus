@@ -68,14 +68,13 @@ export function Boost() {
       </div>
 
       {/* Sammendrag-kort */}
-      <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
+      <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-3">
         {empty ? (
-          <div className="text-center py-2">
-            <div className="text-3xl mb-2">👇</div>
-            <div className="font-display text-[15px] font-semibold">
+          <div className="text-center py-1">
+            <div className="font-display text-[14px] font-semibold">
               Trykk på hackene under
             </div>
-            <div className="text-[12px] text-[var(--muted)] mt-0.5">
+            <div className="text-[11px] text-[var(--muted)] mt-0.5">
               Så ser du hva de er verdt i fremtiden
             </div>
           </div>
@@ -201,7 +200,7 @@ function HackRow({
       layout
       whileTap={{ scale: 0.98 }}
       onClick={onToggle}
-      className={`text-left rounded-2xl px-3.5 py-3 border transition-colors ${
+      className={`text-left rounded-2xl px-3 py-2.5 border transition-colors ${
         on
           ? "bg-[var(--primary-soft)] border-[var(--primary-strong)]/25"
           : "bg-[var(--surface)] border-[var(--border)]"

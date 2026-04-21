@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { TabBar } from "@/components/TabBar";
 import { TopBar } from "@/components/TopBar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 
 const sans = Plus_Jakarta_Sans({
@@ -68,6 +69,7 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <ThemeProvider />
         <AnalyticsProvider />
         <Analytics />
         <div className="mx-auto w-full max-w-md flex-1 flex flex-col">

@@ -33,11 +33,13 @@ export function ShareSheet({ onClose, shareText }: Props) {
   const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
 
   useEffect(() => {
+    const isDark = document.documentElement.classList.contains("theme-exclusive") ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
     QRCode.toString(APP_URL, {
       type: "svg",
       width: 200,
       margin: 1,
-      color: { dark: "#1a1a1a", light: "#00000000" },
+      color: { dark: isDark ? "#f0ede6" : "#1a1a1a", light: "#00000000" },
     }).then(setQrSvg);
   }, []);
 

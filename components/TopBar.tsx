@@ -7,6 +7,28 @@ import { ShareSheet } from "./ShareSheet";
 import { track } from "@/lib/analytics";
 import { formatNok, getAtAge, projectWealth } from "@/lib/finance";
 
+export function ThemeToggle() {
+  const theme = useFlus((s) => s.theme);
+  const setTheme = useFlus((s) => s.setTheme);
+  const isGold = theme === "exclusive";
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isGold ? "original" : "exclusive")}
+      className="h-6 px-2 rounded-full text-[9px] font-semibold tracking-wide transition-all active:scale-95 border"
+      style={{
+        background: isGold ? "rgba(201,168,76,0.15)" : "var(--surface)",
+        borderColor: isGold ? "rgba(201,168,76,0.3)" : "var(--border)",
+        color: isGold ? "#c9a84c" : "var(--muted)",
+      }}
+      title="Bytt design"
+    >
+      {isGold ? "GOLD" : "ORIGINAL"}
+    </button>
+  );
+}
+
 export function TopBar() {
   const name = useFlus((s) => s.name);
   const age = useFlus((s) => s.age);
@@ -41,14 +63,15 @@ export function TopBar() {
           Hei{" "}
           <span className="font-semibold text-[var(--foreground)]">{name}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => {
               setShowShare(true);
               track("share_opened");
             }}
-            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
+            className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
             aria-label="Del"
           >
             <svg
@@ -58,7 +81,7 @@ export function TopBar() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             >
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
               <polyline points="16 6 12 2 8 6" />
@@ -76,7 +99,7 @@ export function TopBar() {
                 reset();
               }
             }}
-            className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
+            className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
             aria-label="Start på nytt"
             title="Start på nytt"
           >
@@ -87,7 +110,7 @@ export function TopBar() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
             >
               <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8" />
               <path d="M21 3v5h-5" />

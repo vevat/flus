@@ -20,28 +20,6 @@
   --accent-soft: #e0e7ff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b1220;
-    --surface: #131a2a;
-    --surface-2: #1a2236;
-    --foreground: #f5f5f4;
-    --muted: #94a3b8;
-    --muted-2: #64748b;
-    --border: #1f2a3f;
-
-    --primary: #10b981;
-    --primary-soft: #064e3b;
-    --primary-strong: #34d399;
-
-    --gold: #fbbf24;
-    --gold-soft: #422006;
-
-    --accent: #818cf8;
-    --accent-soft: #1e1b4b;
-  }
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -120,7 +98,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 999px;
   background: var(--primary);
   border: 4px solid var(--surface);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 35%, transparent);
   margin-top: -12px;
   transition: transform 0.15s ease;
 }
@@ -133,7 +111,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 999px;
   background: var(--primary);
   border: 4px solid var(--surface);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
 /* Gold-themed slider variant — brukes på "Kostnaden av å vente"
@@ -154,6 +132,11 @@ input[type="range"].slider-gold::-moz-range-thumb {
   background: var(--gold);
   border-color: var(--gold-soft);
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.exclusive-bg {
+  background: #08080a;
+  color: #f0ede6;
 }
 
 /* Subtle scrollbar hide for tidy mobile feel */

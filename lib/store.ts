@@ -34,6 +34,8 @@ export type FamilyMember = {
   parentContribution: number;
 };
 
+export type ThemeId = "original" | "exclusive";
+
 type FlusState = {
   hasOnboarded: boolean;
   name: string;
@@ -47,6 +49,8 @@ type FlusState = {
   acceptedHacks: string[];
   /** Familiemedlemmer */
   familyMembers: FamilyMember[];
+  /** Visuelt tema */
+  theme: ThemeId;
 
   /** UI-preferanser som huskes mellom sidevisninger */
   ui: {
@@ -73,6 +77,7 @@ type FlusState = {
   updateFamilyMember: (id: string, updates: Partial<Omit<FamilyMember, "id">>) => void;
   removeFamilyMember: (id: string) => void;
   setUi: (patch: Partial<FlusState["ui"]>) => void;
+  setTheme: (theme: ThemeId) => void;
   reset: () => void;
 };
 
@@ -89,6 +94,7 @@ export const useFlus = create<FlusState>()(
       seenTips: [],
       acceptedHacks: [],
       familyMembers: [],
+      theme: "exclusive" as ThemeId,
       ui: {
         selectedAge: null,
         delayYears: 10,
@@ -171,6 +177,7 @@ export const useFlus = create<FlusState>()(
         })),
       setUi: (patch) =>
         set((s) => ({ ui: { ...s.ui, ...patch } })),
+      setTheme: (theme) => set({ theme }),
       reset: () =>
         set({
           hasOnboarded: false,
@@ -181,6 +188,7 @@ export const useFlus = create<FlusState>()(
           seenTips: [],
           acceptedHacks: [],
           familyMembers: [],
+          theme: "exclusive" as ThemeId,
           ui: {
             selectedAge: null,
             delayYears: 10,
@@ -196,7 +204,7 @@ export const useFlus = create<FlusState>()(
     {
       name: "flus-storage",
       storage: createJSONStorage(() => localStorage),
-      version: 4,
+      version: 5,
       migrate: (persistedState, version) => {
         const s = (persistedState ?? {}) as Partial<FlusState>;
         if (version < 2 && !Array.isArray(s.acceptedHacks)) {
@@ -216,6 +224,9 @@ export const useFlus = create<FlusState>()(
             goalMillions: 10,
             goalTargetAge: null,
           };
+        }
+        if (version < 5 && !s.theme) {
+          s.theme = "exclusive";
         }
         return s as FlusState;
       },
