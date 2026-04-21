@@ -75,6 +75,10 @@ export default function RootLayout({
         <div className="mx-auto w-full max-w-md flex-1 flex flex-col">
           <TopBar />
           <main className="flex-1 flex flex-col">{children}</main>
+          <footer className="text-center text-[10px] text-[var(--muted-2)] py-3">
+            <div>&copy; {new Date().getFullYear()} Pengebingen. All rights reserved.</div>
+            <div className="mt-0.5 italic">Stay curious | Onkel Cato</div>
+          </footer>
           <TabBar />
         </div>
       </body>

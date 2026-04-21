@@ -383,10 +383,6 @@ export function InvestGuide() {
       {/* Disclaimer */}
       <Disclaimer />
 
-      {/* Copyright */}
-      <div className="text-center text-[10px] text-[var(--muted-2)] pb-2">
-        &copy; {new Date().getFullYear()} Pengebingen. All rights reserved.
-      </div>
     </div>
   );
 }
