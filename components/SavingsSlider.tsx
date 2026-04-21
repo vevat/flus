@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getRelatable, formatNok, DEFAULTS, type RelatableId } from "@/lib/finance";
-import { useFlusStore } from "@/lib/store";
+import { useFlus } from "@/lib/store";
 
 type Props = {
   value: number;
@@ -44,7 +44,7 @@ export function SavingsSlider({
 }: Props) {
   const monthly = value * DEFAULTS.daysPerMonth;
   const relatable = getRelatable(value);
-  const isGold = useFlusStore((s) => s.theme) === "exclusive";
+  const isGold = useFlus((s) => s.theme) === "exclusive";
 
   const useStops = stops && stops.length > 1;
   const stopIndex = useMemo(
