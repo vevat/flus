@@ -47,6 +47,8 @@ type FlusState = {
   seenTips: string[];
   /** Sparehacks brukeren har sagt "skal" gjøre (bygger fremtidsverdi i Boost) */
   acceptedHacks: string[];
+  /** Brukerjusterte beløp per hack (overskriver default) */
+  hackAmounts: Record<string, number>;
   /** Familiemedlemmer */
   familyMembers: FamilyMember[];
   /** Visuelt tema */
@@ -73,6 +75,7 @@ type FlusState = {
   completeOnboarding: () => void;
   markTipSeen: (id: string) => void;
   toggleHack: (id: string) => void;
+  setHackAmount: (id: string, amount: number) => void;
   addFamilyMember: (member: Omit<FamilyMember, "id">) => void;
   updateFamilyMember: (id: string, updates: Partial<Omit<FamilyMember, "id">>) => void;
   removeFamilyMember: (id: string) => void;
@@ -93,6 +96,7 @@ export const useFlus = create<FlusState>()(
       goals: [{ fromAge: 14, dailyAmount: DEFAULT_DAILY }],
       seenTips: [],
       acceptedHacks: [],
+      hackAmounts: {},
       familyMembers: [],
       theme: "exclusive" as ThemeId,
       ui: {
@@ -158,6 +162,10 @@ export const useFlus = create<FlusState>()(
             ? s.acceptedHacks.filter((h) => h !== id)
             : [...s.acceptedHacks, id],
         })),
+      setHackAmount: (id, amount) =>
+        set((s) => ({
+          hackAmounts: { ...s.hackAmounts, [id]: Math.max(0, amount) },
+        })),
       addFamilyMember: (member) =>
         set((s) => ({
           familyMembers: [
@@ -187,6 +195,7 @@ export const useFlus = create<FlusState>()(
           goals: [{ fromAge: 14, dailyAmount: DEFAULT_DAILY }],
           seenTips: [],
           acceptedHacks: [],
+          hackAmounts: {},
           familyMembers: [],
           theme: "exclusive" as ThemeId,
           ui: {
@@ -204,7 +213,7 @@ export const useFlus = create<FlusState>()(
     {
       name: "flus-storage",
       storage: createJSONStorage(() => localStorage),
-      version: 5,
+      version: 6,
       migrate: (persistedState, version) => {
         const s = (persistedState ?? {}) as Partial<FlusState>;
         if (version < 2 && !Array.isArray(s.acceptedHacks)) {
@@ -227,6 +236,9 @@ export const useFlus = create<FlusState>()(
         }
         if (version < 5 && !s.theme) {
           s.theme = "exclusive";
+        }
+        if (version < 6 && !s.hackAmounts) {
+          s.hackAmounts = {};
         }
         return s as FlusState;
       },

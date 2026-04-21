@@ -238,9 +238,9 @@ const _HACKS: Hack[] = [
     icon: "utensils",
     iconColor: "#8acc7a",
     title: "Meal prep på søndag",
-    blurb: "5 lunsjer for 200 kr. Sparer ~100 kr per dag.",
-    amount: 100,
-    frequency: "daily",
+    blurb: "Kjøpelunsj koster ~120 kr. Lag selv for 30 kr — spar 90 kr × 5 dager.",
+    amount: 450,
+    frequency: "weekly",
     category: "hack",
     effort: 2,
   },
@@ -264,12 +264,23 @@ const FREQ_TO_YEARLY: Record<HackFrequency, number> = {
   yearly: 1,
 };
 
-export function yearlyAmount(hack: Hack): number {
-  return hack.amount * FREQ_TO_YEARLY[hack.frequency];
+export function yearlyAmount(hack: Hack, overrideAmount?: number): number {
+  return (overrideAmount ?? hack.amount) * FREQ_TO_YEARLY[hack.frequency];
 }
 
-export function monthlyAmount(hack: Hack): number {
-  return yearlyAmount(hack) / 12;
+export function monthlyAmount(hack: Hack, overrideAmount?: number): number {
+  return yearlyAmount(hack, overrideAmount) / 12;
+}
+
+const STEP_BY_FREQ: Record<HackFrequency, number> = {
+  daily: 5,
+  weekly: 25,
+  monthly: 100,
+  yearly: 100,
+};
+
+export function hackStep(hack: Hack): number {
+  return STEP_BY_FREQ[hack.frequency];
 }
 
 export const HACKS: Hack[] = _HACKS.sort(
@@ -285,18 +296,20 @@ export function futureValueOfHack({
   hack,
   fromAge,
   toAge,
+  overrideAmount,
   annualReturn = 0.08,
   annualInflation = 0.025,
 }: {
   hack: Hack;
   fromAge: number;
   toAge: number;
+  overrideAmount?: number;
   annualReturn?: number;
   annualInflation?: number;
 }): number {
   if (toAge <= fromAge) return 0;
   const years = toAge - fromAge;
-  const monthly = monthlyAmount(hack);
+  const monthly = monthlyAmount(hack, overrideAmount);
   const monthlyRate = Math.pow(1 + annualReturn, 1 / 12) - 1;
 
   let value = 0;

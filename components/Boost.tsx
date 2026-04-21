@@ -12,6 +12,7 @@ import {
   type HackIconId,
   futureValueOfHack,
   monthlyAmount,
+  hackStep,
 } from "@/lib/hacks";
 import { formatNok } from "@/lib/finance";
 
@@ -22,6 +23,8 @@ export function Boost() {
   const age = useFlus((s) => s.age);
   const acceptedHacks = useFlus((s) => s.acceptedHacks);
   const toggleHack = useFlus((s) => s.toggleHack);
+  const hackAmounts = useFlus((s) => s.hackAmounts);
+  const setHackAmount = useFlus((s) => s.setHackAmount);
 
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
@@ -32,6 +35,8 @@ export function Boost() {
   const targetAge = ui.boostTargetAge ?? defaultBoostAge;
   const setTargetAge = (v: number) => setUi({ boostTargetAge: v });
 
+  const getAmount = (h: Hack) => hackAmounts[h.id] ?? h.amount;
+
   const accepted = useMemo(
     () => HACKS.filter((h) => acceptedHacks.includes(h.id)),
     [acceptedHacks],
@@ -41,11 +46,12 @@ export function Boost() {
     let monthly = 0;
     let future = 0;
     for (const h of accepted) {
-      monthly += monthlyAmount(h);
-      future += futureValueOfHack({ hack: h, fromAge: age, toAge: targetAge });
+      const amt = hackAmounts[h.id] ?? h.amount;
+      monthly += monthlyAmount(h, amt);
+      future += futureValueOfHack({ hack: h, fromAge: age, toAge: targetAge, overrideAmount: amt });
     }
     return { monthly, future };
-  }, [accepted, age, targetAge]);
+  }, [accepted, age, targetAge, hackAmounts]);
 
   const visible = useMemo(() => {
     if (activeCat === "all") return HACKS;
@@ -160,6 +166,7 @@ export function Boost() {
             <HackRow
               key={hack.id}
               hack={hack}
+              amount={getAmount(hack)}
               on={acceptedHacks.includes(hack.id)}
               fromAge={age}
               toAge={targetAge}
@@ -167,6 +174,7 @@ export function Boost() {
                 toggleHack(hack.id);
                 track("hack_toggled", { hack: hack.id, category: hack.category });
               }}
+              onAdjust={(amt) => setHackAmount(hack.id, amt)}
             />
           ))}
         </AnimatePresence>
@@ -226,80 +234,106 @@ function HackIcon({ icon, color }: { icon: HackIconId; color: string }) {
 
 function HackRow({
   hack,
+  amount,
   on,
   fromAge,
   toAge,
   onToggle,
+  onAdjust,
 }: {
   hack: Hack;
+  amount: number;
   on: boolean;
   fromAge: number;
   toAge: number;
   onToggle: () => void;
+  onAdjust: (amount: number) => void;
 }) {
-  const future = futureValueOfHack({ hack, fromAge, toAge });
+  const future = futureValueOfHack({ hack, fromAge, toAge, overrideAmount: amount });
+  const step = hackStep(hack);
+  const isCustom = amount !== hack.amount;
 
   return (
-    <motion.button
-      layout
-      whileTap={{ scale: 0.98 }}
-      onClick={onToggle}
-      className={`text-left rounded-2xl px-3 py-2 border transition-colors ${
-        on
-          ? "bg-[var(--primary-soft)] border-[var(--primary-strong)]/25"
-          : "bg-[var(--surface)] border-[var(--border)]"
-      }`}
-    >
-      <div className="flex items-start gap-3">
-        {/* Toggle-indikator */}
-        <div
-          className={`mt-0.5 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-            on
-              ? "bg-[var(--primary)] border-[var(--primary)]"
-              : "bg-transparent border-[var(--muted-2)]"
-          }`}
-        >
-          {on && (
-            <motion.svg
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-3 h-3"
-            >
-              <path d="M5 12l5 5L20 7" />
-            </motion.svg>
-          )}
-        </div>
+    <motion.div layout className="flex flex-col">
+      <motion.button
+        whileTap={{ scale: 0.98 }}
+        onClick={onToggle}
+        className={`text-left rounded-2xl px-3 py-2 border transition-colors ${
+          on
+            ? "bg-[var(--primary-soft)] border-[var(--primary-strong)]/25"
+            : "bg-[var(--surface)] border-[var(--border)]"
+        }`}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className={`mt-0.5 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+              on
+                ? "bg-[var(--primary)] border-[var(--primary)]"
+                : "bg-transparent border-[var(--muted-2)]"
+            }`}
+          >
+            {on && (
+              <motion.svg
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-3 h-3"
+              >
+                <path d="M5 12l5 5L20 7" />
+              </motion.svg>
+            )}
+          </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <HackIcon icon={hack.icon} color={hack.iconColor} />
-              <span className="font-display font-semibold text-[14px] leading-tight">
-                {hack.title}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <HackIcon icon={hack.icon} color={hack.iconColor} />
+                <span className="font-display font-semibold text-[14px] leading-tight">
+                  {hack.title}
+                </span>
+              </div>
+            </div>
+            <div className="text-[12px] text-[var(--muted)] leading-snug mt-0.5 ml-9">
+              {hack.blurb}
+            </div>
+
+            {/* Amount adjuster + future value */}
+            <div className="flex items-center justify-between mt-1.5 ml-9">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onAdjust(amount - step); }}
+                  className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M5 12h14" /></svg>
+                </button>
+                <span className={`text-[12px] font-bold tabular-nums min-w-[48px] text-center ${isCustom ? "text-[var(--primary)]" : "text-[var(--foreground)]"}`}>
+                  {amount} kr
+                  <span className="font-medium text-[var(--muted)] text-[10px]">
+                    {FREQUENCY_LABELS[hack.frequency]}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onAdjust(amount + step); }}
+                  className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M12 5v14M5 12h14" /></svg>
+                </button>
+              </div>
+              <span className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums">
+                Verdt {fmtBig(future)}
               </span>
             </div>
-            <span className="text-[11px] font-bold tabular-nums shrink-0 text-[var(--foreground)]">
-              {hack.amount} kr
-              <span className="font-medium text-[var(--muted)]">
-                {FREQUENCY_LABELS[hack.frequency]}
-              </span>
-            </span>
-          </div>
-          <div className="text-[12px] text-[var(--muted)] leading-snug mt-0.5 ml-9">
-            {hack.blurb}
-          </div>
-          <div className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums mt-1 ml-9">
-            Verdt {fmtBig(future)} når du er {toAge}
           </div>
         </div>
-      </div>
-    </motion.button>
+      </motion.button>
+    </motion.div>
   );
 }
 
