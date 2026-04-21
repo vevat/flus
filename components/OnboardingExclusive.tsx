@@ -101,7 +101,9 @@ export function OnboardingExclusive() {
             </p>
             <p className="mt-4 text-[12px] text-[#908b80] text-center leading-relaxed">
               Strategien hyllet av Forbes som den viktigste noensinne.
-              Brukt av verdens beste investorer. Nå tilgjengelig for deg.
+              Brukt av verdens beste investorer.
+              <br />
+              Nå tilgjengelig for deg.
             </p>
           </motion.div>
 
