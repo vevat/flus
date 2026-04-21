@@ -25,6 +25,7 @@ export function Boost() {
   const toggleHack = useFlus((s) => s.toggleHack);
   const hackAmounts = useFlus((s) => s.hackAmounts);
   const setHackAmount = useFlus((s) => s.setHackAmount);
+  const isGold = useFlus((s) => s.theme) === "exclusive";
 
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
@@ -170,6 +171,7 @@ export function Boost() {
               on={acceptedHacks.includes(hack.id)}
               fromAge={age}
               toAge={targetAge}
+              isGold={isGold}
               onToggle={() => {
                 toggleHack(hack.id);
                 track("hack_toggled", { hack: hack.id, category: hack.category });
@@ -238,6 +240,7 @@ function HackRow({
   on,
   fromAge,
   toAge,
+  isGold,
   onToggle,
   onAdjust,
 }: {
@@ -246,12 +249,14 @@ function HackRow({
   on: boolean;
   fromAge: number;
   toAge: number;
+  isGold: boolean;
   onToggle: () => void;
   onAdjust: (amount: number) => void;
 }) {
   const future = futureValueOfHack({ hack, fromAge, toAge, overrideAmount: amount });
   const step = hackStep(hack);
   const isCustom = amount !== hack.amount;
+  const iconColor = isGold ? hack.iconColor : hack.iconColorLight;
 
   return (
     <motion.div layout className="flex flex-col">
@@ -292,7 +297,7 @@ function HackRow({
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <HackIcon icon={hack.icon} color={hack.iconColor} />
+                <HackIcon icon={hack.icon} color={iconColor} />
                 <span className="font-display font-semibold text-[14px] leading-tight">
                   {hack.title}
                 </span>
