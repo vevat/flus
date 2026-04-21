@@ -172,9 +172,6 @@ export function Boost() {
         </AnimatePresence>
       </div>
 
-      <p className="text-[11px] text-[var(--muted)] leading-snug px-1 mt-1">
-        Regnet med 7 % årlig avkastning og 2,5 % inflasjon.
-      </p>
     </div>
   );
 }
@@ -200,6 +197,8 @@ const ICON_PATHS: Record<HackIconId, ReactNode> = {
   utensils: <><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" /></>,
   recycle: <><path d="M7 19H4.815a1.83 1.83 0 01-1.57-.881 1.785 1.785 0 01-.004-1.784L7.196 9.5" /><path d="M11 19h8.203a1.83 1.83 0 001.556-.89 1.784 1.784 0 00-.009-1.78L16.8 9.5" /><path d="M12 5l3.96 6.84M6.04 11.84L12 5" /><path d="M2 15l4 4 4-4M18 15l4 4-4 4M12 2l3 5H9l3-5" /></>,
   noodles: <><path d="M4 12c0 4.42 3.58 8 8 8s8-3.58 8-8" /><path d="M5 4v4c0 2.21 1.79 4 4 4" /><path d="M9 4v8" /><path d="M13 4v8" /><path d="M17 4v4c0 2.21 1.79 4 4 4" /><path d="M12 20v2" /></>,
+  coffee: <><path d="M17 8h1a4 4 0 010 8h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" /><path d="M6 2v3M10 2v3M14 2v3" /></>,
+  briefcase: <><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3M2 13h20" /></>,
 };
 
 function HackIcon({ icon, color }: { icon: HackIconId; color: string }) {
@@ -245,7 +244,7 @@ function HackRow({
       layout
       whileTap={{ scale: 0.98 }}
       onClick={onToggle}
-      className={`text-left rounded-2xl px-3 py-2.5 border transition-colors ${
+      className={`text-left rounded-2xl px-3 py-2 border transition-colors ${
         on
           ? "bg-[var(--primary-soft)] border-[var(--primary-strong)]/25"
           : "bg-[var(--surface)] border-[var(--border)]"
@@ -295,7 +294,7 @@ function HackRow({
           <div className="text-[12px] text-[var(--muted)] leading-snug mt-0.5 ml-9">
             {hack.blurb}
           </div>
-          <div className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums mt-1.5 ml-9">
+          <div className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums mt-1 ml-9">
             Verdt {fmtBig(future)} når du er {toAge}
           </div>
         </div>
@@ -306,14 +305,16 @@ function HackRow({
 
 function fmtBig(amount: number): string {
   if (!isFinite(amount) || amount <= 0) return "0 kr";
-  if (amount >= 1_000_000) {
-    const m = amount / 1_000_000;
+  const m = amount / 1_000_000;
+  if (m >= 0.1) {
     const d = m < 10 ? 1 : 0;
     return `${m.toLocaleString("nb-NO", {
       minimumFractionDigits: d,
       maximumFractionDigits: d,
     })} mill`;
   }
-  if (amount >= 1000) return `${Math.round(amount / 1000)} k`;
+  if (amount >= 1000) {
+    return `${Math.round(amount / 1000)} 000 kr`;
+  }
   return `${Math.round(amount)} kr`;
 }

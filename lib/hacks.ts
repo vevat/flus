@@ -14,7 +14,8 @@ export type HackFrequency = "daily" | "weekly" | "monthly" | "yearly";
 export type HackIconId =
   | "zap" | "sandwich" | "droplet" | "tv" | "gamepad" | "dice"
   | "ban" | "cart" | "shirt" | "baby" | "dog" | "snowflake"
-  | "bike" | "gem" | "gift" | "utensils" | "recycle" | "noodles";
+  | "bike" | "gem" | "gift" | "utensils" | "recycle" | "noodles"
+  | "coffee" | "briefcase";
 
 export type Hack = {
   id: string;
@@ -28,8 +29,30 @@ export type Hack = {
   effort: 1 | 2 | 3;
 };
 
-export const HACKS: Hack[] = [
+const _HACKS: Hack[] = [
   // ---- CUT ----
+  {
+    id: "cut-nudler",
+    icon: "noodles",
+    iconColor: "#e8a33a",
+    title: "Mr. Lee-nudler til lunsj",
+    blurb: "En pakke koster 15 kr. Billig, mettende, og millionærvennlig.",
+    amount: 15,
+    frequency: "daily",
+    category: "cut",
+    effort: 1,
+  },
+  {
+    id: "cut-vannflaske",
+    icon: "droplet",
+    iconColor: "#5ba8c8",
+    title: "Ta med vannflaske",
+    blurb: "Dropp å betale 30 kr for flaskevann og brus i butikken.",
+    amount: 30,
+    frequency: "daily",
+    category: "cut",
+    effort: 1,
+  },
   {
     id: "cut-energidrikk",
     icon: "zap",
@@ -53,15 +76,26 @@ export const HACKS: Hack[] = [
     effort: 2,
   },
   {
-    id: "cut-vannflaske",
-    icon: "droplet",
-    iconColor: "#5ba8c8",
-    title: "Ta med vannflaske",
-    blurb: "Dropp å betale 30 kr for flaskevann og brus i butikken.",
-    amount: 30,
+    id: "cut-kaffe",
+    icon: "coffee",
+    iconColor: "#8b6b4a",
+    title: "Dropp kaffebaren",
+    blurb: "Lag kaffe hjemme. En kopp ute koster fort 55–75 kr.",
+    amount: 55,
     frequency: "daily",
     category: "cut",
     effort: 1,
+  },
+  {
+    id: "cut-snus",
+    icon: "ban",
+    iconColor: "#cc8b6b",
+    title: "Drop snusen",
+    blurb: "Bra for tennene, råbra for fremtidsformuen.",
+    amount: 70,
+    frequency: "daily",
+    category: "cut",
+    effort: 3,
   },
   {
     id: "cut-streaming",
@@ -71,6 +105,17 @@ export const HACKS: Hack[] = [
     blurb: "Du rakk uansett ikke å se alt.",
     amount: 129,
     frequency: "monthly",
+    category: "cut",
+    effort: 1,
+  },
+  {
+    id: "cut-rema",
+    icon: "cart",
+    iconColor: "#7baacc",
+    title: "Bytt til Kiwi eller Rema",
+    blurb: "Minst 30 kr/uke spart. For en familie kan det bety tusenlapper i mnd.",
+    amount: 30,
+    frequency: "weekly",
     category: "cut",
     effort: 1,
   },
@@ -96,59 +141,26 @@ export const HACKS: Hack[] = [
     category: "cut",
     effort: 1,
   },
-  {
-    id: "cut-snus",
-    icon: "ban",
-    iconColor: "#cc8b6b",
-    title: "Drop snusen",
-    blurb: "Bra for tennene, råbra for fremtidsformuen.",
-    amount: 70,
-    frequency: "daily",
-    category: "cut",
-    effort: 3,
-  },
-  {
-    id: "cut-rema",
-    icon: "cart",
-    iconColor: "#7baacc",
-    title: "Bytt til Rema eller Kiwi",
-    blurb: "Samme handlevogn, billigere per tur. Husk Trumf og Trippeltrumf!",
-    amount: 30,
-    frequency: "weekly",
-    category: "cut",
-    effort: 1,
-  },
-  {
-    id: "cut-nudler",
-    icon: "noodles",
-    iconColor: "#e8a33a",
-    title: "Mr. Lee-nudler til lunsj",
-    blurb: "En pakke koster 15 kr. Billig, mettende, og millionærvennlig.",
-    amount: 15,
-    frequency: "daily",
-    category: "cut",
-    effort: 1,
-  },
 
   // ---- EARN ----
+  {
+    id: "earn-pant",
+    icon: "recycle",
+    iconColor: "#4db87a",
+    title: "Pant 5 flasker om dagen",
+    blurb: "~150 flasker i mnd. 300–450 kr avhengig av 2 eller 3 kr pant.",
+    amount: 10,
+    frequency: "daily",
+    category: "earn",
+    effort: 1,
+  },
   {
     id: "earn-tise",
     icon: "shirt",
     iconColor: "#cc7eb5",
-    title: "Selg gamle klær på Tise",
-    blurb: "Gjennomsnittlig 200 kr per uke om du legger ut jevnlig.",
-    amount: 200,
-    frequency: "weekly",
-    category: "earn",
-    effort: 2,
-  },
-  {
-    id: "earn-babysit",
-    icon: "baby",
-    iconColor: "#e89a7a",
-    title: "Tilby babysitting",
-    blurb: "200 kr/time. Naboene elsker deg etter første kveld.",
-    amount: 600,
+    title: "Selg gamle klær på Tise eller Finn",
+    blurb: "Gjennomsnittlig 150 kr per uke om du legger ut jevnlig.",
+    amount: 150,
     frequency: "weekly",
     category: "earn",
     effort: 2,
@@ -158,8 +170,19 @@ export const HACKS: Hack[] = [
     icon: "dog",
     iconColor: "#a8885c",
     title: "Hundepass etter skolen",
-    blurb: "150 kr per tur, 3 dager i uka.",
-    amount: 450,
+    blurb: "100 kr per tur, 3 dager i uka.",
+    amount: 300,
+    frequency: "weekly",
+    category: "earn",
+    effort: 2,
+  },
+  {
+    id: "earn-babysit",
+    icon: "baby",
+    iconColor: "#e89a7a",
+    title: "Tilby babysitting",
+    blurb: "100 kr/time. Naboene elsker deg etter første kveld.",
+    amount: 300,
     frequency: "weekly",
     category: "earn",
     effort: 2,
@@ -169,8 +192,8 @@ export const HACKS: Hack[] = [
     icon: "snowflake",
     iconColor: "#8ab8d4",
     title: "Snømåking eller plenklipping",
-    blurb: "Bank på naboens dør. 250 kr per jobb, sesongbasert.",
-    amount: 1000,
+    blurb: "Bank på naboens dør. 200 kr per jobb, sesongbasert.",
+    amount: 800,
     frequency: "monthly",
     category: "earn",
     effort: 3,
@@ -187,29 +210,18 @@ export const HACKS: Hack[] = [
     effort: 3,
   },
   {
-    id: "earn-pant",
-    icon: "recycle",
-    iconColor: "#4db87a",
-    title: "Pant 3 flasker om dagen",
-    blurb: "~75 flasker i mnd. 150–225 kr avhengig av 2 eller 3 kr pant.",
-    amount: 6,
-    frequency: "daily",
+    id: "earn-deltid",
+    icon: "briefcase",
+    iconColor: "#b8a060",
+    title: "Deltidsjobb eller bi-inntekt",
+    blurb: "Selv 5 000 kr ekstra i mnd blir til millioner over tid.",
+    amount: 5000,
+    frequency: "monthly",
     category: "earn",
-    effort: 1,
+    effort: 3,
   },
 
   // ---- HACK ----
-  {
-    id: "hack-vipps",
-    icon: "gem",
-    iconColor: "#c9a84c",
-    title: "Auto-spar hver fredag",
-    blurb: "Sett opp fast overføring til sparekonto/fond. Glem den.",
-    amount: 200,
-    frequency: "weekly",
-    category: "hack",
-    effort: 1,
-  },
   {
     id: "hack-bursdag",
     icon: "gift",
@@ -232,6 +244,17 @@ export const HACKS: Hack[] = [
     category: "hack",
     effort: 2,
   },
+  {
+    id: "hack-vipps",
+    icon: "gem",
+    iconColor: "#c9a84c",
+    title: "Auto-spar hver fredag",
+    blurb: "Sett opp fast overføring til sparekonto/fond. Glem den.",
+    amount: 200,
+    frequency: "weekly",
+    category: "hack",
+    effort: 1,
+  },
 ];
 
 const FREQ_TO_YEARLY: Record<HackFrequency, number> = {
@@ -241,15 +264,17 @@ const FREQ_TO_YEARLY: Record<HackFrequency, number> = {
   yearly: 1,
 };
 
-/** Konverterer hack-beløpet til kroner per år. */
 export function yearlyAmount(hack: Hack): number {
   return hack.amount * FREQ_TO_YEARLY[hack.frequency];
 }
 
-/** Konverterer hack-beløpet til kroner per måned. */
 export function monthlyAmount(hack: Hack): number {
   return yearlyAmount(hack) / 12;
 }
+
+export const HACKS: Hack[] = _HACKS.sort(
+  (a, b) => monthlyAmount(a) - monthlyAmount(b),
+);
 
 /**
  * Beregner hva en hacks årlige beløp blir verdt i fremtid hvis det
