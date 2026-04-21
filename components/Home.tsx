@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import {
@@ -18,7 +18,6 @@ import { CostOfWaiting } from "./CostOfWaiting";
 import { track } from "@/lib/analytics";
 
 const DEFAULT_PROJECTION_END = 80;
-const ALL_MILESTONES = [25, 30, 40, 50, 60, 70];
 
 // 40–100 à 10, 125–400 à 25, 500–1000 à 100
 const DAILY_STOPS = [
@@ -28,10 +27,10 @@ const DAILY_STOPS = [
   ...Array.from({ length: 6 }, (_, i) => 500 + i * 100),  // 500..1000
 ];
 
-/** Standard alder å vise verdi for. 50 år er en fin balanse mellom
- *  "innen pensjon" og "fortsatt overskuelig tidshorisont". */
 function defaultSelectedAge(currentAge: number): number {
-  if (currentAge >= 50) return Math.min(80, currentAge + 20);
+  if (currentAge >= 50) return 80;
+  if (currentAge >= 30) return 70;
+  if (currentAge >= 20) return 60;
   return 50;
 }
 
@@ -41,7 +40,6 @@ export function Home() {
   const avatar = useFlus((s) => s.avatar);
   const goals = useFlus((s) => s.goals);
   const setInitialDaily = useFlus((s) => s.setInitialDaily);
-  const addMilestoneGoal = useFlus((s) => s.addMilestoneGoal);
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
 
@@ -49,8 +47,6 @@ export function Home() {
   const setSelectedAge = (v: number) => setUi({ selectedAge: v });
   const delayYears = ui.delayYears;
   const setDelayYears = (v: number) => setUi({ delayYears: v });
-
-  const [milestoneOpen, setMilestoneOpen] = useState(false);
 
   const initialDaily = goals[0]?.dailyAmount ?? 50;
 
@@ -83,13 +79,6 @@ export function Home() {
   const contributed = point?.contributed ?? 0;
 
   const wealthLevel = wealthLevelFromAmount(nominal);
-
-  // Neste tilgjengelige milepæl - alltid neste over alder OG over siste mål
-  const lastGoalAge = goals.length > 0 ? goals[goals.length - 1].fromAge : age;
-  const nextMilestone = ALL_MILESTONES.find((m) => m > lastGoalAge && m > age);
-  const milestoneOptions = ALL_MILESTONES.filter(
-    (m) => m > lastGoalAge && m > age,
-  );
 
   return (
     <div className="flex-1 flex flex-col px-5 pt-4 pb-3">
@@ -170,6 +159,7 @@ export function Home() {
             track("daily_amount_changed", { amount: v });
           }}
           stops={DAILY_STOPS}
+          hideRelatable={age > 30}
         />
       </div>
 
@@ -178,17 +168,6 @@ export function Home() {
         <div className="mt-3">
           <GoalsList goals={goals} currentAge={age} />
         </div>
-      )}
-
-      {/* Milepæl-knapp */}
-      {nextMilestone !== undefined && (
-        <button
-          type="button"
-          onClick={() => setMilestoneOpen(true)}
-          className="mt-2.5 w-full py-2.5 rounded-2xl bg-[var(--surface)] border border-dashed border-[var(--border)] text-[13px] text-[var(--muted)] active:scale-[0.99] transition-transform"
-        >
-          + Sett nytt sparemål når jeg blir eldre
-        </button>
       )}
 
       {/* Kostnaden av å vente */}
@@ -215,111 +194,7 @@ export function Home() {
         />
       </div>
 
-      {/* Milestone modal */}
-      <AnimatePresence>
-        {milestoneOpen && milestoneOptions.length > 0 && (
-          <MilestoneModal
-            onClose={() => setMilestoneOpen(false)}
-            onSave={(fromAge, daily) => {
-              addMilestoneGoal(fromAge, daily);
-              track("milestone_added", { fromAge, daily });
-              setMilestoneOpen(false);
-            }}
-            options={milestoneOptions}
-            currentDaily={initialDaily}
-            previousDaily={
-              goals[goals.length - 1]?.dailyAmount ?? initialDaily
-            }
-          />
-        )}
-      </AnimatePresence>
-
     </div>
-  );
-}
-
-function MilestoneModal({
-  onClose,
-  onSave,
-  options,
-  previousDaily,
-}: {
-  onClose: () => void;
-  onSave: (fromAge: number, daily: number) => void;
-  options: number[];
-  currentDaily: number;
-  previousDaily: number;
-}) {
-  const [fromAge, setFromAge] = useState(options[0]);
-  const [daily, setDaily] = useState(
-    Math.max(Math.round(previousDaily * 3), 150),
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        className="w-full max-w-md bg-[var(--background)] rounded-t-3xl p-6 pb-8"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="w-10 h-1 rounded-full bg-[var(--border)] mx-auto mb-5" />
-        <div className="font-display text-2xl font-semibold">
-          Nytt sparemål
-        </div>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Når du er i jobb sparer du gjerne mer. Sett et nytt mål og se hvordan
-          prognosen endrer seg.
-        </p>
-
-        <div className="mt-5">
-          <div className="text-sm text-[var(--muted)] mb-2">Fra alder</div>
-          <div className="flex gap-2 flex-wrap">
-            {options.map((a) => (
-              <button
-                key={a}
-                type="button"
-                onClick={() => setFromAge(a)}
-                className={`flex-1 min-w-[50px] py-2.5 rounded-xl font-semibold transition-colors ${
-                  fromAge === a
-                    ? "bg-[var(--foreground)] text-[var(--background)]"
-                    : "bg-[var(--surface-2)] text-[var(--muted)]"
-                }`}
-              >
-                {a}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <SavingsSlider
-            value={daily}
-            onChange={setDaily}
-            min={50}
-            max={1000}
-            step={10}
-            label="Nytt daglig sparebeløp"
-          />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onSave(fromAge, daily)}
-          className="mt-6 w-full py-4 rounded-2xl bg-[var(--primary)] text-white font-semibold active:scale-[0.98] transition-transform"
-        >
-          Lagre
-        </button>
-      </motion.div>
-    </motion.div>
   );
 }
 

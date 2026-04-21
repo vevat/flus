@@ -14,6 +14,7 @@ type Props = {
   /** Variable-step stops — overrides min/max/step when provided */
   stops?: number[];
   label?: string;
+  hideRelatable?: boolean;
 };
 
 const ICON_PATHS: Record<RelatableId, string> = {
@@ -41,6 +42,7 @@ export function SavingsSlider({
   step = 5,
   stops,
   label = "Jeg sparer",
+  hideRelatable = false,
 }: Props) {
   const monthly = value * DEFAULTS.daysPerMonth;
   const relatable = getRelatable(value);
@@ -108,35 +110,37 @@ export function SavingsSlider({
         />
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={relatable.id}
-          initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -3 }}
-          transition={{ duration: 0.15 }}
-          className="flex items-center gap-1.5 text-[12px] text-[var(--muted)]"
-        >
-          <div
-            className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
-            style={{ background: `${isGold ? relatable.color : relatable.colorLight}18` }}
+      {!hideRelatable && (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={relatable.id}
+            initial={{ opacity: 0, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.15 }}
+            className="flex items-center gap-1.5 text-[12px] text-[var(--muted)]"
           >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={isGold ? relatable.color : relatable.colorLight}
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <div
+              className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+              style={{ background: `${isGold ? relatable.color : relatable.colorLight}18` }}
             >
-              <path d={ICON_PATHS[relatable.id]} />
-            </svg>
-          </div>
-          <span>{relatable.label}</span>
-        </motion.div>
-      </AnimatePresence>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isGold ? relatable.color : relatable.colorLight}
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d={ICON_PATHS[relatable.id]} />
+              </svg>
+            </div>
+            <span>{relatable.label}</span>
+          </motion.div>
+        </AnimatePresence>
+      )}
     </div>
   );
 }
