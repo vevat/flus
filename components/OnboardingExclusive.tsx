@@ -189,7 +189,7 @@ export function OnboardingExclusive() {
             <ExclusiveAgeStepper
               value={localAge}
               onChange={setLocalAge}
-              min={8}
+              min={1}
               max={80}
             />
           </div>
