@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getRelatable, formatNok, DEFAULTS } from "@/lib/finance";
+import { getRelatable, formatNok, DEFAULTS, type RelatableId } from "@/lib/finance";
+import { useFlusStore } from "@/lib/store";
 
 type Props = {
   value: number;
@@ -13,6 +14,23 @@ type Props = {
   /** Variable-step stops — overrides min/max/step when provided */
   stops?: number[];
   label?: string;
+};
+
+const ICON_PATHS: Record<RelatableId, string> = {
+  nudler:
+    "M4 14c0-3 2-5 8-5s8 2 8 5M3 14h18v1c0 3-4 5-9 5s-9-2-9-5v-1zm5-7c0-1.5 1-3 4-3s4 1.5 4 3",
+  brus:
+    "M8 2h8l1 4H7L8 2zm-1 4h10v1a1 1 0 01-1 1H8a1 1 0 01-1-1V6zm1 2h8l-1 14H9L8 8z",
+  sjokolade:
+    "M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zm0 6h14M5 14h14M9 4v16M14 4v16",
+  baguette:
+    "M5 17L17 5c1.5-1.5 4 1 2.5 2.5L7.5 19.5C6 21 3.5 18.5 5 17zm2-2l10-10M8 16l9-9",
+  storebeløp:
+    "M12 2v2m0 16v2M2 12h2m16 0h2M12 8a4 4 0 100 8 4 4 0 000-8zm0 2a2 2 0 110 4 2 2 0 010-4z",
+  sky:
+    "M12 3l1.5 3.5L18 8l-3.5 1.5L13 14l-1-4.5L7 8l4.5-1.5L12 3zM5 12l1 2 2 .5-2 1L5 18l-1-2.5L2 15l2-.5L5 12z",
+  loaded:
+    "M5 16l2-6h10l2 6H5zm7-14l-3 5h6l-3-5zm-5.5 6.5L4 14m13.5-5.5L20 14",
 };
 
 export function SavingsSlider({
@@ -26,6 +44,7 @@ export function SavingsSlider({
 }: Props) {
   const monthly = value * DEFAULTS.daysPerMonth;
   const relatable = getRelatable(value);
+  const isGold = useFlusStore((s) => s.theme) === "exclusive";
 
   const useStops = stops && stops.length > 1;
   const stopIndex = useMemo(
@@ -67,7 +86,7 @@ export function SavingsSlider({
             Månedlig sparing
           </span>
           <span className="text-sm font-semibold text-[var(--foreground)] tabular-nums">
-            = {formatNok(monthly)}/mnd
+            {formatNok(monthly)}/mnd
           </span>
         </div>
       </div>
@@ -91,15 +110,31 @@ export function SavingsSlider({
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={relatable.label}
+          key={relatable.id}
           initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -3 }}
           transition={{ duration: 0.15 }}
           className="flex items-center gap-1.5 text-[12px] text-[var(--muted)]"
         >
-          <span>{relatable.emoji}</span>
-          <span>= {relatable.label}</span>
+          <div
+            className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+            style={{ background: `${isGold ? relatable.color : relatable.colorLight}18` }}
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={isGold ? relatable.color : relatable.colorLight}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d={ICON_PATHS[relatable.id]} />
+            </svg>
+          </div>
+          <span>{relatable.label}</span>
         </motion.div>
       </AnimatePresence>
     </div>

@@ -369,11 +369,32 @@ function formatDecimal(n: number, decimals: number): string {
   }).format(n);
 }
 
-export function getRelatable(daily: number): { emoji: string; label: string } {
-  if (daily < 25) return { emoji: "🍜", label: "en pakke Mr. Lee nudler" };
-  if (daily < 35) return { emoji: "🥤", label: "en brus" };
+export type RelatableId =
+  | "nudler"
+  | "brus"
+  | "sjokolade"
+  | "baguette"
+  | "storebeløp"
+  | "sky"
+  | "loaded";
+
+export function getRelatable(daily: number): {
+  id: RelatableId;
+  label: string;
+  color: string;
+  colorLight: string;
+} {
+  if (daily < 20)
+    return { id: "nudler", label: "en pose Mr. Lee nudler", color: "#d4a54a", colorLight: "#b8943e" };
+  if (daily < 30)
+    return { id: "brus", label: "en brus på butikken", color: "#8a9da8", colorLight: "#6e8892" };
   if (daily < 50)
-    return { emoji: "⚡", label: "en energidrikk (idiotisk – stay away!)" };
-  if (daily < 100) return { emoji: "🥖", label: "en påsmurt baguette til lunsj" };
-  return { emoji: "💎", label: "Du er en skikkelig sparemaskin" };
+    return { id: "sjokolade", label: "en 200g sjokoladeplate", color: "#8b6b4a", colorLight: "#7a5d3f" };
+  if (daily < 70)
+    return { id: "baguette", label: "en påsmurt baguette til lunsj", color: "#cc8b6b", colorLight: "#b07a5c" };
+  if (daily < 100)
+    return { id: "storebeløp", label: "dette begynner å bli store penger i lengden", color: "#dfc06a", colorLight: "#c4a855" };
+  if (daily < 200)
+    return { id: "sky", label: "Sky is the limit, hvis du begynner i dag!", color: "#d4a76a", colorLight: "#b8923a" };
+  return { id: "loaded", label: "Du blir Loaded.", color: "#c9a84c", colorLight: "#a8882e" };
 }

@@ -22,7 +22,8 @@ const ALL_MILESTONES = [25, 30, 40, 50, 60, 70];
 
 // 40–100 à 10, 125–400 à 25, 500–1000 à 100
 const DAILY_STOPS = [
-  ...Array.from({ length: 7 }, (_, i) => 40 + i * 10),   // 40..100
+  ...Array.from({ length: 4 }, (_, i) => 10 + i * 10),    // 10..40
+  ...Array.from({ length: 6 }, (_, i) => 50 + i * 10),    // 50..100
   ...Array.from({ length: 12 }, (_, i) => 125 + i * 25),  // 125..400
   ...Array.from({ length: 6 }, (_, i) => 500 + i * 100),  // 500..1000
 ];
@@ -163,7 +164,7 @@ export function Home() {
       {/* Sparing-slider (sentral) */}
       <div className="mt-3 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
         <SavingsSlider
-          value={Math.max(40, initialDaily)}
+          value={Math.max(10, initialDaily)}
           onChange={(v) => {
             setInitialDaily(v);
             track("daily_amount_changed", { amount: v });
