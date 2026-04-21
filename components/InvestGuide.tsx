@@ -381,30 +381,11 @@ export function InvestGuide() {
       </div>
 
       {/* Disclaimer */}
-      <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-[11px] text-[var(--muted)] leading-snug space-y-1.5">
-        <div className="font-semibold text-[var(--foreground)] mb-0.5">
-          Viktig
-        </div>
-        <p>
-          Dette er ikke individuell finansiell rådgivning. Historisk avkastning
-          er ingen garanti for fremtidig avkastning. Snakk med en uavhengig
-          rådgiver eller bruk{" "}
-          <a
-            href="https://www.finansportalen.no"
-            target="_blank"
-            rel="noreferrer"
-            className="text-[var(--primary)] underline"
-          >
-            Finansportalen.no
-          </a>{" "}
-          før du tar store investeringsbeslutninger. Sjekk alltid ISIN, kostnader
-          og tilgjengelighet hos leverandøren før kjøp.
-        </p>
-        <p className="text-[10px] opacity-70">
-          Lenker til Nordnet er annonselenker — vi kan motta en godtgjørelse
-          hvis du oppretter konto. Dette påvirker ikke vår anbefaling, som er
-          basert på produkttilgang og kostnader.
-        </p>
+      <Disclaimer />
+
+      {/* Copyright */}
+      <div className="text-center text-[10px] text-[var(--muted-2)] pb-2">
+        &copy; {new Date().getFullYear()} Pengebingen. All rights reserved.
       </div>
     </div>
   );
@@ -528,5 +509,57 @@ function ProductCard({
         </motion.div>
       )}
     </div>
+  );
+}
+
+function Disclaimer() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen((o) => !o)}
+      className="w-full text-left rounded-2xl bg-[var(--surface-2)] p-3 text-[11px] text-[var(--muted)] leading-snug transition-all"
+    >
+      <div className="flex items-center justify-between">
+        <span className="font-semibold text-[var(--muted)]">Disclaimer</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`w-3.5 h-3.5 text-[var(--muted-2)] transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </div>
+      {open && (
+        <div className="mt-2 space-y-1.5">
+          <p>
+            Dette er ikke individuell finansiell rådgivning. Historisk avkastning
+            er ingen garanti for fremtidig avkastning. Snakk med en uavhengig
+            rådgiver eller bruk{" "}
+            <a
+              href="https://www.finansportalen.no"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[var(--primary)] underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Finansportalen.no
+            </a>{" "}
+            før du tar store investeringsbeslutninger. Sjekk alltid ISIN,
+            kostnader og tilgjengelighet hos leverandøren før kjøp.
+          </p>
+          <p className="text-[10px] opacity-70">
+            Lenker til Nordnet er annonselenker — vi kan motta en godtgjørelse
+            hvis du oppretter konto. Dette påvirker ikke vår anbefaling, som er
+            basert på produkttilgang og kostnader.
+          </p>
+        </div>
+      )}
+    </button>
   );
 }
