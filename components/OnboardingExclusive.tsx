@@ -100,7 +100,7 @@ export function OnboardingExclusive() {
               <span className="text-white/90">Enkelt, risikofritt, og bevist.</span>
             </p>
             <p className="mt-4 text-[12px] text-[#908b80] text-center leading-relaxed">
-              Strategien hyllet av Forbes som den viktigste noensinne.
+              Strategien hyllet av <span className="text-white/90">Forbes</span> som den viktigste noensinne.
               Brukt av verdens beste investorer.
               <br />
               Nå tilgjengelig for deg.
