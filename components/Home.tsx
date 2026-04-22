@@ -169,7 +169,7 @@ export function Home() {
             <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
               Da har <strong className="font-bold text-[var(--foreground)]">{name ? `${name}'s` : "din"} pengebinge</strong> vokst til
             </div>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
+            <div className="flex items-start gap-0 mt-0.5">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={Math.round(nominal / 100)}
@@ -182,7 +182,7 @@ export function Home() {
                   {formatNok(nominal, { compact: true })}
                 </motion.div>
               </AnimatePresence>
-              <InfoTooltip text={`≈ ${formatNok(real, { compact: true })} i dagens kjøpekraft`} />
+              <InfoTooltip text={`≈ ${formatNok(real, { compact: true })} i dag`} />
             </div>
           </div>
         </div>
@@ -301,17 +301,20 @@ function MilestonePicker({
 
 function InfoTooltip({ text }: { text: string }) {
   const [show, setShow] = useState(false);
-  const toggle = useCallback(() => setShow((s) => !s), []);
+  const toggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShow((s) => !s);
+  }, []);
 
   return (
-    <span className="inline-flex items-center gap-1">
+    <span className="relative ml-1 top-0.5 flex-shrink-0">
       <button
         type="button"
         onClick={toggle}
         aria-label="Vis justert verdi"
-        className="w-4 h-4 rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+        className="w-3.5 h-3.5 rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
       >
-        <svg viewBox="0 0 16 16" fill="currentColor" className="w-2.5 h-2.5">
+        <svg viewBox="0 0 16 16" fill="currentColor" className="w-2 h-2">
           <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm-.5 3a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM7 6.5h2v5H7v-5Z" />
         </svg>
       </button>
@@ -321,7 +324,7 @@ function InfoTooltip({ text }: { text: string }) {
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
-            className="text-[11px] text-[var(--muted)]"
+            className="absolute left-full top-1/2 -translate-y-1/2 ml-1 text-[10px] text-[var(--muted)] whitespace-nowrap"
           >
             {text}
           </motion.span>
