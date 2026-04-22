@@ -19,21 +19,6 @@ export default function PersonvernPage() {
 
       <div className="space-y-4 text-[13px] text-[var(--foreground)] leading-relaxed">
         <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
-          <h2 className="font-display text-base font-semibold">Hvem er ansvarlig?</h2>
-          <p>
-            Pengebingen er et uavhengig prosjekt drevet av Cato. Ved spørsmål om
-            personvern, kontakt oss på{" "}
-            <a
-              href="mailto:hei@pengebingen.no"
-              className="underline text-[var(--primary)]"
-            >
-              hei@pengebingen.no
-            </a>
-            .
-          </p>
-        </div>
-
-        <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
           <h2 className="font-display text-base font-semibold">Hvilke data samler vi inn?</h2>
           <p>
             Pengebingen lagrer all brukerdata (navn, alder, sparemål) lokalt i

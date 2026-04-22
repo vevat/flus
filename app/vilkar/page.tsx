@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Feedback } from "@/components/Feedback";
 
 export const metadata: Metadata = {
   title: "Vilkår for bruk – Pengebingen",
@@ -49,7 +50,7 @@ export default function VilkarPage() {
             fremtidig avkastning.
           </p>
           <p>
-            Vi bruker 7 % årlig forventet avkastning og 3 % årlig inflasjon som
+            Vi bruker 8 % årlig forventet avkastning og 3 % årlig inflasjon som
             standardverdier. Disse er basert på langsiktige historiske
             gjennomsnitt, men fremtiden kan avvike.
           </p>
@@ -81,6 +82,8 @@ export default function VilkarPage() {
           </p>
         </div>
       </div>
+
+      <Feedback />
 
       <div className="text-[11px] text-[var(--muted-2)] space-x-3">
         <Link href="/om" className="underline hover:text-[var(--muted)]">

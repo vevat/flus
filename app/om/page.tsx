@@ -35,43 +35,30 @@ export default function OmPage() {
         </div>
 
         <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
-          <h2 className="font-display text-base font-semibold">Hvorfor laget vi dette?</h2>
+          <h2 className="font-display text-base font-semibold">Hvorfor og hvem</h2>
           <p>
-            De fleste nordmenn lærer aldri om investering på skolen. Resultatet
-            er at pengene blir stående på sparekonto med negativ realavkastning.
-            Pengebingen er laget for å gjøre investering tilgjengelig og
-            forståelig — spesielt for de som er unge nok til å utnytte tidenes
+            Pengebingen startet som en konfirmasjonsgave. Cato — teknolog, far
+            og ikke minst Onkel med stor O — ville gi nevøen Millian noe som
+            kunne vare livet ut. Ikke en ting, men en innsikt: hva som skjer
+            når du lar små beløp jobbe for deg over tid.
+          </p>
+          <p>
+            De fleste lærer ikke hva sparing faktisk kan bety før det nesten
+            er for seint. Pengebingen gjør det synlig, forståelig og
+            motiverende — spesielt for de som er unge nok til å utnytte tidenes
             beste superkraft: tid.
           </p>
         </div>
 
         <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
-          <h2 className="font-display text-base font-semibold">Hvem står bak?</h2>
+          <h2 className="font-display text-base font-semibold">Eksterne lenker</h2>
           <p>
-            Pengebingen er et uavhengig prosjekt drevet av Cato, en norsk
-            teknolog og far som ønsker å gi barna sine — og alle andre — et
-            forsprang i personlig økonomi.
-          </p>
-          <p className="text-[var(--muted)]">
-            Kontakt:{" "}
-            <a
-              href="mailto:hei@pengebingen.no"
-              className="underline text-[var(--primary)]"
-            >
-              hei@pengebingen.no
-            </a>
-          </p>
-        </div>
-
-        <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
-          <h2 className="font-display text-base font-semibold">Hvordan tjener vi penger?</h2>
-          <p>
-            Pengebingen er helt gratis å bruke. Vi kan motta en godtgjørelse fra
-            Nordnet dersom du oppretter konto via våre lenker. Dette påvirker
-            ikke anbefalingene våre, som er basert utelukkende på produkttilgang,
+            Kan inneholde linker til affiliateprogrammer.
+            Anbefalingene våre er basert utelukkende på produkttilgang,
             kostnader og diversifisering.
           </p>
         </div>
+
       </div>
 
       <div className="text-[11px] text-[var(--muted-2)] space-x-3">

@@ -290,7 +290,7 @@ export function GoalReverse() {
       {/* Footer-tekst */}
       <div className="text-[11px] text-[var(--muted)] leading-snug px-1">
         Tallene øker automatisk med inflasjon (~3 %/år) slik at kjøpekraften
-        holdes. Forventet avkastning 7 %/år bygger på{" "}
+        holdes. Forventet avkastning 8 %/år bygger på{" "}
         <Link
           href="/plassere#strategi"
           className="text-[var(--primary)] underline font-medium"
