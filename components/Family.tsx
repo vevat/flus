@@ -147,7 +147,7 @@ export function Family({ readonly, members: externalMembers }: {
       {/* Disclaimer */}
       {members.length > 0 && (
         <p className="mt-4 text-[11px] text-[var(--muted-2)] text-center leading-snug">
-          Beregnet med 8% årlig avkastning og 2,5% inflasjon.
+          Beregnet med 8% årlig avkastning og 3% inflasjon.
           <br />
           Historisk avkastning er ingen garanti.
         </p>

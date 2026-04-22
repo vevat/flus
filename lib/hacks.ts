@@ -311,7 +311,7 @@ export const HACKS: Hack[] = _HACKS.sort(
 /**
  * Beregner hva en hacks årlige beløp blir verdt i fremtid hvis det
  * investeres månedlig fra brukerens nåværende alder til en målalder.
- * Bruker enkel forventet rente (7%) og inflasjonsjustert månedlig bidrag (2.5%).
+ * Bruker enkel forventet rente (7%) og inflasjonsjustert månedlig bidrag (3%).
  */
 export function futureValueOfHack({
   hack,

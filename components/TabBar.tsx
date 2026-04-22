@@ -120,13 +120,13 @@ export function TabBar() {
 
   return (
     <nav
-      className="sticky bottom-0 left-0 right-0 z-30 mt-auto"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 z-30 w-full max-w-md"
       style={{
-        paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 6px)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       <div
-        className="mx-3 mb-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-stretch overflow-hidden"
+        className="mx-3 -mb-1 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-stretch overflow-hidden"
         style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}
       >
         {TABS.map((tab) => {

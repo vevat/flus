@@ -257,7 +257,7 @@ export function GoalReverse() {
                 stage={stage}
                 idx={idx}
                 onAdjust={adjustStage}
-                step={STEP}
+                step={idx === 0 && age < 20 ? 200 : STEP}
               />
             ))}
 
@@ -289,7 +289,7 @@ export function GoalReverse() {
 
       {/* Footer-tekst */}
       <div className="text-[11px] text-[var(--muted)] leading-snug px-1">
-        Tallene øker automatisk med inflasjon (~2,5 %/år) slik at kjøpekraften
+        Tallene øker automatisk med inflasjon (~3 %/år) slik at kjøpekraften
         holdes. Forventet avkastning 7 %/år bygger på{" "}
         <Link
           href="/plassere#strategi"
