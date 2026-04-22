@@ -3,14 +3,14 @@
  *
  * Antagelser (kan justeres senere uten å endre callsites):
  *  - Forventet nominell årlig avkastning: 8% (realistisk for et globalt aksjefond)
- *  - Forventet årlig inflasjon: 2.5% (Norges Banks målsetting)
+ *  - Forventet årlig inflasjon: 3% (litt over Norges Banks mål — ligge foran)
  *  - Sparebeløpet justeres opp med inflasjon hvert år (slik at kjøpekraft holdes)
  *  - Bidrag skjer månedlig på slutten av hver måned
  */
 
 export const DEFAULTS = {
   annualReturn: 0.08,
-  annualInflation: 0.025,
+  annualInflation: 0.03,
   daysPerMonth: 30.4375,
 } as const;
 

@@ -134,6 +134,24 @@ input[type="range"].slider-gold::-moz-range-thumb {
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
 }
 
+input[type="range"].slider-warn::-webkit-slider-runnable-track {
+  background: rgba(176, 90, 58, 0.15);
+}
+input[type="range"].slider-warn::-moz-range-track {
+  background: rgba(176, 90, 58, 0.15);
+}
+input[type="range"].slider-warn::-webkit-slider-thumb {
+  background: #b05a3a;
+  border-color: rgba(176, 90, 58, 0.2);
+  box-shadow: 0 4px 14px rgba(176, 90, 58, 0.3);
+  margin-top: -12px;
+}
+input[type="range"].slider-warn::-moz-range-thumb {
+  background: #b05a3a;
+  border-color: rgba(176, 90, 58, 0.2);
+  box-shadow: 0 4px 14px rgba(176, 90, 58, 0.3);
+}
+
 .exclusive-bg {
   background: #08080a;
   color: #f0ede6;

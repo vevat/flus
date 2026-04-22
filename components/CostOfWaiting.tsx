@@ -98,7 +98,7 @@ export function CostOfWaiting({
         </div>
         <input
           type="range"
-          className="slider-gold"
+          className="slider-warn"
           min={1}
           max={maxDelay}
           step={1}
