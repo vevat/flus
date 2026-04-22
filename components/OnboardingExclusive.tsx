@@ -100,6 +100,55 @@ export function OnboardingExclusive() {
             Allerede brukt av tusenvis av nordmenn
           </motion.p>
         </div>
+
+        {/* Public content visible to search engines and reviewers */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="px-6 pb-10 pt-6 space-y-4 relative z-10"
+        >
+          <div className="text-center mb-2">
+            <div className="h-px w-16 mx-auto bg-gradient-to-r from-transparent via-[#c9a84c]/30 to-transparent" />
+            <p className="mt-3 text-[11px] uppercase tracking-[0.15em] text-[#6b6555]">
+              Hva du får tilgang til
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            <div className="rounded-2xl bg-[#0f0f12] border border-[#1a1a1e] p-4">
+              <div className="text-[13px] font-semibold text-white">Sparekalkulator</div>
+              <p className="text-[11px] text-[#908b80] mt-1 leading-snug">
+                Se hva 10–1000 kr om dagen blir til over 10, 20 eller 50 år
+                med renters rente. Sett personlige sparemål i millioner.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#0f0f12] border border-[#1a1a1e] p-4">
+              <div className="text-[13px] font-semibold text-white">Investeringsguide</div>
+              <p className="text-[11px] text-[#908b80] mt-1 leading-snug">
+                Velg mellom Ray Dalios All Weather-portefølje og Warren Buffetts
+                indeksfondstrategi. Konkrete fond og ETF-er med direktelenker.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#0f0f12] border border-[#1a1a1e] p-4">
+              <div className="text-[13px] font-semibold text-white">Sparehacks</div>
+              <p className="text-[11px] text-[#908b80] mt-1 leading-snug">
+                Finn penger i hverdagen du ikke visste du hadde. Kutt kaffen,
+                pant flasker, mealprep — se hva det blir verdt over tid.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#0f0f12] border border-[#1a1a1e] p-4">
+              <div className="text-[13px] font-semibold text-white">Helt gratis</div>
+              <p className="text-[11px] text-[#908b80] mt-1 leading-snug">
+                Ingen abonnement, ingen skjulte kostnader. Laget for å gi
+                unge nordmenn et forsprang i personlig økonomi.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     );
   }

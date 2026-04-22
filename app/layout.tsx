@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import Link from "next/link";
 import "./globals.css";
 import { TabBar } from "@/components/TabBar";
 import { TopBar } from "@/components/TopBar";
@@ -21,10 +22,28 @@ const display = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Pengebingen",
+  title: {
+    default: "Pengebingen – Gratis sparekalkulator og investeringsguide",
+    template: "%s – Pengebingen",
+  },
   description:
-    "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
+    "Se hva små daglige beløp blir til over tid. Gratis spare- og investeringsguide for unge nordmenn med velprøvde strategier fra Ray Dalio og Warren Buffett.",
   applicationName: "Pengebingen",
+  keywords: [
+    "sparekalkulator",
+    "investering",
+    "sparing",
+    "renters rente",
+    "indeksfond",
+    "All Weather",
+    "Warren Buffett",
+    "Nordnet",
+    "unge investorer",
+    "Norge",
+    "personlig økonomi",
+  ],
+  authors: [{ name: "Pengebingen" }],
+  creator: "Pengebingen",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -35,10 +54,11 @@ export const metadata: Metadata = {
     icon: "/logo.png",
     apple: "/logo.png",
   },
+  metadataBase: new URL("https://pengebingen.vercel.app"),
   openGraph: {
-    title: "Pengebingen",
+    title: "Pengebingen – Gratis sparekalkulator og investeringsguide",
     description:
-      "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
+      "Se hva små daglige beløp blir til over tid. Gratis spare- og investeringsguide for unge nordmenn med velprøvde strategier fra Ray Dalio og Warren Buffett.",
     url: "https://pengebingen.vercel.app",
     siteName: "Pengebingen",
     locale: "nb_NO",
@@ -46,9 +66,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pengebingen",
+    title: "Pengebingen – Gratis sparekalkulator og investeringsguide",
     description:
-      "Gjør dette nå, og du investerer blant topp 0,1% i verden. Enkelt, uten risiko, uten å miste nattesøvnen.",
+      "Se hva små daglige beløp blir til over tid. Gratis spare- og investeringsguide for unge nordmenn.",
   },
 };
 
@@ -71,6 +91,31 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Pengebingen",
+              url: "https://pengebingen.vercel.app",
+              description:
+                "Gratis spare- og investeringsguide for unge nordmenn. Se hva små daglige beløp blir til over tid med velprøvde strategier fra Ray Dalio og Warren Buffett.",
+              applicationCategory: "FinanceApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "NOK",
+              },
+              inLanguage: "nb",
+              author: {
+                "@type": "Person",
+                name: "Cato",
+              },
+            }),
+          }}
+        />
         <ThemeProvider />
         <AnalyticsProvider />
         <Analytics />
@@ -81,7 +126,14 @@ export default function RootLayout({
             <TipCarousel />
             <PlassereDisclaimer />
             <footer className="text-center text-[10px] text-[var(--muted-2)] py-3 mt-auto">
-              <div>&copy; {new Date().getFullYear()} Pengebingen. All rights reserved.</div>
+              <div className="flex items-center justify-center gap-2">
+                <Link href="/om" className="hover:text-[var(--muted)] transition-colors">Om</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/personvern" className="hover:text-[var(--muted)] transition-colors">Personvern</Link>
+                <span aria-hidden="true">·</span>
+                <Link href="/vilkar" className="hover:text-[var(--muted)] transition-colors">Vilkår</Link>
+              </div>
+              <div className="mt-1">&copy; {new Date().getFullYear()} Pengebingen. All rights reserved.</div>
               <div className="mt-px text-[9px]">Stay curious | Onkel Cato</div>
             </footer>
             {/* Spacer so footer clears the fixed TabBar */}
