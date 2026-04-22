@@ -474,6 +474,6 @@ export function getRelatable(daily: number): {
   if (daily < 100)
     return { id: "storebeløp", label: "dette begynner å bli store penger i lengden", color: "#dfc06a", colorLight: "#c4a855" };
   if (daily < 200)
-    return { id: "sky", label: "Sky is the limit, hvis du begynner i dag!", color: "#d4a76a", colorLight: "#b8923a" };
-  return { id: "loaded", label: "Du blir Loaded.", color: "#c9a84c", colorLight: "#a8882e" };
+    return { id: "sky", label: "Her er det bare å kjøre på!", color: "#d4a76a", colorLight: "#b8923a" };
+  return { id: "loaded", label: "Du bygger skikkelig formue.", color: "#c9a84c", colorLight: "#a8882e" };
 }

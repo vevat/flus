@@ -63,7 +63,7 @@ export default function OgImage() {
             <span>·</span>
             <span>Investeringsguide</span>
             <span>·</span>
-            <span>All Weather & Buffett</span>
+            <span>Velprøvde strategier</span>
           </div>
         </div>
       </div>

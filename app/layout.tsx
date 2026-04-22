@@ -133,8 +133,8 @@ export default function RootLayout({
                 <span aria-hidden="true">·</span>
                 <Link href="/vilkar" className="hover:text-[var(--muted)] transition-colors">Vilkår</Link>
               </div>
-              <div className="mt-1">&copy; {new Date().getFullYear()} Pengebingen. All rights reserved.</div>
-              <div className="mt-px text-[9px]">Stay curious | Onkel Cato</div>
+              <div className="mt-1">&copy; {new Date().getFullYear()} Pengebingen. Alle rettigheter reservert.</div>
+              <div className="mt-px text-[9px]">Vær nysgjerrig | Onkel Cato</div>
             </footer>
             {/* Spacer so footer clears the fixed TabBar */}
             <div className="h-20 shrink-0" aria-hidden="true" />
