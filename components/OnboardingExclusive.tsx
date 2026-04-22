@@ -1,39 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useState } from "react";
 import { useFlus, type AvatarId } from "@/lib/store";
 import { track } from "@/lib/analytics";
+import { useHoldRepeat } from "@/lib/hooks";
 import Image from "next/image";
-
-function useHoldRepeat(
-  callback: () => void,
-  initialDelay = 400,
-  repeatDelay = 80
-) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const repeater = useRef<ReturnType<typeof setInterval> | null>(null);
-  const cb = useRef(callback);
-  cb.current = callback;
-
-  const stop = useCallback(() => {
-    if (timer.current) clearTimeout(timer.current);
-    if (repeater.current) clearInterval(repeater.current);
-    timer.current = null;
-    repeater.current = null;
-  }, []);
-
-  const start = useCallback(() => {
-    cb.current();
-    timer.current = setTimeout(() => {
-      repeater.current = setInterval(() => cb.current(), repeatDelay);
-    }, initialDelay);
-  }, [initialDelay, repeatDelay]);
-
-  useEffect(() => stop, [stop]);
-
-  return { onPointerDown: start, onPointerUp: stop, onPointerLeave: stop };
-}
 
 const ALL_AVATARS: AvatarId[] = [
   "zara", "emma", "sofia", "amara", "ida", "luna",
@@ -271,39 +243,55 @@ function ExclusiveAgeStepper({
   min: number;
   max: number;
 }) {
-  const decrement = useHoldRepeat(() =>
-    onChange((v) => Math.max(min, v - 1))
+  const dec = useHoldRepeat(
+    useCallback(() => onChange((v) => Math.max(min, v - 1)), [onChange, min]),
   );
-  const increment = useHoldRepeat(() =>
-    onChange((v) => Math.min(max, v + 1))
+  const inc = useHoldRepeat(
+    useCallback(() => onChange((v) => Math.min(max, v + 1)), [onChange, max]),
   );
 
+  const hint = dec.showHint || inc.showHint;
+
   return (
-    <div className="mt-1.5 flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#0f0f12] border border-[#222226]">
-      <button
-        type="button"
-        {...decrement}
-        className="w-9 h-9 rounded-full bg-[#1a1a1e] border border-[#222226] flex items-center justify-center text-[#908b80] text-lg font-semibold active:scale-95 active:bg-[#c9a84c]/10 transition-all select-none touch-none"
-        aria-label="Minus"
-      >
-        −
-      </button>
-      <div className="flex-1 text-center">
-        <div className="font-display text-2xl font-semibold text-white tabular-nums leading-none">
-          {value}
+    <div className="mt-1.5 flex flex-col">
+      <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#0f0f12] border border-[#222226]">
+        <button
+          type="button"
+          {...dec.handlers}
+          className="w-9 h-9 rounded-full bg-[#1a1a1e] border border-[#222226] flex items-center justify-center text-[#908b80] text-lg font-semibold active:scale-95 active:bg-[#c9a84c]/10 transition-all select-none touch-none"
+          aria-label="Minus"
+        >
+          −
+        </button>
+        <div className="flex-1 text-center">
+          <div className="font-display text-2xl font-semibold text-white tabular-nums leading-none">
+            {value}
+          </div>
+          <div className="text-[10px] text-[#908b80] mt-0.5 uppercase tracking-wider">
+            år
+          </div>
         </div>
-        <div className="text-[10px] text-[#908b80] mt-0.5 uppercase tracking-wider">
-          år
-        </div>
+        <button
+          type="button"
+          {...inc.handlers}
+          className="w-9 h-9 rounded-full bg-[#1a1a1e] border border-[#222226] flex items-center justify-center text-[#908b80] text-lg font-semibold active:scale-95 active:bg-[#c9a84c]/10 transition-all select-none touch-none"
+          aria-label="Pluss"
+        >
+          +
+        </button>
       </div>
-      <button
-        type="button"
-        {...increment}
-        className="w-9 h-9 rounded-full bg-[#1a1a1e] border border-[#222226] flex items-center justify-center text-[#908b80] text-lg font-semibold active:scale-95 active:bg-[#c9a84c]/10 transition-all select-none touch-none"
-        aria-label="Pluss"
-      >
-        +
-      </button>
+      <AnimatePresence>
+        {hint && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="text-[10px] text-[#908b80] text-center mt-1"
+          >
+            Hold inne for å gå raskere
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

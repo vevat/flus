@@ -1,35 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useState } from "react";
 import { useFlus, type AvatarId } from "@/lib/store";
 import { AvatarPicker } from "./Avatar";
 import { track } from "@/lib/analytics";
-
-function useHoldRepeat(callback: () => void, initialDelay = 400, repeatDelay = 80) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const repeater = useRef<ReturnType<typeof setInterval> | null>(null);
-  const cb = useRef(callback);
-  cb.current = callback;
-
-  const stop = useCallback(() => {
-    if (timer.current) clearTimeout(timer.current);
-    if (repeater.current) clearInterval(repeater.current);
-    timer.current = null;
-    repeater.current = null;
-  }, []);
-
-  const start = useCallback(() => {
-    cb.current();
-    timer.current = setTimeout(() => {
-      repeater.current = setInterval(() => cb.current(), repeatDelay);
-    }, initialDelay);
-  }, [initialDelay, repeatDelay]);
-
-  useEffect(() => stop, [stop]);
-
-  return { onPointerDown: start, onPointerUp: stop, onPointerLeave: stop };
-}
+import { useHoldRepeat } from "@/lib/hooks";
 
 export function Onboarding() {
   const setName = useFlus((s) => s.setName);
@@ -131,33 +107,53 @@ function AgeStepper({ value, onChange, min, max }: {
   min: number;
   max: number;
 }) {
-  const decrement = useHoldRepeat(() => onChange((v) => Math.max(min, v - 1)));
-  const increment = useHoldRepeat(() => onChange((v) => Math.min(max, v + 1)));
+  const dec = useHoldRepeat(
+    useCallback(() => onChange((v) => Math.max(min, v - 1)), [onChange, min]),
+  );
+  const inc = useHoldRepeat(
+    useCallback(() => onChange((v) => Math.min(max, v + 1)), [onChange, max]),
+  );
+
+  const hint = dec.showHint || inc.showHint;
 
   return (
-    <div className="mt-1 flex items-center gap-3 px-4 py-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
-      <button
-        type="button"
-        {...decrement}
-        className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform select-none touch-none"
-        aria-label="Minus"
-      >
-        −
-      </button>
-      <div className="flex-1 text-center">
-        <div className="font-display text-2xl font-semibold tabular-nums leading-none">
-          {value}
+    <div className="mt-1 flex flex-col">
+      <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+        <button
+          type="button"
+          {...dec.handlers}
+          className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform select-none touch-none"
+          aria-label="Minus"
+        >
+          −
+        </button>
+        <div className="flex-1 text-center">
+          <div className="font-display text-2xl font-semibold tabular-nums leading-none">
+            {value}
+          </div>
+          <div className="text-[11px] text-[var(--muted)] mt-0.5">år</div>
         </div>
-        <div className="text-[11px] text-[var(--muted)] mt-0.5">år</div>
+        <button
+          type="button"
+          {...inc.handlers}
+          className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform select-none touch-none"
+          aria-label="Pluss"
+        >
+          +
+        </button>
       </div>
-      <button
-        type="button"
-        {...increment}
-        className="w-9 h-9 rounded-full bg-[var(--surface-2)] flex items-center justify-center text-lg font-semibold active:scale-95 transition-transform select-none touch-none"
-        aria-label="Pluss"
-      >
-        +
-      </button>
+      <AnimatePresence>
+        {hint && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="text-[10px] text-[var(--muted-2)] text-center mt-1"
+          >
+            Hold inne for å gå raskere
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

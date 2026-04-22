@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
@@ -10,6 +10,7 @@ import {
   solveStairSteppedSavings,
   solveStairSteppedWithOverrides,
 } from "@/lib/finance";
+import { useHoldRepeat } from "@/lib/hooks";
 import { WealthChart } from "./WealthChart";
 
 const TARGET_AGE_OPTIONS = [25, 30, 40, 50, 60, 70, 80];
@@ -250,70 +251,15 @@ export function GoalReverse() {
             <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
               Slik kommer du dit
             </div>
-            {effectiveStages.map((stage, idx) => {
-              const ageRange =
-                stage.toAge - stage.fromAge === 1
-                  ? `${stage.fromAge} år`
-                  : `${stage.fromAge} – ${stage.toAge - 1} år`;
-              const years = stage.toAge - stage.fromAge;
-              return (
-                <motion.div
-                  key={`${stage.fromAge}-${stage.toAge}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.04, duration: 0.22 }}
-                  className="flex items-center gap-2.5"
-                >
-                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--primary-soft)] text-[var(--primary-strong)] text-xs font-bold flex items-center justify-center tabular-nums">
-                    {idx + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[12.5px] text-[var(--foreground)]">
-                      Når du er <strong>{ageRange}</strong>
-                    </div>
-                    <div className="text-[10px] text-[var(--muted-2)]">
-                      {years} år · per måned
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        adjustStage(stage.fromAge, stage.monthlyToday, -STEP)
-                      }
-                      disabled={stage.monthlyToday <= 0}
-                      className="w-7 h-7 rounded-lg bg-[var(--surface-2)] text-[var(--muted)] font-bold flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30 disabled:active:scale-100"
-                      aria-label="Reduser med 500"
-                    >
-                      −
-                    </button>
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={Math.round(stage.monthlyToday)}
-                        initial={{ opacity: 0, y: 2 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -2 }}
-                        transition={{ duration: 0.15 }}
-                        className="font-display text-sm font-bold tracking-tight tabular-nums text-right min-w-[64px]"
-                      >
-                        {formatNok(stage.monthlyToday)}
-                      </motion.div>
-                    </AnimatePresence>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        adjustStage(stage.fromAge, stage.monthlyToday, STEP)
-                      }
-                      className="w-7 h-7 rounded-lg bg-[var(--surface-2)] text-[var(--muted)] font-bold flex items-center justify-center active:scale-90 transition-transform"
-                      aria-label="Øk med 500"
-                    >
-                      +
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {effectiveStages.map((stage, idx) => (
+              <StageRow
+                key={`${stage.fromAge}-${stage.toAge}`}
+                stage={stage}
+                idx={idx}
+                onAdjust={adjustStage}
+                step={STEP}
+              />
+            ))}
 
             {Object.keys(overrides).length > 0 && (
               <button
@@ -377,6 +323,100 @@ function Row({
         {value}
       </span>
     </div>
+  );
+}
+
+function StageRow({
+  stage,
+  idx,
+  onAdjust,
+  step,
+}: {
+  stage: { fromAge: number; toAge: number; monthlyToday: number };
+  idx: number;
+  onAdjust: (fromAge: number, current: number, delta: number) => void;
+  step: number;
+}) {
+  const ageRange =
+    stage.toAge - stage.fromAge === 1
+      ? `${stage.fromAge} år`
+      : `${stage.fromAge} – ${stage.toAge - 1} år`;
+  const years = stage.toAge - stage.fromAge;
+
+  const dec = useHoldRepeat(
+    useCallback(() => onAdjust(stage.fromAge, stage.monthlyToday, -step), [onAdjust, stage.fromAge, stage.monthlyToday, step]),
+  );
+  const inc = useHoldRepeat(
+    useCallback(() => onAdjust(stage.fromAge, stage.monthlyToday, step), [onAdjust, stage.fromAge, stage.monthlyToday, step]),
+  );
+
+  const hint = dec.showHint || inc.showHint;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: idx * 0.04, duration: 0.22 }}
+      className="flex flex-col"
+    >
+      <div className="flex items-center gap-2.5">
+        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--primary-soft)] text-[var(--primary-strong)] text-xs font-bold flex items-center justify-center tabular-nums">
+          {idx + 1}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] text-[var(--foreground)]">
+            Når du er <strong>{ageRange}</strong>
+          </div>
+          <div className="text-[10px] text-[var(--muted-2)]">
+            {years} år · per måned
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            type="button"
+            {...dec.handlers}
+            disabled={stage.monthlyToday <= 0}
+            className="w-7 h-7 rounded-lg bg-[var(--surface-2)] text-[var(--muted)] font-bold flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30 disabled:active:scale-100 select-none touch-none"
+            aria-label="Reduser"
+          >
+            −
+          </button>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={Math.round(stage.monthlyToday)}
+              initial={{ opacity: 0, y: 2 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -2 }}
+              transition={{ duration: 0.15 }}
+              className="font-display text-sm font-bold tracking-tight tabular-nums text-right min-w-[64px]"
+            >
+              {formatNok(stage.monthlyToday)}
+            </motion.div>
+          </AnimatePresence>
+          <button
+            type="button"
+            {...inc.handlers}
+            className="w-7 h-7 rounded-lg bg-[var(--surface-2)] text-[var(--muted)] font-bold flex items-center justify-center active:scale-90 transition-transform select-none touch-none"
+            aria-label="Øk"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <AnimatePresence>
+        {hint && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="text-[10px] text-[var(--muted-2)] text-right mt-0.5 pr-1"
+          >
+            Hold inne for å gå raskere
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 

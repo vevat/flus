@@ -1,14 +1,16 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import { track } from "@/lib/analytics";
+import { useHoldRepeat } from "@/lib/hooks";
 import {
   FREQUENCY_LABELS,
   HACKS,
   type Hack,
   type HackCategory,
+  type HackFrequency,
   type HackIconId,
   futureValueOfHack,
   monthlyAmount,
@@ -307,38 +309,88 @@ function HackRow({
               {hack.blurb}
             </div>
 
-            {/* Amount adjuster + future value */}
-            <div className="flex items-center justify-between mt-1.5 ml-9">
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); onAdjust(amount - step); }}
-                  className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M5 12h14" /></svg>
-                </button>
-                <span className={`text-[12px] font-bold tabular-nums min-w-[48px] text-center ${isCustom ? "text-[var(--primary)]" : "text-[var(--foreground)]"}`}>
-                  {amount} kr
-                  <span className="font-medium text-[var(--muted)] text-[10px]">
-                    {FREQUENCY_LABELS[hack.frequency]}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); onAdjust(amount + step); }}
-                  className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M12 5v14M5 12h14" /></svg>
-                </button>
-              </div>
-              <span className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums">
-                Verdt {fmtBig(future)}
-              </span>
-            </div>
+            <HackAdjuster
+              amount={amount}
+              step={step}
+              isCustom={isCustom}
+              frequency={hack.frequency}
+              future={future}
+              onAdjust={onAdjust}
+            />
           </div>
         </div>
       </motion.button>
     </motion.div>
+  );
+}
+
+function HackAdjuster({
+  amount,
+  step,
+  isCustom,
+  frequency,
+  future,
+  onAdjust,
+}: {
+  amount: number;
+  step: number;
+  isCustom: boolean;
+  frequency: HackFrequency;
+  future: number;
+  onAdjust: (v: number) => void;
+}) {
+  const dec = useHoldRepeat(
+    useCallback(() => onAdjust(amount - step), [onAdjust, amount, step]),
+  );
+  const inc = useHoldRepeat(
+    useCallback(() => onAdjust(amount + step), [onAdjust, amount, step]),
+  );
+  const hint = dec.showHint || inc.showHint;
+
+  return (
+    <div className="mt-1.5 ml-9">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            {...dec.handlers}
+            onPointerDown={(e) => { e.stopPropagation(); dec.handlers.onPointerDown(); }}
+            className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform select-none touch-none"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M5 12h14" /></svg>
+          </button>
+          <span className={`text-[12px] font-bold tabular-nums min-w-[48px] text-center ${isCustom ? "text-[var(--primary)]" : "text-[var(--foreground)]"}`}>
+            {amount} kr
+            <span className="font-medium text-[var(--muted)] text-[10px]">
+              {FREQUENCY_LABELS[frequency]}
+            </span>
+          </span>
+          <button
+            type="button"
+            {...inc.handlers}
+            onPointerDown={(e) => { e.stopPropagation(); inc.handlers.onPointerDown(); }}
+            className="w-5 h-5 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-90 transition-transform select-none touch-none"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-2.5 h-2.5"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </div>
+        <span className="text-[11px] font-semibold text-[var(--primary-strong)] tabular-nums">
+          Verdt {fmtBig(future)}
+        </span>
+      </div>
+      <AnimatePresence>
+        {hint && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="text-[10px] text-[var(--muted-2)] text-left mt-0.5"
+          >
+            Hold inne for å gå raskere
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
