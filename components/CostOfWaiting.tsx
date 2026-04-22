@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { costOfDelaying, formatNok } from "@/lib/finance";
 import type { Goal } from "@/lib/store";
 
+const WARN = "#b05a3a";
+const WARN_SOFT = "rgba(176, 90, 58, 0.08)";
+const WARN_BORDER = "rgba(176, 90, 58, 0.2)";
+
 type Props = {
   currentAge: number;
   targetAge: number;
@@ -49,12 +53,15 @@ export function CostOfWaiting({
   else ratioPhrase = `~${ratioPct} %`;
 
   return (
-    <div className="rounded-3xl bg-[var(--gold-soft)]/40 border border-[var(--gold)]/30 p-3.5">
+    <div
+      className="rounded-3xl p-3.5"
+      style={{ background: WARN_SOFT, border: `1px solid ${WARN_BORDER}` }}
+    >
       <div className="text-[12.5px] text-[var(--foreground)] leading-snug">
         Visste du at hvis du venter{" "}
-        <span className="font-bold text-[var(--gold)]">{safeDelay} år</span>{" "}
+        <span className="font-bold" style={{ color: WARN }}>{safeDelay} år</span>{" "}
         med å begynne sparingen, blir du{" "}
-        <span className="font-bold text-[var(--gold)]">{ratioPhrase}</span>{" "}
+        <span className="font-bold" style={{ color: WARN }}>{ratioPhrase}</span>{" "}
         så rik som om du startet i dag?
       </div>
 
@@ -69,7 +76,8 @@ export function CostOfWaiting({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.18 }}
-            className="font-display text-[26px] leading-none font-extrabold tracking-tight tabular-nums text-[var(--gold)]"
+            className="font-display text-[26px] leading-none font-extrabold tracking-tight tabular-nums"
+            style={{ color: WARN }}
           >
             {formatNok(result.difference, { compact: true })}
           </motion.span>

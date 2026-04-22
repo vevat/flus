@@ -6,6 +6,7 @@ import { TabBar } from "@/components/TabBar";
 import { TopBar } from "@/components/TopBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+import { TipCarousel } from "@/components/TipCard";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -75,6 +76,7 @@ export default function RootLayout({
         <div className="mx-auto w-full max-w-md flex-1 flex flex-col">
           <TopBar />
           <main className="flex-1 flex flex-col">{children}</main>
+          <TipCarousel />
           <footer className="text-center text-[10px] text-[var(--muted-2)] py-3">
             <div>&copy; {new Date().getFullYear()} Pengebingen. All rights reserved.</div>
             <div className="mt-px text-[9px]">Stay curious | Onkel Cato</div>

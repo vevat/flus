@@ -12,7 +12,6 @@ import { Avatar, wealthLevelFromAmount } from "./Avatar";
 import { SavingsSlider } from "./SavingsSlider";
 import { AgeTimeline } from "./AgeTimeline";
 import { WealthChart } from "./WealthChart";
-import { TipCarousel } from "./TipCard";
 import { GoalsList } from "./GoalsList";
 import { CostOfWaiting } from "./CostOfWaiting";
 import { track } from "@/lib/analytics";
@@ -224,19 +223,6 @@ export function Home() {
           goals={goals}
           delayYears={delayYears}
           onDelayChange={setDelayYears}
-        />
-      </div>
-
-      {/* Tips */}
-      <div className="mt-3">
-        <TipCarousel
-          context={{
-            age,
-            selectedAge,
-            daily: initialDaily,
-            nominal,
-            contributed,
-          }}
         />
       </div>
 
