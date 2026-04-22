@@ -91,7 +91,7 @@ export function MillianGreeting({ onClose }: Props) {
           <p className="text-[#d4cfc4]">
             Bruk den. Lek med den. Del den.
             <br />
-            Og la tallene overraske deg.
+            Og la tallene overraske og inspirere.
           </p>
 
           <div className="h-px w-12 mx-auto bg-gradient-to-r from-transparent via-[#c9a84c]/30 to-transparent" />

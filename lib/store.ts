@@ -87,7 +87,7 @@ type FlusState = {
   reset: () => void;
 };
 
-const DEFAULT_DAILY = 50;
+const DEFAULT_DAILY = 60;
 
 export const useFlus = create<FlusState>()(
   persist(

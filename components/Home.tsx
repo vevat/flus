@@ -30,8 +30,7 @@ const DAILY_STOPS = [
 function defaultSelectedAge(currentAge: number): number {
   if (currentAge >= 50) return 80;
   if (currentAge >= 30) return 70;
-  if (currentAge >= 20) return 60;
-  return 50;
+  return 60;
 }
 
 export function Home() {
