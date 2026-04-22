@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import {
@@ -180,9 +180,7 @@ export function Home() {
                 {formatNok(nominal, { compact: true })}
               </motion.div>
             </AnimatePresence>
-            <div className="text-[11px] text-[var(--muted)] mt-1">
-              ≈ {formatNok(real, { compact: true })} i dagens kjøpekraft
-            </div>
+            <InfoTooltip text={`≈ ${formatNok(real, { compact: true })} i dagens kjøpekraft`} />
           </div>
         </div>
 
@@ -298,3 +296,34 @@ function MilestonePicker({
   );
 }
 
+function InfoTooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+  const toggle = useCallback(() => setShow((s) => !s), []);
+
+  return (
+    <span className="inline-flex items-center gap-1 mt-1">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label="Vis justert verdi"
+        className="w-4 h-4 rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+      >
+        <svg viewBox="0 0 16 16" fill="currentColor" className="w-2.5 h-2.5">
+          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm-.5 3a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM7 6.5h2v5H7v-5Z" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {show && (
+          <motion.span
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -4 }}
+            className="text-[11px] text-[var(--muted)]"
+          >
+            {text}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+}
