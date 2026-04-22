@@ -91,8 +91,11 @@ export function Home() {
 
   return (
     <div className="flex-1 flex flex-col px-5 pt-4 pb-3">
-      {/* 1 — Slider on top */}
+      {/* 1 — Slider + milestone flow */}
       <div className="mt-1 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
+        <div className="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">
+          Hvis jeg starter med å spare
+        </div>
         <SavingsSlider
           value={Math.max(10, initialDaily)}
           onChange={(v) => {
@@ -102,6 +105,50 @@ export function Home() {
           stops={DAILY_STOPS}
           hideRelatable={age > 30}
         />
+
+        {/* Sparemål-liste */}
+        {goals.length > 1 && (
+          <div className="mt-3 pt-2.5 border-t border-[var(--border)]">
+            <GoalsList goals={goals} currentAge={age} />
+          </div>
+        )}
+
+        {/* Milestone prompt */}
+        {hasMilestones && !milestoneOpen && (
+          <button
+            type="button"
+            onClick={() => setMilestoneOpen(true)}
+            className="mt-2.5 w-full text-left text-[11px] text-[var(--muted)] leading-snug"
+          >
+            Når du blir eldre sparer du sikkert enda mer.{" "}
+            <span className="underline text-[var(--primary)] font-medium">
+              Legg til sparemål
+            </span>
+          </button>
+        )}
+
+        {/* Inline milestone picker */}
+        <AnimatePresence>
+          {milestoneOpen && hasMilestones && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <MilestonePicker
+                options={milestoneOptions}
+                previousDaily={goals[goals.length - 1]?.dailyAmount ?? initialDaily}
+                onSave={(fromAge, daily) => {
+                  addMilestoneGoal(fromAge, daily);
+                  track("milestone_added", { fromAge, daily });
+                  setMilestoneOpen(false);
+                }}
+                onCancel={() => setMilestoneOpen(false)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* 2 — Hero result card */}
@@ -168,47 +215,6 @@ export function Home() {
           </div>
         )}
       </div>
-
-      {/* Sparemål-liste */}
-      {goals.length > 1 && (
-        <div className="mt-3">
-          <GoalsList goals={goals} currentAge={age} />
-        </div>
-      )}
-
-      {/* Compact milestone link */}
-      {hasMilestones && !milestoneOpen && (
-        <button
-          type="button"
-          onClick={() => setMilestoneOpen(true)}
-          className="mt-2 text-[11px] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors text-center"
-        >
-          + Legg til sparemål for når du blir eldre
-        </button>
-      )}
-
-      {/* Inline milestone picker */}
-      <AnimatePresence>
-        {milestoneOpen && hasMilestones && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
-            <MilestonePicker
-              options={milestoneOptions}
-              previousDaily={goals[goals.length - 1]?.dailyAmount ?? initialDaily}
-              onSave={(fromAge, daily) => {
-                addMilestoneGoal(fromAge, daily);
-                track("milestone_added", { fromAge, daily });
-                setMilestoneOpen(false);
-              }}
-              onCancel={() => setMilestoneOpen(false)}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Kostnaden av å vente */}
       <div className="mt-3">

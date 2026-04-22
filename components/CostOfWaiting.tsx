@@ -50,17 +50,16 @@ export function CostOfWaiting({
 
   return (
     <div className="rounded-3xl bg-[var(--gold-soft)]/40 border border-[var(--gold)]/30 p-3.5">
-      <div className="flex items-baseline justify-between mb-1">
-        <div className="text-xs font-medium text-[var(--gold)] uppercase tracking-wide">
-          Hvis du venter
-        </div>
-        <div className="text-[11px] text-[var(--muted-2)]">
-          målt ved {targetAge} år
-        </div>
+      <div className="text-[12.5px] text-[var(--foreground)] leading-snug">
+        Visste du at hvis du venter{" "}
+        <span className="font-bold text-[var(--gold)]">{safeDelay} år</span>{" "}
+        med å begynne sparingen, blir du{" "}
+        <span className="font-bold text-[var(--gold)]">{ratioPhrase}</span>{" "}
+        så rik som om du startet i dag?
       </div>
 
-      <div className="flex items-baseline gap-2 mt-1">
-        <div className="text-[12px] text-[var(--muted)] leading-tight pb-1">
+      <div className="flex items-baseline gap-2 mt-2.5">
+        <div className="text-[11px] text-[var(--muted)]">
           Du taper
         </div>
         <AnimatePresence mode="wait">
@@ -70,17 +69,14 @@ export function CostOfWaiting({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.18 }}
-            className="font-display text-[28px] leading-none font-extrabold tracking-tight tabular-nums text-[var(--gold)]"
+            className="font-display text-[26px] leading-none font-extrabold tracking-tight tabular-nums text-[var(--gold)]"
           >
             {formatNok(result.difference, { compact: true })}
           </motion.span>
         </AnimatePresence>
-      </div>
-
-      <div className="text-[12.5px] text-[var(--foreground)] mt-1.5 leading-snug">
-        Da blir du{" "}
-        <span className="font-semibold text-[var(--gold)]">{ratioPhrase}</span>{" "}
-        så rik som om du startet i dag.
+        <div className="text-[11px] text-[var(--muted-2)]">
+          målt ved {targetAge} år
+        </div>
       </div>
 
       <div className="mt-3">
