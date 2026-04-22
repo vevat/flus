@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import {
@@ -18,8 +18,8 @@ import { CostOfWaiting } from "./CostOfWaiting";
 import { track } from "@/lib/analytics";
 
 const DEFAULT_PROJECTION_END = 80;
+const ALL_MILESTONES = [25, 30, 40, 50, 60, 70];
 
-// 40–100 à 10, 125–400 à 25, 500–1000 à 100
 const DAILY_STOPS = [
   ...Array.from({ length: 4 }, (_, i) => 10 + i * 10),    // 10..40
   ...Array.from({ length: 6 }, (_, i) => 50 + i * 10),    // 50..100
@@ -40,6 +40,7 @@ export function Home() {
   const avatar = useFlus((s) => s.avatar);
   const goals = useFlus((s) => s.goals);
   const setInitialDaily = useFlus((s) => s.setInitialDaily);
+  const addMilestoneGoal = useFlus((s) => s.addMilestoneGoal);
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
 
@@ -47,6 +48,8 @@ export function Home() {
   const setSelectedAge = (v: number) => setUi({ selectedAge: v });
   const delayYears = ui.delayYears;
   const setDelayYears = (v: number) => setUi({ delayYears: v });
+
+  const [milestoneOpen, setMilestoneOpen] = useState(false);
 
   const initialDaily = goals[0]?.dailyAmount ?? 50;
 
@@ -80,11 +83,29 @@ export function Home() {
 
   const wealthLevel = wealthLevelFromAmount(nominal);
 
+  const lastGoalAge = goals.length > 0 ? goals[goals.length - 1].fromAge : age;
+  const milestoneOptions = ALL_MILESTONES.filter(
+    (m) => m > lastGoalAge && m > age,
+  );
+  const hasMilestones = milestoneOptions.length > 0;
+
   return (
     <div className="flex-1 flex flex-col px-5 pt-4 pb-3">
-      {/* Topp - kompakt */}
-      {/* Hero: avatar + stort tall + graf */}
-      <div className="mt-2 rounded-3xl bg-[var(--surface)] border border-[var(--border)] px-3 pt-3 pb-2">
+      {/* 1 — Slider on top */}
+      <div className="mt-1 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
+        <SavingsSlider
+          value={Math.max(10, initialDaily)}
+          onChange={(v) => {
+            setInitialDaily(v);
+            track("daily_amount_changed", { amount: v });
+          }}
+          stops={DAILY_STOPS}
+          hideRelatable={age > 30}
+        />
+      </div>
+
+      {/* 2 — Hero result card */}
+      <div className="mt-3 rounded-3xl bg-[var(--surface)] border border-[var(--border)] px-3 pt-3 pb-2">
         <div className="flex items-center gap-3">
           {avatar && (
             <motion.div
@@ -99,7 +120,7 @@ export function Home() {
           )}
           <div className="flex-1 min-w-0">
             <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
-              Når du er {selectedAge} år har <strong className="font-bold text-[var(--foreground)]">{name ? `${name}'s` : "din"} Holding</strong> vokst til
+              Da har <strong className="font-bold text-[var(--foreground)]">{name ? `${name}'s` : "din"} pengebinge</strong> vokst til
             </div>
             <AnimatePresence mode="wait">
               <motion.div
@@ -119,7 +140,16 @@ export function Home() {
           </div>
         </div>
 
-        <div className="mt-2">
+        {/* Age selector inline */}
+        <div className="mt-2.5 mb-1">
+          <AgeTimeline
+            currentAge={age}
+            selectedAge={selectedAge}
+            onChange={setSelectedAge}
+          />
+        </div>
+
+        <div className="mt-1">
           <WealthChart
             data={projection}
             delayedData={delayedProjection}
@@ -131,36 +161,12 @@ export function Home() {
 
         {delayYears > 0 && (
           <div className="mt-1 flex items-center justify-end gap-1.5 text-[11px]">
-            <span
-              className="w-3 h-0 border-t-2 border-dashed border-[var(--gold)]"
-            />
+            <span className="w-3 h-0 border-t-2 border-dashed border-[var(--gold)]" />
             <span className="text-[var(--muted)]">
               Hvis du venter {delayYears} år
             </span>
           </div>
         )}
-      </div>
-
-      {/* Tidslinje - milepæl-knapper */}
-      <div className="mt-2">
-        <AgeTimeline
-          currentAge={age}
-          selectedAge={selectedAge}
-          onChange={setSelectedAge}
-        />
-      </div>
-
-      {/* Sparing-slider (sentral) */}
-      <div className="mt-3 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
-        <SavingsSlider
-          value={Math.max(10, initialDaily)}
-          onChange={(v) => {
-            setInitialDaily(v);
-            track("daily_amount_changed", { amount: v });
-          }}
-          stops={DAILY_STOPS}
-          hideRelatable={age > 30}
-        />
       </div>
 
       {/* Sparemål-liste */}
@@ -169,6 +175,40 @@ export function Home() {
           <GoalsList goals={goals} currentAge={age} />
         </div>
       )}
+
+      {/* Compact milestone link */}
+      {hasMilestones && !milestoneOpen && (
+        <button
+          type="button"
+          onClick={() => setMilestoneOpen(true)}
+          className="mt-2 text-[11px] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors text-center"
+        >
+          + Legg til sparemål for når du blir eldre
+        </button>
+      )}
+
+      {/* Inline milestone picker */}
+      <AnimatePresence>
+        {milestoneOpen && hasMilestones && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <MilestonePicker
+              options={milestoneOptions}
+              previousDaily={goals[goals.length - 1]?.dailyAmount ?? initialDaily}
+              onSave={(fromAge, daily) => {
+                addMilestoneGoal(fromAge, daily);
+                track("milestone_added", { fromAge, daily });
+                setMilestoneOpen(false);
+              }}
+              onCancel={() => setMilestoneOpen(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Kostnaden av å vente */}
       <div className="mt-3">
@@ -194,6 +234,74 @@ export function Home() {
         />
       </div>
 
+    </div>
+  );
+}
+
+function MilestonePicker({
+  options,
+  previousDaily,
+  onSave,
+  onCancel,
+}: {
+  options: number[];
+  previousDaily: number;
+  onSave: (fromAge: number, daily: number) => void;
+  onCancel: () => void;
+}) {
+  const [fromAge, setFromAge] = useState(options[0]);
+  const suggestedDaily = Math.max(Math.round(previousDaily * 3), 150);
+  const [daily, setDaily] = useState(suggestedDaily);
+
+  return (
+    <div className="mt-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[12px] font-semibold">Nytt sparemål</span>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[11px] text-[var(--muted)] hover:text-[var(--foreground)]"
+        >
+          Avbryt
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-[11px] text-[var(--muted)] shrink-0">Fra alder</span>
+        <div className="flex gap-1.5 flex-wrap">
+          {options.map((a) => (
+            <button
+              key={a}
+              type="button"
+              onClick={() => setFromAge(a)}
+              className={`px-2.5 py-1 rounded-lg text-[12px] font-medium transition-colors ${
+                fromAge === a
+                  ? "bg-[var(--foreground)] text-[var(--background)]"
+                  : "bg-[var(--surface-2)] text-[var(--muted)]"
+              }`}
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <SavingsSlider
+        value={daily}
+        onChange={setDaily}
+        min={50}
+        max={1000}
+        step={10}
+        hideRelatable
+      />
+
+      <button
+        type="button"
+        onClick={() => onSave(fromAge, daily)}
+        className="mt-3 w-full py-2.5 rounded-xl bg-[var(--primary)] text-white text-[13px] font-semibold active:scale-[0.98] transition-transform"
+      >
+        Lagre
+      </button>
     </div>
   );
 }
