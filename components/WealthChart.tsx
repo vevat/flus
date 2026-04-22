@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Area,
   AreaChart,
@@ -109,6 +109,11 @@ export function WealthChart({
     (v) => v > 0,
   );
 
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  }, []);
+
   const ageTicks = useMemo(() => xTicks(merged), [merged]);
   const startAge = merged[0]?.age ?? 0;
   const endAge = merged[merged.length - 1]?.age ?? startAge;
@@ -179,30 +184,32 @@ export function WealthChart({
             ticks={yTicksDisplay}
             allowDataOverflow={false}
           />
-          <Tooltip
-            contentStyle={{
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-              fontSize: 12,
-              color: "var(--foreground)",
-            }}
-            cursor={{
-              stroke: "var(--muted-2)",
-              strokeWidth: 1,
-              strokeDasharray: "3 3",
-            }}
-            labelFormatter={(age) => `${age} år`}
-            itemSorter={(item) => (item.dataKey === "nominal" ? -1 : 1)}
-            formatter={(val, name) => {
-              const label =
-                name === "delayed" ? `Venter ${delayYears} år` : "Formue";
-              const num = Number(val);
-              if (!isFinite(num) || num === 0)
-                return ["—", label] as [string, string];
-              return [formatMill(num), label];
-            }}
-          />
+          {!isTouchDevice && (
+            <Tooltip
+              contentStyle={{
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: 12,
+                fontSize: 12,
+                color: "var(--foreground)",
+              }}
+              cursor={{
+                stroke: "var(--muted-2)",
+                strokeWidth: 1,
+                strokeDasharray: "3 3",
+              }}
+              labelFormatter={(age) => `${age} år`}
+              itemSorter={(item) => (item.dataKey === "nominal" ? -1 : 1)}
+              formatter={(val, name) => {
+                const label =
+                  name === "delayed" ? `Venter ${delayYears} år` : "Formue";
+                const num = Number(val);
+                if (!isFinite(num) || num === 0)
+                  return ["—", label] as [string, string];
+                return [formatMill(num), label];
+              }}
+            />
+          )}
           <Area
             type="monotone"
             dataKey="nominal"
