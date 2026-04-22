@@ -112,43 +112,44 @@ export function Home() {
           </div>
         )}
 
-        {/* Milestone prompt */}
-        {hasMilestones && !milestoneOpen && (
-          <button
-            type="button"
-            onClick={() => setMilestoneOpen(true)}
-            className="mt-2.5 w-full text-left text-[11px] text-[var(--muted)] leading-snug"
-          >
-            Når du blir eldre sparer du sikkert enda mer.{" "}
-            <span className="underline text-[var(--primary)] font-medium">
-              Legg til sparemål
-            </span>
-          </button>
-        )}
-
-        {/* Inline milestone picker */}
-        <AnimatePresence>
-          {milestoneOpen && hasMilestones && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden"
-            >
-              <MilestonePicker
-                options={milestoneOptions}
-                previousDaily={goals[goals.length - 1]?.dailyAmount ?? initialDaily}
-                onSave={(fromAge, daily) => {
-                  addMilestoneGoal(fromAge, daily);
-                  track("milestone_added", { fromAge, daily });
-                  setMilestoneOpen(false);
-                }}
-                onCancel={() => setMilestoneOpen(false)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      {/* Milestone prompt — between slider and result card */}
+      {hasMilestones && !milestoneOpen && (
+        <button
+          type="button"
+          onClick={() => setMilestoneOpen(true)}
+          className="mt-2 w-full text-left text-[11px] text-[var(--muted)] leading-snug px-1"
+        >
+          Når du blir eldre sparer du sikkert enda mer.{" "}
+          <span className="underline text-[var(--primary)] font-medium">
+            + Legg til nytt sparemål
+          </span>
+        </button>
+      )}
+
+      {/* Inline milestone picker */}
+      <AnimatePresence>
+        {milestoneOpen && hasMilestones && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-2 overflow-hidden rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4"
+          >
+            <MilestonePicker
+              options={milestoneOptions}
+              previousDaily={goals[goals.length - 1]?.dailyAmount ?? initialDaily}
+              onSave={(fromAge, daily) => {
+                addMilestoneGoal(fromAge, daily);
+                track("milestone_added", { fromAge, daily });
+                setMilestoneOpen(false);
+              }}
+              onCancel={() => setMilestoneOpen(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 2 — Hero result card */}
       <div className="mt-3 rounded-3xl bg-[var(--surface)] border border-[var(--border)] px-3 pt-3 pb-2">
@@ -168,19 +169,21 @@ export function Home() {
             <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
               Da har <strong className="font-bold text-[var(--foreground)]">{name ? `${name}'s` : "din"} pengebinge</strong> vokst til
             </div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={Math.round(nominal / 100)}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="font-display text-[34px] font-bold tracking-tight tabular-nums leading-none mt-0.5"
-              >
-                {formatNok(nominal, { compact: true })}
-              </motion.div>
-            </AnimatePresence>
-            <InfoTooltip text={`≈ ${formatNok(real, { compact: true })} i dagens kjøpekraft`} />
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={Math.round(nominal / 100)}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="font-display text-[34px] font-bold tracking-tight tabular-nums leading-none"
+                >
+                  {formatNok(nominal, { compact: true })}
+                </motion.div>
+              </AnimatePresence>
+              <InfoTooltip text={`≈ ${formatNok(real, { compact: true })} i dagens kjøpekraft`} />
+            </div>
           </div>
         </div>
 
@@ -301,7 +304,7 @@ function InfoTooltip({ text }: { text: string }) {
   const toggle = useCallback(() => setShow((s) => !s), []);
 
   return (
-    <span className="inline-flex items-center gap-1 mt-1">
+    <span className="inline-flex items-center gap-1">
       <button
         type="button"
         onClick={toggle}

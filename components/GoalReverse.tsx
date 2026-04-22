@@ -8,6 +8,7 @@ import {
   formatNok,
   projectStairStepped,
   solveStairSteppedSavings,
+  solveStairSteppedWithOverrides,
 } from "@/lib/finance";
 import { WealthChart } from "./WealthChart";
 
@@ -51,14 +52,26 @@ export function GoalReverse() {
     setOverrides({});
   }, [targetMillions, targetAge, age]);
 
-  const effectiveStages = useMemo(
-    () =>
-      suggestion.stages.map((s) => ({
+  const effectiveStages = useMemo(() => {
+    const hasOverrides = Object.keys(overrides).length > 0;
+    if (!hasOverrides) {
+      return suggestion.stages.map((s) => ({
         ...s,
-        monthlyToday: overrides[s.fromAge] ?? roundNice(s.monthlyToday),
-      })),
-    [suggestion.stages, overrides],
-  );
+        monthlyToday: roundNice(s.monthlyToday),
+      }));
+    }
+    return solveStairSteppedWithOverrides({
+      currentAge: age,
+      targetAge,
+      targetAmount,
+      overrides,
+    }).map((s) => ({
+      ...s,
+      monthlyToday: s.fromAge in overrides
+        ? s.monthlyToday
+        : roundNice(s.monthlyToday),
+    }));
+  }, [suggestion.stages, overrides, age, targetAge, targetAmount]);
 
   const monthlyByAge = useMemo(() => {
     const map = new Map<number, number>();

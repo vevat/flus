@@ -284,6 +284,85 @@ export function solveStairSteppedSavings({
 }
 
 /**
+ * Re-solves the stair-stepped plan when the user has overridden some stages.
+ * Overridden stages keep their fixed amount; non-overridden stages are
+ * recalculated so the total still hits targetAmount.
+ *
+ * Uses linearity of contributions: finalBalance = fixedFV + base * unitFV.
+ */
+export function solveStairSteppedWithOverrides({
+  currentAge,
+  targetAge,
+  targetAmount,
+  overrides,
+  annualReturn = DEFAULTS.annualReturn,
+  annualInflation = DEFAULTS.annualInflation,
+}: {
+  currentAge: number;
+  targetAge: number;
+  targetAmount: number;
+  overrides: Record<number, number>;
+  annualReturn?: number;
+  annualInflation?: number;
+}): StairStage[] {
+  if (targetAge <= currentAge || targetAmount <= 0) return [];
+
+  const monthlyRate = Math.pow(1 + annualReturn, 1 / 12) - 1;
+
+  const stages: {
+    fromAge: number;
+    toAge: number;
+    weight: number;
+    fixed: boolean;
+    fixedMonthly: number;
+  }[] = [];
+  let cursor = currentAge;
+  for (const s of STAIR_STAGES) {
+    if (cursor >= targetAge) break;
+    if (s.until <= cursor) continue;
+    const end = Math.min(s.until, targetAge);
+    const hasOverride = cursor in overrides;
+    stages.push({
+      fromAge: cursor,
+      toAge: end,
+      weight: s.weight,
+      fixed: hasOverride,
+      fixedMonthly: hasOverride ? overrides[cursor] : 0,
+    });
+    cursor = end;
+  }
+
+  let fixedBal = 0;
+  let unitBal = 0;
+
+  for (let a = currentAge; a < targetAge; a++) {
+    const yrs = a - currentAge;
+    const st = stages.find((s) => a >= s.fromAge && a < s.toAge);
+    let fixedM = 0;
+    let unitW = 0;
+    if (st) {
+      if (st.fixed) fixedM = st.fixedMonthly;
+      else unitW = st.weight;
+    }
+    const fInfl = fixedM * Math.pow(1 + annualInflation, yrs);
+    const uInfl = unitW * Math.pow(1 + annualInflation, yrs);
+    for (let m = 0; m < 12; m++) {
+      fixedBal = fixedBal * (1 + monthlyRate) + fInfl;
+      unitBal = unitBal * (1 + monthlyRate) + uInfl;
+    }
+  }
+
+  const remaining = targetAmount - fixedBal;
+  const newBase = unitBal > 0 ? Math.max(0, remaining / unitBal) : 0;
+
+  return stages.map((s) => ({
+    fromAge: s.fromAge,
+    toAge: s.toAge,
+    monthlyToday: s.fixed ? s.fixedMonthly : newBase * s.weight,
+  }));
+}
+
+/**
  * Beregner kostnaden ved å vente med å starte sparing.
  * Returnerer differansen i nominell formue ved targetAge mellom å starte nå
  * vs. å starte om delayYears år.
