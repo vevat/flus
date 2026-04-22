@@ -160,7 +160,7 @@ export function InvestGuide() {
             </Expandable>
           ) : (
             <Expandable
-              title="Buffetts anbefaling"
+              title="Warren Buffetts anbefaling"
               preview="90% aksjer, 10% korte obligasjoner."
               variant="highlight"
             >
