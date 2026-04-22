@@ -193,9 +193,10 @@ export function WealthChart({
               strokeDasharray: "3 3",
             }}
             labelFormatter={(age) => `${age} år`}
+            itemSorter={(item) => (item.dataKey === "nominal" ? -1 : 1)}
             formatter={(val, name) => {
               const label =
-                name === "delayed" ? `Vent ${delayYears} år` : "Verdi";
+                name === "delayed" ? `Venter ${delayYears} år` : "Formue";
               const num = Number(val);
               if (!isFinite(num) || num === 0)
                 return ["—", label] as [string, string];

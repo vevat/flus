@@ -51,7 +51,7 @@ export function TopBar() {
       contributions,
     });
     const nominal = getAtAge(projection, selectedAge)?.nominal ?? 0;
-    return `Visste du at ${daily} kr om dagen kan bli til ${formatNok(nominal, { compact: true })} innen du er ${selectedAge}? Sjekk hva din sparing kan bli til!`;
+    return `Visste du at jeg kan få ${formatNok(nominal, { compact: true })} i formue med å spare ${daily} kroner om dagen?\nSjekk hvor mye din sparing kan bli til!`;
   }, [hasOnboarded, daily, age, selectedAge]);
 
   if (!hasOnboarded) return null;

@@ -125,8 +125,8 @@ export function ShareSheet({ onClose, shareText }: Props) {
         </p>
 
         {/* Share text preview */}
-        <div className="mt-4 p-3 rounded-2xl bg-[var(--surface-2)] text-[13px] text-[var(--foreground)] leading-snug">
-          &ldquo;{shareText}&rdquo;
+        <div className="mt-4 p-3 rounded-2xl bg-[var(--surface-2)] text-[13px] text-[var(--foreground)] leading-snug whitespace-pre-line">
+          {shareText}
         </div>
 
         {/* Actions */}
