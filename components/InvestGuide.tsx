@@ -86,8 +86,8 @@ export function InvestGuide() {
   }, [productsForProvider]);
 
   return (
-    <div className="flex-1 flex flex-col px-5 pt-6 pb-6 space-y-5">
-      {/* Tittel */}
+    <div className="flex-1 flex flex-col px-5 pt-6 pb-6 space-y-4">
+      {/* Hero — punchy intro */}
       <div id="strategi" className="scroll-mt-4">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--primary)]">
           Plassere
@@ -96,41 +96,16 @@ export function InvestGuide() {
           All Weather
         </h1>
         <p className="text-[13px] text-[var(--muted)] mt-1 leading-snug">
-          En portefølje som tåler alt slags vær – oppgang, nedgang, inflasjon
-          og deflasjon. Utviklet av Ray Dalio – en legende og en av verdens
-          beste kapitalforvaltere. Strategien er hyllet verden over, og følger
-          du den er du blant de 1% beste i verden over tid. Det tar tid, men
-          følger du planen kan du ikke unngå å bli rik.
+          En strategi som tåler alt — oppgang, nedgang, inflasjon og krise.
+          Følg planen, og du kan ikke unngå å bli rik over tid.
         </p>
       </div>
 
-      {/* Barnevennlig forklaring */}
-      <div className="rounded-3xl bg-[var(--primary-soft)] p-4">
-        <div className="font-display text-base font-semibold text-[var(--primary-strong)] mb-2">
-          Forklart enkelt
-        </div>
-        <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
-          <p>
-            <strong>Tenk på pengene som et fotballag.</strong> Du vil ikke ha
-            bare angripere — du vil også ha forsvarere og en keeper. Da
-            stiller du sterkt enten du møter et offensivt eller defensivt
-            motstanderlag.
-          </p>
-          <p>
-            Aksjer er angriperne — de scorer mest når det går bra. Statsobligasjoner
-            er forsvaret som holder igjen når det går dårlig. Gull og
-            råvarer er keeperen som redder deg når inflasjonen stiger.
-          </p>
-          <p>
-            Resultatet: du tjener litt mindre enn rene aksjer i de aller beste
-            årene, men du taper også mye mindre i de verste. Over tid gir det
-            <strong> jevn og solid vekst</strong> uten store skrekkfall.
-          </p>
-        </div>
-      </div>
-
-      {/* Donut */}
+      {/* Donut — always visible, visual & interactive */}
       <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
+        <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)] mb-2">
+          5 byggeklosser
+        </div>
         <Donut
           size={200}
           highlightId={highlight}
@@ -179,7 +154,29 @@ export function InvestGuide() {
         )}
       </div>
 
-      {/* Beløps-kalkulator */}
+      {/* Collapsible: Forklart enkelt */}
+      <Expandable
+        title="Forklart enkelt"
+        preview="Tenk på pengene som et fotballag."
+        variant="highlight"
+      >
+        <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
+          <p>
+            Du vil ikke ha bare angripere — du vil også ha forsvarere og en keeper.
+            Da stiller du sterkt uansett hva som skjer.
+          </p>
+          <p>
+            <strong>Aksjer</strong> er angriperne — de scorer mest når det går bra.{" "}
+            <strong>Statsobligasjoner</strong> er forsvaret som holder igjen i dårlige tider.{" "}
+            <strong>Gull og råvarer</strong> er keeperen som redder deg når inflasjonen stiger.
+          </p>
+          <p>
+            Resultatet: jevn og solid vekst — uten store skrekkfall.
+          </p>
+        </div>
+      </Expandable>
+
+      {/* Beløps-kalkulator — always visible (interactive) */}
       <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
         <div className="flex items-baseline justify-between mb-1">
           <div className="text-xs font-medium text-[var(--muted)] uppercase tracking-wide">
@@ -219,7 +216,51 @@ export function InvestGuide() {
         </div>
       </div>
 
-      {/* Velg leverandør */}
+      {/* Collapsible: Gebyrer */}
+      {feeCost && (
+        <Expandable
+          title="Gebyrer spiser formuen din"
+          alwaysShowPreview
+          preview={
+            <span style={{ color: WARN }}>
+              Velger du feil produkter koster det deg {formatNok(feeCost.lost, { compact: true })} over {feeYears} år
+            </span>
+          }
+        >
+          <p className="text-[13px] text-[var(--muted)] leading-snug mb-3">
+            Mange fond tar 1,5–2% i årlig gebyr. Det høres lite ut, men over
+            {" "}{feeYears} år er forskjellen enorm:
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="rounded-2xl bg-[var(--primary-soft)] p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[var(--primary-strong)] font-semibold">
+                Lave gebyrer (0,2%)
+              </div>
+              <div className="font-display text-xl font-bold text-[var(--primary-strong)] mt-1">
+                {formatNok(feeCost.without, { compact: true })}
+              </div>
+            </div>
+            <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[var(--muted)] font-semibold">
+                Høye gebyrer (2%)
+              </div>
+              <div className="font-display text-xl font-bold text-[var(--foreground)] mt-1">
+                {formatNok(feeCost.with, { compact: true })}
+              </div>
+            </div>
+          </div>
+          <div className="mt-2.5 text-center">
+            <span className="text-[13px] font-semibold" style={{ color: WARN }}>
+              Differanse: {formatNok(feeCost.lost, { compact: true })}
+            </span>
+            <p className="text-[11px] text-[var(--muted)] mt-0.5">
+              Samme avkastning, samme sparebeløp — men 2% i gebyrer vs 0,2%.
+            </p>
+          </div>
+        </Expandable>
+      )}
+
+      {/* Velg leverandør — always visible */}
       <div>
         <div className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wide px-1 mb-2">
           Velg din leverandør
@@ -290,85 +331,42 @@ export function InvestGuide() {
         )}
       </div>
 
-      {/* Gebyr-advarsel */}
-      {feeCost && (
-        <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
-          <div className="font-display text-base font-semibold mb-1.5">
-            Hvorfor lave gebyrer er nøkkelen
-          </div>
-          <p className="text-[13px] text-[var(--muted)] leading-snug">
-            Velger du produkter med høye gebyrer – typisk populære fond hos banker
-            – spiser det opp formuen din over tid. Mange fond tar 1,5–2% i
-            årlig gebyr. Det høres lite ut, men over {feeYears} år
-            er forskjellen enorm:
-          </p>
-          <div className="mt-3 grid grid-cols-2 gap-2.5">
-            <div className="rounded-2xl bg-[var(--primary-soft)] p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[var(--primary-strong)] font-semibold">
-                Lave gebyrer (0,2%)
-              </div>
-              <div className="font-display text-xl font-bold text-[var(--primary-strong)] mt-1">
-                {formatNok(feeCost.without, { compact: true })}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-[var(--surface-2)] p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[var(--muted)] font-semibold">
-                Høye gebyrer (2%)
-              </div>
-              <div className="font-display text-xl font-bold text-[var(--foreground)] mt-1">
-                {formatNok(feeCost.with, { compact: true })}
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 text-center">
-            <span className="text-[13px] font-semibold" style={{ color: WARN }}>
-              Gebyrer koster deg {formatNok(feeCost.lost, { compact: true })}
-            </span>
-            <p className="text-[11px] text-[var(--muted)] mt-0.5">
-              Samme avkastning, samme sparebeløp – men 2% i gebyrer vs 0,2%.
-            </p>
-          </div>
+      {/* Collapsible: Konkrete produkter */}
+      <Expandable
+        title="Konkrete produkter"
+        preview={`${ALLOCATIONS.length} fond du trenger`}
+      >
+        <div className="space-y-2.5">
+          {ALLOCATIONS.map((a) => {
+            const product = productByAsset.get(a.id);
+            const amount = (monthly * a.percent) / 100;
+            return (
+              <ProductCard
+                key={a.id}
+                allocation={a}
+                product={product}
+                amount={amount}
+                isGold={isGold}
+              />
+            );
+          })}
         </div>
-      )}
+      </Expandable>
 
-      {/* Produkter per asset-klasse */}
-      <div className="space-y-2.5">
-        <div className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wide px-1">
-          Konkrete produkter
-        </div>
-        {ALLOCATIONS.map((a) => {
-          const product = productByAsset.get(a.id);
-          const amount = (monthly * a.percent) / 100;
-          return (
-            <ProductCard
-              key={a.id}
-              allocation={a}
-              product={product}
-              amount={amount}
-              isGold={isGold}
-            />
-          );
-        })}
-      </div>
-
-      {/* Hvordan komme i gang */}
+      {/* CTA — always visible */}
       <div className="rounded-3xl bg-[var(--primary-soft)] p-4">
         <div className="font-display text-base font-semibold text-[var(--primary-strong)] mb-2">
-          Hvordan komme i gang
+          Kom i gang på 3 steg
         </div>
         <ol className="space-y-2 text-[13px]">
           <Step n={1}>
-            Opprett <strong>gratis konto hos Nordnet</strong> — det tar 2
-            minutter. Du får aksjesparekonto (ASK) med skattefordel og tilgang
-            til alle produktene du trenger.
+            Opprett <strong>gratis konto hos Nordnet</strong> — det tar 2 minutter.
           </Step>
           <Step n={2}>
-            Sett opp <strong>månedlig spareavtale</strong> for hvert produkt
-            etter beløpene over. Nordnet automatiserer dette gratis.
+            Sett opp <strong>månedlig spareavtale</strong> for hvert produkt med beløpene over.
           </Step>
           <Step n={3}>
-            <strong>Rebalanser ca 1 gang i året</strong>: justér beholdningene
-            tilbake til målfordelingen ved å kjøpe mer av det som har sunket.
+            <strong>Rebalanser 1 gang i året</strong> — kjøp mer av det som har sunket.
           </Step>
         </ol>
 
@@ -385,14 +383,76 @@ export function InvestGuide() {
         </motion.a>
 
         <p className="mt-3 text-[12px] text-[var(--primary-strong)] leading-snug italic">
-          Gjør du dette nå, investerer du blant topp 0,1% i verden. Følg planen,
-          gi den tid, og du kan ikke unngå å bygge en formue.
+          Gjør du dette nå, investerer du blant topp 0,1% i verden.
         </p>
       </div>
 
-      {/* Disclaimer */}
-      <Disclaimer />
+    </div>
+  );
+}
 
+function Expandable({
+  title,
+  preview,
+  children,
+  variant = "default",
+  alwaysShowPreview = false,
+}: {
+  title: string;
+  preview: React.ReactNode;
+  children: React.ReactNode;
+  variant?: "default" | "highlight";
+  alwaysShowPreview?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const bg =
+    variant === "highlight"
+      ? "bg-[var(--primary-soft)]"
+      : "bg-[var(--surface)] border border-[var(--border)]";
+  const titleColor =
+    variant === "highlight"
+      ? "text-[var(--primary-strong)]"
+      : "text-[var(--foreground)]";
+
+  return (
+    <div className={`rounded-3xl p-4 ${bg}`}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full text-left flex items-start justify-between gap-3"
+      >
+        <div className="flex-1 min-w-0">
+          <div className={`font-display text-base font-semibold ${titleColor}`}>
+            {title}
+          </div>
+          {(alwaysShowPreview || !open) && (
+            <div className="text-[12px] text-[var(--muted)] mt-0.5 leading-snug">
+              {preview}
+            </div>
+          )}
+        </div>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`w-4 h-4 mt-1 flex-shrink-0 text-[var(--muted)] transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-3"
+        >
+          {children}
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -502,6 +562,21 @@ function ProductCard({
       <p className="mt-1.5 text-[12px] text-[var(--muted)] leading-snug">
         {product.description}
       </p>
+      {product.nordnetUrl && (
+        <a
+          href={product.nordnetUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => track("nordnet_product_click", { product: product.id })}
+          className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-[var(--primary)] hover:underline"
+        >
+          Se på Nordnet
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+            <path d="M6 3h7v7" />
+            <path d="M13 3L3 13" />
+          </svg>
+        </a>
+      )}
       <div className="mt-2 flex items-center justify-between pt-2 border-t border-[var(--border)]">
         <span className="text-[11px] text-[var(--muted)]">Plasseres</span>
         <span className="font-display text-base font-bold tabular-nums">
@@ -521,7 +596,7 @@ function ProductCard({
   );
 }
 
-function Disclaimer() {
+export function Disclaimer() {
   const [open, setOpen] = useState(false);
 
   return (

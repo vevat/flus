@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useFlus } from "@/lib/store";
 
 export type Tip = {
@@ -122,6 +123,7 @@ export function TipCarousel() {
   const hasOnboarded = useFlus((s) => s.hasOnboarded);
   const markTipSeen = useFlus((s) => s.markTipSeen);
 
+  const pathname = usePathname();
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -136,6 +138,11 @@ export function TipCarousel() {
     resetTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
+  useEffect(() => {
+    setIndex((i) => (i + 1) % TIPS.length);
+    resetTimer();
+  }, [pathname]);
 
   if (!hasOnboarded) return null;
 

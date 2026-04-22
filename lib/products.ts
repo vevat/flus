@@ -129,6 +129,8 @@ export type Product = {
   unavailable?: boolean;
   /** Forklaring når unavailable */
   unavailableNote?: string;
+  /** Direct link to this product's page on Nordnet */
+  nordnetUrl?: string;
 };
 
 export const PRODUCTS: Product[] = [
@@ -143,6 +145,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Globalt indeksfond med 0% forvaltningskostnad hos Nordnet. Følger MSCI World.",
     recommended: true,
+    nordnetUrl: "https://www.nordnet.no/market/funds/17334521-nordnet-indeksfond-global",
   },
   {
     id: "nn-stocks-iwda",
@@ -166,6 +169,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Lange amerikanske statsobligasjoner (20+ år). Klassisk All Weather-byggekloss.",
     recommended: true,
+    nordnetUrl: "https://www.nordnet.no/market/etfs/16452522-i-shares-treasury-bond",
   },
   {
     id: "nn-midbonds",
@@ -178,6 +182,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Mellomlange amerikanske statsobligasjoner. Stabiliserende komponent.",
     recommended: true,
+    nordnetUrl: "https://www.nordnet.no/etf/liste/i-shares-0-treasury-bond-iusm-xeta",
   },
   {
     id: "nn-gold",
@@ -190,6 +195,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Fysisk gull lagret i sikre hvelv. En av de billigste gull-ETC-ene.",
     recommended: true,
+    nordnetUrl: "https://www.nordnet.no/market/trackers/17545382-i-shares-physical-gold",
   },
   {
     id: "nn-commod",
@@ -202,6 +208,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Bredt råvareindeks-ETF: olje, gass, metaller, korn, kjøtt, sukker.",
     recommended: true,
+    nordnetUrl: "https://www.nordnet.no/etf/liste/invesco-bloomberg-commodity-ucits-cmoe-xeta",
   },
 
   // ------- DNB (begrenset, fond over ETF) -------
