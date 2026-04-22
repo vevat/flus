@@ -98,9 +98,22 @@ export function ShareSheet({ onClose, shareText }: Props) {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        className="w-full max-w-md bg-[var(--background)] rounded-t-3xl p-6 pb-8"
+        className="relative w-full max-w-md bg-[var(--background)] rounded-t-3xl p-6 pb-8"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* X close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          aria-label="Lukk"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
         <div className="w-10 h-1 rounded-full bg-[var(--border)] mx-auto mb-5" />
 
         <div className="text-center">

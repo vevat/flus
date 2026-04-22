@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Personvernerklæring – Pengebingen",
@@ -69,15 +68,6 @@ export default function PersonvernPage() {
             tømme nettleserdata.
           </p>
         </div>
-      </div>
-
-      <div className="text-[11px] text-[var(--muted-2)] space-x-3">
-        <Link href="/om" className="underline hover:text-[var(--muted)]">
-          Om oss
-        </Link>
-        <Link href="/vilkar" className="underline hover:text-[var(--muted)]">
-          Vilkår
-        </Link>
       </div>
     </div>
   );

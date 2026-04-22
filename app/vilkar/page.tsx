@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Feedback } from "@/components/Feedback";
 
 export const metadata: Metadata = {
@@ -84,15 +83,6 @@ export default function VilkarPage() {
       </div>
 
       <Feedback />
-
-      <div className="text-[11px] text-[var(--muted-2)] space-x-3">
-        <Link href="/om" className="underline hover:text-[var(--muted)]">
-          Om oss
-        </Link>
-        <Link href="/personvern" className="underline hover:text-[var(--muted)]">
-          Personvern
-        </Link>
-      </div>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import { ShareSheet } from "./ShareSheet";
+import { MillianGreeting } from "./MillianGreeting";
 import { track } from "@/lib/analytics";
 import { formatNok, getAtAge, projectWealth } from "@/lib/finance";
 
@@ -30,6 +32,7 @@ export function ThemeToggle() {
 }
 
 export function TopBar() {
+  const router = useRouter();
   const name = useFlus((s) => s.name);
   const age = useFlus((s) => s.age);
   const goals = useFlus((s) => s.goals);
@@ -38,7 +41,9 @@ export function TopBar() {
   const ui = useFlus((s) => s.ui);
 
   const [showShare, setShowShare] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
 
+  const isMillian = name.toLowerCase() === "millian";
   const daily = goals[0]?.dailyAmount ?? 50;
   const selectedAge = ui.selectedAge ?? 50;
 
@@ -64,6 +69,20 @@ export function TopBar() {
           <span className="font-semibold text-[var(--foreground)]">{name}</span>
         </div>
         <div className="flex items-center gap-1.5">
+          {isMillian && (
+            <button
+              type="button"
+              onClick={() => setShowGreeting(true)}
+              className="h-6 px-2 rounded-full text-[9px] font-semibold tracking-wide transition-all active:scale-95 border"
+              style={{
+                background: "rgba(201,168,76,0.15)",
+                borderColor: "rgba(201,168,76,0.3)",
+                color: "#c9a84c",
+              }}
+            >
+              HILSEN
+            </button>
+          )}
           <ThemeToggle />
           <button
             type="button"
@@ -97,6 +116,7 @@ export function TopBar() {
                 )
               ) {
                 reset();
+                router.push("/");
               }
             }}
             className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
@@ -127,6 +147,9 @@ export function TopBar() {
             onClose={() => setShowShare(false)}
             shareText={shareText}
           />
+        )}
+        {showGreeting && (
+          <MillianGreeting onClose={() => setShowGreeting(false)} />
         )}
       </AnimatePresence>
     </>

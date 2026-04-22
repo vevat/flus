@@ -53,6 +53,8 @@ type FlusState = {
   familyMembers: FamilyMember[];
   /** Visuelt tema */
   theme: ThemeId;
+  /** Om Millian har sett hilsenen sin */
+  greetingSeen: boolean;
 
   /** UI-preferanser som huskes mellom sidevisninger */
   ui: {
@@ -81,6 +83,7 @@ type FlusState = {
   removeFamilyMember: (id: string) => void;
   setUi: (patch: Partial<FlusState["ui"]>) => void;
   setTheme: (theme: ThemeId) => void;
+  setGreetingSeen: (seen: boolean) => void;
   reset: () => void;
 };
 
@@ -99,6 +102,7 @@ export const useFlus = create<FlusState>()(
       hackAmounts: {},
       familyMembers: [],
       theme: "exclusive" as ThemeId,
+      greetingSeen: false,
       ui: {
         selectedAge: null,
         delayYears: 10,
@@ -186,6 +190,7 @@ export const useFlus = create<FlusState>()(
       setUi: (patch) =>
         set((s) => ({ ui: { ...s.ui, ...patch } })),
       setTheme: (theme) => set({ theme }),
+      setGreetingSeen: (seen) => set({ greetingSeen: seen }),
       reset: () =>
         set({
           hasOnboarded: false,
@@ -198,6 +203,7 @@ export const useFlus = create<FlusState>()(
           hackAmounts: {},
           familyMembers: [],
           theme: "exclusive" as ThemeId,
+          greetingSeen: false,
           ui: {
             selectedAge: null,
             delayYears: 10,
@@ -213,7 +219,7 @@ export const useFlus = create<FlusState>()(
     {
       name: "flus-storage",
       storage: createJSONStorage(() => localStorage),
-      version: 6,
+      version: 7,
       migrate: (persistedState, version) => {
         const s = (persistedState ?? {}) as Partial<FlusState>;
         if (version < 2 && !Array.isArray(s.acceptedHacks)) {
@@ -239,6 +245,9 @@ export const useFlus = create<FlusState>()(
         }
         if (version < 6 && !s.hackAmounts) {
           s.hackAmounts = {};
+        }
+        if (version < 7 && s.greetingSeen === undefined) {
+          s.greetingSeen = false;
         }
         return s as FlusState;
       },

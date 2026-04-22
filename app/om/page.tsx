@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Om Pengebingen",
@@ -59,15 +58,6 @@ export default function OmPage() {
           </p>
         </div>
 
-      </div>
-
-      <div className="text-[11px] text-[var(--muted-2)] space-x-3">
-        <Link href="/personvern" className="underline hover:text-[var(--muted)]">
-          Personvern
-        </Link>
-        <Link href="/vilkar" className="underline hover:text-[var(--muted)]">
-          Vilkår
-        </Link>
       </div>
     </div>
   );

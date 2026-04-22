@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFlus } from "@/lib/store";
 import {
@@ -14,6 +14,7 @@ import { AgeTimeline } from "./AgeTimeline";
 import { WealthChart } from "./WealthChart";
 import { GoalsList } from "./GoalsList";
 import { CostOfWaiting } from "./CostOfWaiting";
+import { MillianGreeting } from "./MillianGreeting";
 import { track } from "@/lib/analytics";
 
 const DEFAULT_PROJECTION_END = 80;
@@ -42,13 +43,24 @@ export function Home() {
   const addMilestoneGoal = useFlus((s) => s.addMilestoneGoal);
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
+  const greetingSeen = useFlus((s) => s.greetingSeen);
+  const setGreetingSeen = useFlus((s) => s.setGreetingSeen);
 
   const selectedAge = ui.selectedAge ?? defaultSelectedAge(age);
   const setSelectedAge = (v: number) => setUi({ selectedAge: v });
   const delayYears = ui.delayYears;
   const setDelayYears = (v: number) => setUi({ delayYears: v });
 
+  const isMillian = name.toLowerCase() === "millian";
+  const [showGreeting, setShowGreeting] = useState(false);
   const [milestoneOpen, setMilestoneOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMillian && !greetingSeen) {
+      const t = setTimeout(() => setShowGreeting(true), 600);
+      return () => clearTimeout(t);
+    }
+  }, [isMillian, greetingSeen]);
 
   const initialDaily = goals[0]?.dailyAmount ?? 50;
 
@@ -88,7 +100,16 @@ export function Home() {
   );
   const hasMilestones = milestoneOptions.length > 0;
 
+  const closeGreeting = useCallback(() => {
+    setShowGreeting(false);
+    setGreetingSeen(true);
+  }, [setGreetingSeen]);
+
   return (
+    <>
+    <AnimatePresence>
+      {showGreeting && <MillianGreeting onClose={closeGreeting} />}
+    </AnimatePresence>
     <div className="flex-1 flex flex-col px-5 pt-4 pb-3">
       {/* 1 — Slider + milestone flow */}
       <div className="mt-1 p-4 rounded-3xl bg-[var(--surface)] border border-[var(--border)]">
@@ -228,6 +249,7 @@ export function Home() {
       </div>
 
     </div>
+    </>
   );
 }
 
