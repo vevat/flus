@@ -144,7 +144,8 @@ export function TipCarousel() {
     resetTimer();
   }, [pathname]);
 
-  if (!hasOnboarded) return null;
+  const hiddenRoutes = ["/om", "/personvern", "/vilkar"];
+  if (!hasOnboarded || hiddenRoutes.includes(pathname)) return null;
 
   const tip = TIPS[index % TIPS.length];
 

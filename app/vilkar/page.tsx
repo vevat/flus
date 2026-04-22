@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Feedback } from "@/components/Feedback";
 
 export const metadata: Metadata = {
   title: "Vilkår for bruk – Pengebingen",
@@ -81,8 +80,6 @@ export default function VilkarPage() {
           </p>
         </div>
       </div>
-
-      <Feedback />
     </div>
   );
 }

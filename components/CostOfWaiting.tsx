@@ -6,8 +6,6 @@ import { costOfDelaying, formatNok } from "@/lib/finance";
 import type { Goal } from "@/lib/store";
 
 const WARN = "#b05a3a";
-const WARN_BG = "rgb(15, 15, 18)";
-const WARN_BORDER = "rgba(176, 90, 58, 0.2)";
 
 type Props = {
   currentAge: number;
@@ -55,7 +53,7 @@ export function CostOfWaiting({
   return (
     <div
       className="rounded-3xl p-3.5"
-      style={{ background: WARN_BG, border: `1px solid ${WARN_BORDER}` }}
+      style={{ background: "var(--surface)", border: `1px solid rgba(176, 90, 58, 0.2)` }}
     >
       <div className="text-[12.5px] text-[var(--foreground)] leading-snug">
         Visste du at hvis du venter{" "}

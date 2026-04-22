@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { TipCarousel } from "@/components/TipCard";
 import { PlassereDisclaimer } from "@/components/PlassereDisclaimer";
+import { FeedbackTrigger } from "@/components/Feedback";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -132,6 +133,8 @@ export default function RootLayout({
                 <Link href="/personvern" className="hover:text-[var(--muted)] transition-colors">Personvern</Link>
                 <span aria-hidden="true">·</span>
                 <Link href="/vilkar" className="hover:text-[var(--muted)] transition-colors">Vilkår</Link>
+                <span aria-hidden="true">·</span>
+                <FeedbackTrigger />
               </div>
               <div className="mt-1">&copy; {new Date().getFullYear()} Pengebingen. Alle rettigheter reservert.</div>
               <div className="mt-px text-[9px]">Stay curious</div>

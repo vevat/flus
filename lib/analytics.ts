@@ -13,6 +13,7 @@ export function initAnalytics() {
     capture_pageview: true,
     capture_pageleave: true,
     autocapture: false,
+    disable_session_recording: true,
     persistence: "localStorage",
   });
   initialized = true;

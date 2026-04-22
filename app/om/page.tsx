@@ -23,7 +23,7 @@ export default function OmPage() {
             Pengebingen er en gratis norsk spare- og investeringsguide laget for
             unge nordmenn. Vi viser deg hvordan små daglige beløp — fra en pose
             nudler til en kopp kaffe — kan vokse til millioner over tid med
-            renters rente.
+            rentes-rente effekten.
           </p>
           <p>
             Appen gir deg konkrete, velprøvde investeringsstrategier basert på
@@ -36,16 +36,16 @@ export default function OmPage() {
         <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
           <h2 className="font-display text-base font-semibold">Hvorfor og hvem</h2>
           <p>
-            Pengebingen startet som en konfirmasjonsgave. Cato — teknolog, far
-            og ikke minst Onkel med stor O — ville gi nevøen Millian noe som
-            kunne vare livet ut. Ikke en ting, men en innsikt: hva som skjer
-            når du lar små beløp jobbe for deg over tid.
+            Tanken om Pengebingen som en app startet med at teknologen Cato
+            ville gi unik innsikt til sin nevø, i anledning hans
+            konfirmasjonsdag. Innsikt han selv skulle ønske at han selv hadde
+            tilegnet seg som 14-åring.
           </p>
           <p>
-            De fleste lærer ikke hva sparing faktisk kan bety før det nesten
-            er for seint. Pengebingen gjør det synlig, forståelig og
-            motiverende — spesielt for de som er unge nok til å utnytte tidenes
-            beste superkraft: tid.
+            Å faktisk se og forstå hva små beløp, strukturert investering og
+            bevissthet om investeringsprodukter, betydning av gebyrer, og
+            rentes-rente effekten faktisk utgjør, er en berikelse. Og jo
+            tidligere i livet man forstår dette, jo mer kraftfullt er det.
           </p>
         </div>
 

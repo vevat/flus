@@ -84,8 +84,8 @@ export function TopBar() {
     <>
       <div className="flex items-center justify-between px-5 pt-3 pb-1">
         <div className="text-[13px] text-[var(--muted)]">
-          Hei{" "}
-          <span className="font-semibold text-[var(--foreground)]">{name}</span>
+          Hei
+          <span className="ml-1.5 font-semibold text-[var(--foreground)]">{name}</span>
         </div>
         <div className="flex items-center gap-1.5">
           {isMillian && (
