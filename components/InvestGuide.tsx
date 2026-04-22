@@ -1,14 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ALLOCATIONS,
+  BUFFETT_ALLOCATIONS,
   PRODUCTS,
   PROVIDERS,
   NORDNET_AFFILIATE_URL,
+  type Allocation,
   type AssetClass,
   type Product,
+  type PortfolioId,
   type ProviderId,
 } from "@/lib/products";
 import { DEFAULTS, formatNok, projectWealth, getAtAge } from "@/lib/finance";
@@ -34,11 +37,12 @@ export function InvestGuide() {
   const setCustomMonthly = (v: number) => setUi({ investMonthly: v });
   const monthly =
     customMonthly ?? Math.max(200, Math.round(savedMonthly / 100) * 100);
+
+  const [portfolio, setPortfolio] = useState<PortfolioId>("allweather");
   const [highlight, setHighlight] = useState<AssetClass | null>(null);
 
   const age = useFlus((s) => s.age);
   const isGold = useFlus((s) => s.theme) === "exclusive";
-  const endAge = 67;
 
   const feeYears = 50;
   const feeCost = useMemo(() => {
@@ -70,6 +74,8 @@ export function InvestGuide() {
     };
   }, [age, monthly, feeYears]);
 
+  const activeAllocations = portfolio === "allweather" ? ALLOCATIONS : BUFFETT_ALLOCATIONS;
+
   const productsForProvider = useMemo(
     () => PRODUCTS.filter((p) => p.provider === provider),
     [provider],
@@ -85,98 +91,192 @@ export function InvestGuide() {
     return map;
   }, [productsForProvider]);
 
+  const missingCount = activeAllocations.filter(
+    (a) => {
+      const p = productByAsset.get(a.id);
+      return !p || p.unavailable;
+    },
+  ).length;
+
   return (
     <div className="flex-1 flex flex-col px-5 pt-6 pb-6 space-y-4">
-      {/* Hero — punchy intro */}
+      {/* Hero */}
       <div id="strategi" className="scroll-mt-4">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--primary)]">
           Plassere
         </div>
         <h1 className="font-display text-2xl font-semibold leading-tight mt-0.5">
-          All Weather
+          Velg din strategi
         </h1>
         <p className="text-[13px] text-[var(--muted)] mt-1 leading-snug">
-          En strategi som tåler alt — oppgang, nedgang, inflasjon og krise.
-          Følg planen, og du kan ikke unngå å bli rik over tid.
+          To velprøvde strategier fra verdens beste investorer.
+          Velg den som passer deg.
         </p>
       </div>
 
-      {/* Donut — always visible, visual & interactive */}
-      <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
-        <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)] mb-2">
-          5 byggeklosser
-        </div>
-        <Donut
-          size={200}
-          highlightId={highlight}
-          onSliceClick={(id) =>
-            setHighlight((h) => (h === id ? null : (id as AssetClass)))
-          }
-          useLight={!isGold}
+      {/* Portfolio tabs */}
+      <div className="grid grid-cols-2 gap-2">
+        <PortfolioTab
+          active={portfolio === "allweather"}
+          onClick={() => { setPortfolio("allweather"); setHighlight(null); }}
+          label="Portefølje 1"
+          name="All Weather"
+          sub="Tryggeste over tid"
         />
-        <div className="mt-3 space-y-1.5">
-          {ALLOCATIONS.map((a) => {
-            const active = highlight === a.id;
-            const dotColor = isGold ? a.color : a.colorLight;
-            return (
-              <button
-                key={a.id}
-                type="button"
-                onClick={() =>
-                  setHighlight((h) => (h === a.id ? null : a.id))
-                }
-                className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors text-left ${
-                  active ? "bg-[var(--surface-2)]" : ""
-                }`}
-              >
-                <span
-                  className="w-3 h-3 rounded-full flex-shrink-0"
-                  style={{ background: dotColor }}
-                />
-                <span className="flex-1 text-[13px] font-medium">
-                  {a.label}
-                </span>
-                <span className="text-[13px] font-semibold tabular-nums text-[var(--muted)]">
-                  {a.percent}%
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        {highlight && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="mt-2 px-3 py-2 rounded-xl bg-[var(--surface-2)] text-[12px] text-[var(--muted)]"
-          >
-            {ALLOCATIONS.find((a) => a.id === highlight)?.why}
-          </motion.div>
-        )}
+        <PortfolioTab
+          active={portfolio === "buffett"}
+          onClick={() => { setPortfolio("buffett"); setHighlight(null); }}
+          label="Portefølje 2"
+          name="Buffett"
+          sub="Verdiene svinger mer"
+        />
       </div>
 
-      {/* Collapsible: Forklart enkelt */}
-      <Expandable
-        title="Forklart enkelt"
-        preview="Tenk på pengene som et fotballag."
-        variant="highlight"
-      >
-        <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
-          <p>
-            Du vil ikke ha bare angripere — du vil også ha forsvarere og en keeper.
-            Da stiller du sterkt uansett hva som skjer.
-          </p>
-          <p>
-            <strong>Aksjer</strong> er angriperne — de scorer mest når det går bra.{" "}
-            <strong>Statsobligasjoner</strong> er forsvaret som holder igjen i dårlige tider.{" "}
-            <strong>Gull og råvarer</strong> er keeperen som redder deg når inflasjonen stiger.
-          </p>
-          <p>
-            Resultatet: jevn og solid vekst — uten store skrekkfall.
-          </p>
-        </div>
-      </Expandable>
+      {/* Portfolio content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={portfolio}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="space-y-4"
+        >
+          {/* Donut */}
+          <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)] mb-2">
+              {portfolio === "allweather" ? "5 byggeklosser" : "2 byggeklosser"}
+            </div>
+            <Donut
+              size={200}
+              highlightId={highlight}
+              onSliceClick={(id) =>
+                setHighlight((h) => (h === id ? null : (id as AssetClass)))
+              }
+              useLight={!isGold}
+              allocations={activeAllocations}
+              centerLabel={portfolio === "allweather" ? "All Weather" : "Buffett"}
+              centerSub={portfolio === "allweather" ? "5 byggeklosser" : "90 / 10"}
+            />
+            <div className="mt-3 space-y-1.5">
+              {activeAllocations.map((a) => {
+                const active = highlight === a.id;
+                const dotColor = isGold ? a.color : a.colorLight;
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() =>
+                      setHighlight((h) => (h === a.id ? null : a.id))
+                    }
+                    className={`w-full flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors text-left ${
+                      active ? "bg-[var(--surface-2)]" : ""
+                    }`}
+                  >
+                    <span
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ background: dotColor }}
+                    />
+                    <span className="flex-1 text-[13px] font-medium">
+                      {a.label}
+                    </span>
+                    <span className="text-[13px] font-semibold tabular-nums text-[var(--muted)]">
+                      {a.percent}%
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {highlight && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-2 px-3 py-2 rounded-xl bg-[var(--surface-2)] text-[12px] text-[var(--muted)]"
+              >
+                {activeAllocations.find((a) => a.id === highlight)?.why}
+              </motion.div>
+            )}
+          </div>
 
-      {/* Beløps-kalkulator — always visible (interactive) */}
+          {/* Portfolio-specific intro */}
+          {portfolio === "allweather" ? (
+            <Expandable
+              title="Forklart enkelt"
+              preview="Når aksjer faller, stiger statsobligasjonene."
+              variant="highlight"
+            >
+              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
+                <p>
+                  Ray Dalios All Weather-strategi sprer pengene dine over fem
+                  aktivaklasser som reagerer <em>ulikt</em> på hva som skjer i
+                  økonomien.
+                </p>
+                <p>
+                  Da aksjemarkedet krasjet i 2008, steg lange statsobligasjoner
+                  over 30%. Da inflasjonen skjøt i været i 2022, holdt gull og
+                  råvarer verdien. Poenget er at <strong>uansett hva som skjer,
+                  har du alltid noe som stiger</strong>.
+                </p>
+                <p>
+                  Strategien har levert positiv avkastning i 85% av alle år
+                  siden 1984, med svært lave tap i de verste periodene. Det er
+                  den tryggeste måten å spare langsiktig på.
+                </p>
+              </div>
+            </Expandable>
+          ) : (
+            <Expandable
+              title="Buffetts anbefaling"
+              preview="90% aksjer, 10% korte obligasjoner."
+              variant="highlight"
+            >
+              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
+                <p>
+                  Warren Buffett — verdens mest suksessfulle investor —
+                  anbefaler en enkel strategi: <strong>90% i et billig
+                  aksjeindeksfond og 10% i korte statsobligasjoner</strong>.
+                </p>
+                <p>
+                  Han mener aksjer alltid vinner over lang tid, og at de fleste
+                  taper penger på å prøve å time markedet eller betale for dyre
+                  fond. Hans eneste råd: kjøp bredt, billig, og hold for alltid.
+                </p>
+                <p className="font-medium" style={{ color: WARN }}>
+                  Forventningsavklaring: Med 90% i aksjer vil porteføljen svinge
+                  mye mer enn All Weather. I et dårlig år kan verdien falle
+                  30-40%. Buffett mener det ikke spiller noen rolle — så lenge
+                  du aldri selger i panikk.
+                </p>
+              </div>
+            </Expandable>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* "Don't sell" — always visible, applies to both */}
+      <div
+        className="rounded-3xl p-4"
+        style={{ background: WARN_SOFT, border: `1px solid ${WARN_BORDER}` }}
+      >
+        <div className="font-display text-[15px] font-semibold" style={{ color: WARN }}>
+          Det viktigste du gjør: aldri selg i panikk
+        </div>
+        <p className="mt-1.5 text-[13px] text-[var(--foreground)] leading-snug">
+          Å selge seg ut på feil tidspunkt er det dyreste du kan gjøre.
+          Historisk har markedet <em>alltid</em> kommet tilbake — men bare for
+          de som ble sittende.
+        </p>
+        <p className="mt-1.5 text-[13px] text-[var(--muted)] leading-snug">
+          Det viktigste er å spare og investere jevnt og trutt, enten markedet
+          faller eller stiger. De som kjøper fast hver måned — uansett hva
+          avisene skriver — ender opp rikest.
+        </p>
+        <p className="mt-1 text-[11px] text-[var(--muted-2)] italic">
+          Kilde: Tony Robbins, «Money: Master the Game»
+        </p>
+      </div>
+
+      {/* Beløps-kalkulator */}
       <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
         <div className="flex items-baseline justify-between mb-1">
           <div className="text-xs font-medium text-[var(--muted)] uppercase tracking-wide">
@@ -260,7 +360,7 @@ export function InvestGuide() {
         </Expandable>
       )}
 
-      {/* Velg leverandør — always visible */}
+      {/* Velg leverandør */}
       <div>
         <div className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wide px-1 mb-2">
           Velg din leverandør
@@ -268,7 +368,7 @@ export function InvestGuide() {
         <div className="grid grid-cols-3 gap-2">
           {PROVIDERS.map((p) => {
             const active = provider === p.id;
-            const incomplete = p.id !== "nordnet";
+            const incomplete = portfolio === "allweather" && p.id !== "nordnet";
             return (
               <motion.button
                 key={p.id}
@@ -305,7 +405,7 @@ export function InvestGuide() {
         <div className="mt-2 px-1 text-[12px] text-[var(--muted)] leading-snug">
           {PROVIDERS.find((p) => p.id === provider)?.blurb}
         </div>
-        {provider !== "nordnet" && (
+        {portfolio === "allweather" && provider !== "nordnet" && (
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
@@ -313,7 +413,7 @@ export function InvestGuide() {
             style={{ background: WARN_SOFT, borderWidth: 1, borderColor: WARN_BORDER }}
           >
             <p className="text-[12px] font-medium leading-snug" style={{ color: WARN }}>
-              {PROVIDERS.find((p) => p.id === provider)?.name} mangler 3 av 5
+              {PROVIDERS.find((p) => p.id === provider)?.name} mangler {missingCount} av 5
               aktivaklasser som trengs til All Weather-strategien. Vi anbefaler
               Nordnet for å få tilgang til alle byggeklossene.
             </p>
@@ -334,10 +434,10 @@ export function InvestGuide() {
       {/* Collapsible: Konkrete produkter */}
       <Expandable
         title="Konkrete produkter"
-        preview={`${ALLOCATIONS.length} fond du trenger`}
+        preview={`${activeAllocations.length} fond du trenger`}
       >
         <div className="space-y-2.5">
-          {ALLOCATIONS.map((a) => {
+          {activeAllocations.map((a) => {
             const product = productByAsset.get(a.id);
             const amount = (monthly * a.percent) / 100;
             return (
@@ -353,7 +453,7 @@ export function InvestGuide() {
         </div>
       </Expandable>
 
-      {/* CTA — always visible */}
+      {/* CTA */}
       <div className="rounded-3xl bg-[var(--primary-soft)] p-4">
         <div className="font-display text-base font-semibold text-[var(--primary-strong)] mb-2">
           Kom i gang på 3 steg
@@ -366,7 +466,11 @@ export function InvestGuide() {
             Sett opp <strong>månedlig spareavtale</strong> for hvert produkt med beløpene over.
           </Step>
           <Step n={3}>
-            <strong>Rebalanser 1 gang i året</strong> — kjøp mer av det som har sunket.
+            {portfolio === "allweather" ? (
+              <><strong>Rebalanser 1 gang i året</strong> — kjøp mer av det som har sunket.</>
+            ) : (
+              <><strong>Ikke rør porteføljen</strong> — la den vokse i fred. Kjøp litt mer hver måned.</>
+            )}
           </Step>
         </ol>
 
@@ -386,11 +490,42 @@ export function InvestGuide() {
           Gjør du dette nå, investerer du blant topp 0,1% i verden.
         </p>
       </div>
-
     </div>
   );
 }
 
+/* ---- Portfolio tab ---- */
+function PortfolioTab({
+  active,
+  onClick,
+  label,
+  name,
+  sub,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  name: string;
+  sub: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-2xl px-3 py-3 text-left transition-colors ${
+        active
+          ? "bg-[var(--foreground)] text-[var(--background)]"
+          : "bg-[var(--surface)] border border-[var(--border)] text-[var(--muted)]"
+      }`}
+    >
+      <div className="text-[10px] uppercase tracking-wider opacity-60">{label}</div>
+      <div className="font-display text-[15px] font-semibold leading-tight mt-0.5">{name}</div>
+      <div className={`text-[11px] mt-0.5 ${active ? "opacity-70" : "opacity-50"}`}>{sub}</div>
+    </button>
+  );
+}
+
+/* ---- Expandable ---- */
 function Expandable({
   title,
   preview,
@@ -457,6 +592,7 @@ function Expandable({
   );
 }
 
+/* ---- Step ---- */
 function Step({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <li className="flex gap-2.5">
@@ -468,13 +604,14 @@ function Step({ n, children }: { n: number; children: React.ReactNode }) {
   );
 }
 
+/* ---- ProductCard ---- */
 function ProductCard({
   allocation,
   product,
   amount,
   isGold,
 }: {
-  allocation: (typeof ALLOCATIONS)[number];
+  allocation: Allocation;
   product?: Product;
   amount: number;
   isGold: boolean;

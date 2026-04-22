@@ -1,17 +1,28 @@
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { ALLOCATIONS } from "@/lib/products";
+import { ALLOCATIONS, type Allocation } from "@/lib/products";
 
 type Props = {
   size?: number;
   highlightId?: string | null;
   onSliceClick?: (id: string) => void;
   useLight?: boolean;
+  allocations?: Allocation[];
+  centerLabel?: string;
+  centerSub?: string;
 };
 
-export function Donut({ size = 180, highlightId, onSliceClick, useLight }: Props) {
-  const data = ALLOCATIONS.map((a) => ({
+export function Donut({
+  size = 180,
+  highlightId,
+  onSliceClick,
+  useLight,
+  allocations = ALLOCATIONS,
+  centerLabel = "All Weather",
+  centerSub,
+}: Props) {
+  const data = allocations.map((a) => ({
     name: a.label,
     value: a.percent,
     color: useLight ? a.colorLight : a.color,
@@ -64,10 +75,10 @@ export function Donut({ size = 180, highlightId, onSliceClick, useLight }: Props
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <div className="text-[10px] uppercase tracking-wider text-[var(--muted)]">
-          All Weather
+          {centerLabel}
         </div>
         <div className="font-display text-base font-semibold leading-tight">
-          5 byggeklosser
+          {centerSub ?? `${allocations.length} byggeklosser`}
         </div>
       </div>
     </div>

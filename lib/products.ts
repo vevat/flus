@@ -22,7 +22,9 @@
 export const NORDNET_AFFILIATE_URL =
   "https://www.nordnet.no/kampanjer/pengebingen";
 
-export type AssetClass = "stocks" | "longBonds" | "midBonds" | "gold" | "commodities";
+export type AssetClass = "stocks" | "longBonds" | "midBonds" | "shortBonds" | "gold" | "commodities";
+
+export type PortfolioId = "allweather" | "buffett";
 
 export type Allocation = {
   id: AssetClass;
@@ -73,6 +75,25 @@ export const ALLOCATIONS: Allocation[] = [
     color: "#6e4a2a",
     colorLight: "#7a5430",
     why: "Beskytter mot uventet inflasjon.",
+  },
+];
+
+export const BUFFETT_ALLOCATIONS: Allocation[] = [
+  {
+    id: "stocks",
+    label: "Aksjer (verden)",
+    percent: 90,
+    color: "#c4a87a",
+    colorLight: "#a08050",
+    why: "Historisk beste aktivaklassen. Buffett mener aksjer alltid vinner over tid.",
+  },
+  {
+    id: "shortBonds",
+    label: "Korte statsobligasjoner",
+    percent: 10,
+    color: "#9a9a9a",
+    colorLight: "#8a8a8a",
+    why: "Trygg buffer som demper de verste fallene.",
   },
 ];
 
@@ -211,6 +232,20 @@ export const PRODUCTS: Product[] = [
     nordnetUrl: "https://www.nordnet.no/etf/liste/invesco-bloomberg-commodity-ucits-cmoe-xeta",
   },
 
+  {
+    id: "nn-shortbonds",
+    asset: "shortBonds",
+    provider: "nordnet",
+    name: "iShares USD Treasury Bond 1-3yr UCITS ETF",
+    isin: "IE00B14X4S71",
+    ticker: "IBTS",
+    ter: 0.07,
+    description:
+      "Korte amerikanske statsobligasjoner (1-3 år). Lav risiko, stabil verdi.",
+    recommended: true,
+    nordnetUrl: "https://www.nordnet.no/etf/liste/i-shares-0-treasury-bond-iusu-xeta",
+  },
+
   // ------- DNB (begrenset, fond over ETF) -------
   {
     id: "dnb-stocks",
@@ -253,6 +288,17 @@ export const PRODUCTS: Product[] = [
     unavailableNote:
       "DNB tilbyr ikke gull-ETF/ETC i fondsutvalget. Bruk Nordnet for SGLN eller 4GLD.",
     description: "",
+  },
+  {
+    id: "dnb-shortbonds",
+    asset: "shortBonds",
+    provider: "dnb",
+    name: "DNB Likviditet A",
+    isin: "NO0010068694",
+    ter: 0.2,
+    description:
+      "Pengemarkedsfond med lav risiko. Nærmeste DNB-alternativ til korte statsobligasjoner.",
+    recommended: true,
   },
   {
     id: "dnb-commod",
@@ -306,6 +352,17 @@ export const PRODUCTS: Product[] = [
     unavailable: true,
     unavailableNote: "Ikke tilgjengelig i fondsutvalget. Bruk Nordnet.",
     description: "",
+  },
+  {
+    id: "sb1-shortbonds",
+    asset: "shortBonds",
+    provider: "sparebank1",
+    name: "KLP Pengemarked",
+    isin: "NO0010215644",
+    ter: 0.1,
+    description:
+      "Pengemarkedsfond med lav risiko og stabil avkastning.",
+    recommended: true,
   },
   {
     id: "sb1-commod",
