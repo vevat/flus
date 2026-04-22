@@ -244,19 +244,13 @@ export function InvestGuide() {
       </AnimatePresence>
 
       {/* "Don't sell" — always visible, applies to both */}
-      <div
-        className="rounded-3xl p-4"
-        style={{ background: WARN_SOFT, border: `1px solid ${WARN_BORDER}` }}
+      <Expandable
+        title="Spar jevnt og trutt. Ikke selg i panikk"
+        preview="Å selge seg ut på feil tidspunkt er det dyreste du kan gjøre. Historisk har markedet alltid kommet tilbake — men bare for de som ble sittende."
+        variant="warn"
+        alwaysShowPreview
       >
-        <div className="font-display text-[15px] font-semibold" style={{ color: WARN }}>
-          Det viktigste du gjør: aldri selg i panikk
-        </div>
-        <p className="mt-1.5 text-[13px] text-[var(--foreground)] leading-snug">
-          Å selge seg ut på feil tidspunkt er det dyreste du kan gjøre.
-          Historisk har markedet <em>alltid</em> kommet tilbake — men bare for
-          de som ble sittende.
-        </p>
-        <p className="mt-1.5 text-[13px] text-[var(--muted)] leading-snug">
+        <p className="text-[13px] text-[var(--muted)] leading-snug">
           Det viktigste er å spare og investere jevnt og trutt, enten markedet
           faller eller stiger. De som kjøper fast hver måned — uansett hva
           avisene skriver — ender opp rikest.
@@ -264,7 +258,7 @@ export function InvestGuide() {
         <p className="mt-1 text-[11px] text-[var(--muted-2)] italic">
           Kilde: Tony Robbins, «Money: Master the Game»
         </p>
-      </div>
+      </Expandable>
 
       {/* Beløps-kalkulator */}
       <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
@@ -352,11 +346,22 @@ export function InvestGuide() {
 
       {/* Leverandør */}
       <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-display text-[15px] font-semibold">Nordnet</span>
-          <span className="text-[10px] font-medium text-[var(--primary)] bg-[var(--primary-soft)] px-1.5 py-0.5 rounded-full">Anbefalt</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-display text-[15px] font-semibold">Nordnet</span>
+            <span className="text-[10px] font-medium text-[var(--primary)] bg-[var(--primary-soft)] px-1.5 py-0.5 rounded-full">Anbefalt</span>
+          </div>
+          <a
+            href={NORDNET_AFFILIATE_URL}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => track("affiliate_click", { source: "provider_card" })}
+            className="text-[11px] font-semibold text-[var(--primary)] hover:underline"
+          >
+            Opprett konto &rarr;
+          </a>
         </div>
-        <p className="text-[12px] text-[var(--muted)] leading-snug">
+        <p className="text-[12px] text-[var(--muted)] leading-snug mt-1">
           Alle byggeklossene du trenger. 0 kr i kurtasje på fond og automatisk månedssparing.
         </p>
       </div>
@@ -474,7 +479,7 @@ function Expandable({
   title: string;
   preview: React.ReactNode;
   children: React.ReactNode;
-  variant?: "default" | "highlight";
+  variant?: "default" | "highlight" | "warn";
   alwaysShowPreview?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -482,21 +487,33 @@ function Expandable({
   const bg =
     variant === "highlight"
       ? "bg-[var(--primary-soft)]"
-      : "bg-[var(--surface)] border border-[var(--border)]";
+      : variant === "warn"
+        ? ""
+        : "bg-[var(--surface)] border border-[var(--border)]";
   const titleColor =
     variant === "highlight"
       ? "text-[var(--primary-strong)]"
-      : "text-[var(--foreground)]";
+      : variant === "warn"
+        ? ""
+        : "text-[var(--foreground)]";
+
+  const warnStyle =
+    variant === "warn"
+      ? { background: WARN_SOFT, border: `1px solid ${WARN_BORDER}` }
+      : undefined;
 
   return (
-    <div className={`rounded-3xl p-4 ${bg}`}>
+    <div className={`rounded-3xl p-4 ${bg}`} style={warnStyle}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="w-full text-left flex items-start justify-between gap-3"
       >
         <div className="flex-1 min-w-0">
-          <div className={`font-display text-base font-semibold ${titleColor}`}>
+          <div
+            className={`font-display text-base font-semibold ${titleColor}`}
+            style={variant === "warn" ? { color: WARN } : undefined}
+          >
             {title}
           </div>
           {(alwaysShowPreview || !open) && (
@@ -711,11 +728,6 @@ export function Disclaimer() {
             </a>{" "}
             før du tar store investeringsbeslutninger. Sjekk alltid ISIN,
             kostnader og tilgjengelighet hos leverandøren før kjøp.
-          </p>
-          <p className="text-[10px] opacity-70">
-            Lenker til Nordnet er annonselenker — vi kan motta en godtgjørelse
-            hvis du oppretter konto. Dette påvirker ikke vår anbefaling, som er
-            basert på produkttilgang og kostnader.
           </p>
         </div>
       )}
