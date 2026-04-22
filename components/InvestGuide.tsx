@@ -6,13 +6,11 @@ import {
   ALLOCATIONS,
   BUFFETT_ALLOCATIONS,
   PRODUCTS,
-  PROVIDERS,
   NORDNET_AFFILIATE_URL,
   type Allocation,
   type AssetClass,
   type Product,
   type PortfolioId,
-  type ProviderId,
 } from "@/lib/products";
 import { DEFAULTS, formatNok, projectWealth, getAtAge } from "@/lib/finance";
 import { useFlus } from "@/lib/store";
@@ -31,8 +29,6 @@ export function InvestGuide() {
   const ui = useFlus((s) => s.ui);
   const setUi = useFlus((s) => s.setUi);
 
-  const provider = (ui.investProvider ?? "nordnet") as ProviderId;
-  const setProvider = (v: ProviderId) => setUi({ investProvider: v });
   const customMonthly = ui.investMonthly;
   const setCustomMonthly = (v: number) => setUi({ investMonthly: v });
   const monthly =
@@ -77,8 +73,8 @@ export function InvestGuide() {
   const activeAllocations = portfolio === "allweather" ? ALLOCATIONS : BUFFETT_ALLOCATIONS;
 
   const productsForProvider = useMemo(
-    () => PRODUCTS.filter((p) => p.provider === provider),
-    [provider],
+    () => PRODUCTS.filter((p) => p.provider === "nordnet"),
+    [],
   );
 
   const productByAsset = useMemo(() => {
@@ -90,13 +86,6 @@ export function InvestGuide() {
     });
     return map;
   }, [productsForProvider]);
-
-  const missingCount = activeAllocations.filter(
-    (a) => {
-      const p = productByAsset.get(a.id);
-      return !p || p.unavailable;
-    },
-  ).length;
 
   return (
     <div className="flex-1 flex flex-col px-5 pt-6 pb-6 space-y-4">
@@ -110,7 +99,8 @@ export function InvestGuide() {
         </h1>
         <p className="text-[13px] text-[var(--muted)] mt-1 leading-snug">
           To velprøvde strategier fra verdens beste investorer.
-          Velg den som passer deg.
+          <br />
+          Velg den som passer best for deg.
         </p>
       </div>
 
@@ -142,6 +132,59 @@ export function InvestGuide() {
           transition={{ duration: 0.2 }}
           className="space-y-4"
         >
+          {/* Portfolio-specific intro */}
+          {portfolio === "allweather" ? (
+            <Expandable
+              title="Forklart enkelt"
+              preview="Når aksjer faller, stiger statsobligasjonene."
+              variant="highlight"
+            >
+              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
+                <p>
+                  Ray Dalios All Weather-strategi sprer pengene dine over fem
+                  aktivaklasser som reagerer <em>ulikt</em> på hva som skjer i
+                  økonomien.
+                </p>
+                <p>
+                  Da aksjemarkedet krasjet i 2008, steg lange statsobligasjoner
+                  over 30%. Da inflasjonen skjøt i været i 2022, holdt gull og
+                  råvarer verdien. Poenget er at <strong>uansett hva som skjer,
+                  har du alltid noe som stiger</strong>.
+                </p>
+                <p>
+                  Strategien har levert positiv avkastning i 85% av alle år
+                  siden 1984, med svært lave tap i de verste periodene. Det er
+                  den tryggeste måten å spare langsiktig på.
+                </p>
+              </div>
+            </Expandable>
+          ) : (
+            <Expandable
+              title="Buffetts anbefaling"
+              preview="90% aksjer, 10% korte obligasjoner."
+              variant="highlight"
+            >
+              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
+                <p>
+                  Warren Buffett — verdens mest suksessfulle investor —
+                  anbefaler en enkel strategi: <strong>90% i et billig
+                  aksjeindeksfond og 10% i korte statsobligasjoner</strong>.
+                </p>
+                <p>
+                  Han mener aksjer alltid vinner over lang tid, og at de fleste
+                  taper penger på å prøve å time markedet eller betale for dyre
+                  fond. Hans eneste råd: kjøp bredt, billig, og hold for alltid.
+                </p>
+                <p className="font-medium" style={{ color: WARN }}>
+                  Forventningsavklaring: Med 90% i aksjer vil porteføljen svinge
+                  mye mer enn All Weather. I et dårlig år kan verdien falle
+                  30-40%. Buffett mener det ikke spiller noen rolle — så lenge
+                  du aldri selger i panikk.
+                </p>
+              </div>
+            </Expandable>
+          )}
+
           {/* Donut */}
           <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)] mb-2">
@@ -197,59 +240,6 @@ export function InvestGuide() {
               </motion.div>
             )}
           </div>
-
-          {/* Portfolio-specific intro */}
-          {portfolio === "allweather" ? (
-            <Expandable
-              title="Forklart enkelt"
-              preview="Når aksjer faller, stiger statsobligasjonene."
-              variant="highlight"
-            >
-              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
-                <p>
-                  Ray Dalios All Weather-strategi sprer pengene dine over fem
-                  aktivaklasser som reagerer <em>ulikt</em> på hva som skjer i
-                  økonomien.
-                </p>
-                <p>
-                  Da aksjemarkedet krasjet i 2008, steg lange statsobligasjoner
-                  over 30%. Da inflasjonen skjøt i været i 2022, holdt gull og
-                  råvarer verdien. Poenget er at <strong>uansett hva som skjer,
-                  har du alltid noe som stiger</strong>.
-                </p>
-                <p>
-                  Strategien har levert positiv avkastning i 85% av alle år
-                  siden 1984, med svært lave tap i de verste periodene. Det er
-                  den tryggeste måten å spare langsiktig på.
-                </p>
-              </div>
-            </Expandable>
-          ) : (
-            <Expandable
-              title="Buffetts anbefaling"
-              preview="90% aksjer, 10% korte obligasjoner."
-              variant="highlight"
-            >
-              <div className="space-y-2 text-[13px] text-[var(--foreground)] leading-snug">
-                <p>
-                  Warren Buffett — verdens mest suksessfulle investor —
-                  anbefaler en enkel strategi: <strong>90% i et billig
-                  aksjeindeksfond og 10% i korte statsobligasjoner</strong>.
-                </p>
-                <p>
-                  Han mener aksjer alltid vinner over lang tid, og at de fleste
-                  taper penger på å prøve å time markedet eller betale for dyre
-                  fond. Hans eneste råd: kjøp bredt, billig, og hold for alltid.
-                </p>
-                <p className="font-medium" style={{ color: WARN }}>
-                  Forventningsavklaring: Med 90% i aksjer vil porteføljen svinge
-                  mye mer enn All Weather. I et dårlig år kan verdien falle
-                  30-40%. Buffett mener det ikke spiller noen rolle — så lenge
-                  du aldri selger i panikk.
-                </p>
-              </div>
-            </Expandable>
-          )}
         </motion.div>
       </AnimatePresence>
 
@@ -360,75 +350,15 @@ export function InvestGuide() {
         </Expandable>
       )}
 
-      {/* Velg leverandør */}
-      <div>
-        <div className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wide px-1 mb-2">
-          Velg din leverandør
+      {/* Leverandør */}
+      <div className="rounded-3xl bg-[var(--surface)] border border-[var(--border)] p-4">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="font-display text-[15px] font-semibold">Nordnet</span>
+          <span className="text-[10px] font-medium text-[var(--primary)] bg-[var(--primary-soft)] px-1.5 py-0.5 rounded-full">Anbefalt</span>
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {PROVIDERS.map((p) => {
-            const active = provider === p.id;
-            const incomplete = portfolio === "allweather" && p.id !== "nordnet";
-            return (
-              <motion.button
-                key={p.id}
-                type="button"
-                onClick={() => {
-                  setProvider(p.id);
-                  track("provider_selected", { provider: p.id });
-                }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-2 py-2.5 rounded-2xl text-[12px] font-semibold transition-colors relative ${
-                  active
-                    ? incomplete
-                      ? "bg-[var(--surface-2)] border text-[var(--foreground)]"
-                      : "bg-[var(--foreground)] text-[var(--background)]"
-                    : "bg-[var(--surface)] border border-[var(--border)] text-[var(--muted)]"
-                }`}
-                style={active && incomplete ? { borderColor: WARN_BORDER } : undefined}
-              >
-                {p.name}
-                {p.recommended && (
-                  <span className="block text-[10px] font-medium opacity-60">
-                    Anbefalt
-                  </span>
-                )}
-                {incomplete && (
-                  <span className="block text-[9px] font-medium opacity-80" style={{ color: WARN }}>
-                    Mangler produkter
-                  </span>
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
-        <div className="mt-2 px-1 text-[12px] text-[var(--muted)] leading-snug">
-          {PROVIDERS.find((p) => p.id === provider)?.blurb}
-        </div>
-        {portfolio === "allweather" && provider !== "nordnet" && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-2 rounded-2xl p-3"
-            style={{ background: WARN_SOFT, borderWidth: 1, borderColor: WARN_BORDER }}
-          >
-            <p className="text-[12px] font-medium leading-snug" style={{ color: WARN }}>
-              {PROVIDERS.find((p) => p.id === provider)?.name} mangler {missingCount} av 5
-              aktivaklasser som trengs til All Weather-strategien. Vi anbefaler
-              Nordnet for å få tilgang til alle byggeklossene.
-            </p>
-            <motion.a
-              href={NORDNET_AFFILIATE_URL}
-              target="_blank"
-              rel="noreferrer"
-              whileTap={{ scale: 0.97 }}
-              onClick={() => track("affiliate_click", { source: "provider_warning" })}
-              className="mt-2 inline-block px-4 py-2 rounded-xl bg-[var(--primary)] text-white text-[12px] font-semibold"
-            >
-              Bytt til Nordnet &rarr;
-            </motion.a>
-          </motion.div>
-        )}
+        <p className="text-[12px] text-[var(--muted)] leading-snug">
+          Alle byggeklossene du trenger. 0 kr i kurtasje på fond og automatisk månedssparing.
+        </p>
       </div>
 
       {/* Collapsible: Konkrete produkter */}
@@ -512,15 +442,23 @@ function PortfolioTab({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl px-3 py-3 text-left transition-colors ${
+      className={`rounded-2xl px-3 py-3 text-left transition-all ${
         active
-          ? "bg-[var(--foreground)] text-[var(--background)]"
-          : "bg-[var(--surface)] border border-[var(--border)] text-[var(--muted)]"
+          ? "bg-[var(--primary-soft)] border-2 border-[var(--primary)]"
+          : "bg-[var(--surface)] border border-[var(--border)]"
       }`}
     >
-      <div className="text-[10px] uppercase tracking-wider opacity-60">{label}</div>
-      <div className="font-display text-[15px] font-semibold leading-tight mt-0.5">{name}</div>
-      <div className={`text-[11px] mt-0.5 ${active ? "opacity-70" : "opacity-50"}`}>{sub}</div>
+      <div className={`text-[10px] uppercase tracking-wider ${active ? "text-[var(--primary-strong)]" : "text-[var(--muted)] opacity-60"}`}>
+        {label}
+      </div>
+      <div className={`font-display font-semibold leading-tight mt-0.5 ${
+        active ? "text-[17px] text-[var(--foreground)]" : "text-[14px] text-[var(--muted)]"
+      }`}>
+        {name}
+      </div>
+      <div className={`text-[11px] mt-0.5 ${active ? "text-[var(--primary-strong)]" : "text-[var(--muted)] opacity-50"}`}>
+        {sub}
+      </div>
     </button>
   );
 }
