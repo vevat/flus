@@ -430,8 +430,9 @@ export function formatNok(amount: number, opts?: { compact?: boolean }): string 
   if (compact && Math.abs(amount) >= 1_000_000) {
     const millions = amount / 1_000_000;
     const rounded = Math.round(millions * 10) / 10;
-    const useWholeNumber = rounded >= 10 || Math.abs(rounded - Math.round(rounded)) < 0.05;
-    return `${formatDecimal(millions, useWholeNumber ? 0 : 1)} mill kr`;
+    const distToWhole = Math.abs(rounded - Math.round(rounded));
+    const useWholeNumber = rounded >= 10 || distToWhole < 0.01 || (rounded >= 5 && distToWhole <= 0.1);
+    return `${formatDecimal(useWholeNumber ? Math.round(rounded) : rounded, useWholeNumber ? 0 : 1)} mill kr`;
   }
   if (compact && Math.abs(amount) >= 10_000) {
     return `${formatNumber(Math.round(amount))} kr`;
