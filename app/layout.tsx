@@ -9,7 +9,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { TipCarousel } from "@/components/TipCard";
 import { PlassereDisclaimer } from "@/components/PlassereDisclaimer";
-import { InstallPrompt } from "@/components/InstallPrompt";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -126,7 +125,6 @@ export default function RootLayout({
             {children}
             <TipCarousel />
             <PlassereDisclaimer />
-            <InstallPrompt />
             <footer className="text-center text-[10px] text-[var(--muted-2)] py-3 mt-auto">
               <div className="flex items-center justify-center gap-2">
                 <Link href="/om" className="hover:text-[var(--muted)] transition-colors">Om</Link>
