@@ -105,18 +105,19 @@ export function TopBar() {
             </button>
           )}
           <ThemeToggle />
-          <InstallButton />
           <Tip label="Tilbakemelding">
             <button
               type="button"
               onClick={() => setShowFeedback(true)}
-              className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center active:scale-95 transition-transform"
-              style={{ color: "var(--primary-strong)" }}
+              className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] active:scale-95 transition-transform"
               aria-label="Tilbakemelding"
             >
-              <span className="text-[14px] leading-none">&#9733;</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
             </button>
           </Tip>
+          <InstallButton />
           <Tip label="Del">
             <button
               type="button"
