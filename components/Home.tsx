@@ -150,7 +150,7 @@ export function Home() {
               color: "var(--primary-strong)",
             }}
           >
-            + Sparemål
+            + Legg til nytt sparemål
           </button>
         </div>
       )}
