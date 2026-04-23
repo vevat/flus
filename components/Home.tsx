@@ -136,16 +136,23 @@ export function Home() {
 
       {/* Milestone prompt — between slider and result card */}
       {hasMilestones && !milestoneOpen && (
-        <button
-          type="button"
-          onClick={() => setMilestoneOpen(true)}
-          className="mt-2 w-full text-left text-[11px] text-[var(--muted)] leading-snug px-1"
-        >
-          Når du blir eldre sparer du sikkert enda mer.{" "}
-          <span className="underline text-[var(--primary)] font-medium">
-            + Legg til nytt sparemål
+        <div className="mt-2 flex items-center gap-2 px-1">
+          <span className="text-[11px] text-[var(--muted)] leading-snug">
+            Når du blir eldre sparer du sikkert enda mer.
           </span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setMilestoneOpen(true)}
+            className="shrink-0 h-6 px-2.5 rounded-full text-[10px] font-semibold tracking-wide border transition-all active:scale-95"
+            style={{
+              background: "var(--primary-soft)",
+              borderColor: "var(--primary)",
+              color: "var(--primary-strong)",
+            }}
+          >
+            + Sparemål
+          </button>
+        </div>
       )}
 
       {/* Inline milestone picker */}
