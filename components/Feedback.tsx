@@ -9,7 +9,7 @@ const AUTO_SHOW_MS = 10 * 60 * 1000;
 function FeedbackForm({ onClose }: { onClose: () => void }) {
   const name = useFlus((s) => s.name);
   const age = useFlus((s) => s.age);
-  const daily = useFlus((s) => s.daily);
+  const daily = useFlus((s) => s.goals[0]?.dailyAmount);
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
