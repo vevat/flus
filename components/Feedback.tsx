@@ -7,6 +7,9 @@ import { useFlus } from "@/lib/store";
 const AUTO_SHOW_MS = 10 * 60 * 1000;
 
 function FeedbackForm({ onClose }: { onClose: () => void }) {
+  const name = useFlus((s) => s.name);
+  const age = useFlus((s) => s.age);
+  const daily = useFlus((s) => s.daily);
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -17,7 +20,13 @@ function FeedbackForm({ onClose }: { onClose: () => void }) {
       await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating, comment: comment.trim() || undefined }),
+        body: JSON.stringify({
+          rating,
+          comment: comment.trim() || undefined,
+          name: name || undefined,
+          age: age || undefined,
+          dailySavings: daily || undefined,
+        }),
       });
     } catch { /* ignore */ }
     setSubmitted(true);

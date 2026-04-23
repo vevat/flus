@@ -6,6 +6,9 @@ export type FeedbackEntry = {
   comment?: string;
   timestamp: string;
   userAgent?: string;
+  name?: string;
+  age?: number;
+  dailySavings?: number;
 };
 
 const BLOB_NAME = "feedback.json";
@@ -32,7 +35,7 @@ async function writeFeedback(entries: FeedbackEntry[]): Promise<void> {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { rating, comment } = body;
+    const { rating, comment, name, age, dailySavings } = body;
 
     if (!rating || typeof rating !== "number" || rating < 1 || rating > 5) {
       return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
@@ -43,6 +46,9 @@ export async function POST(req: NextRequest) {
       comment: typeof comment === "string" ? comment.trim() || undefined : undefined,
       timestamp: new Date().toISOString(),
       userAgent: req.headers.get("user-agent") || undefined,
+      name: typeof name === "string" && name.trim() ? name.trim() : undefined,
+      age: typeof age === "number" && age > 0 ? age : undefined,
+      dailySavings: typeof dailySavings === "number" && dailySavings > 0 ? dailySavings : undefined,
     };
 
     const existing = await readFeedback();

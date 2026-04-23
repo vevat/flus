@@ -158,6 +158,13 @@ export default function AdminPage() {
                   })}
                 </span>
               </div>
+              {(f.name || f.age != null) && (
+                <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[var(--muted)]">
+                  {f.name && <span>{f.name}</span>}
+                  {f.age != null && <span>{f.age} år</span>}
+                  {f.dailySavings != null && <span>{f.dailySavings} kr/dag</span>}
+                </div>
+              )}
               <p className="mt-2 text-[13px] text-[var(--foreground)] leading-snug">
                 {f.comment}
               </p>
@@ -184,6 +191,8 @@ export default function AdminPage() {
                   >
                     <span style={{ color: "var(--primary-strong)" }}>★</span>
                     <span className="text-[var(--foreground)]">{f.rating}</span>
+                    {f.name && <span className="text-[var(--muted)]">{f.name}</span>}
+                    {f.age != null && <span className="text-[var(--muted)]">{f.age}å</span>}
                     <span className="text-[var(--muted-2)]">
                       {new Date(f.timestamp).toLocaleDateString("nb-NO", {
                         day: "numeric",
