@@ -6,7 +6,7 @@ import { useFlus } from "@/lib/store";
 
 const AUTO_SHOW_MS = 10 * 60 * 1000;
 
-function FeedbackForm({ onClose }: { onClose: () => void }) {
+export function FeedbackForm({ onClose }: { onClose: () => void }) {
   const name = useFlus((s) => s.name);
   const age = useFlus((s) => s.age);
   const daily = useFlus((s) => s.goals[0]?.dailyAmount);

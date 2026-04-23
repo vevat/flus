@@ -24,6 +24,7 @@ function Tip({ label, children }: { label: string; children: ReactNode }) {
 import { useFlus } from "@/lib/store";
 import { ShareSheet } from "./ShareSheet";
 import { MillianGreeting } from "./MillianGreeting";
+import { FeedbackForm } from "./Feedback";
 import { InstallButton } from "./InstallPrompt";
 import { track } from "@/lib/analytics";
 import { formatNok, getAtAge, projectWealth } from "@/lib/finance";
@@ -61,6 +62,7 @@ export function TopBar() {
 
   const [showShare, setShowShare] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const isMillian = name.toLowerCase() === "millian";
   const daily = goals[0]?.dailyAmount ?? 50;
@@ -104,6 +106,17 @@ export function TopBar() {
           )}
           <ThemeToggle />
           <InstallButton />
+          <Tip label="Tilbakemelding">
+            <button
+              type="button"
+              onClick={() => setShowFeedback(true)}
+              className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center active:scale-95 transition-transform"
+              style={{ color: "var(--primary-strong)" }}
+              aria-label="Tilbakemelding"
+            >
+              <span className="text-[14px] leading-none">&#9733;</span>
+            </button>
+          </Tip>
           <Tip label="Del">
             <button
               type="button"
@@ -173,6 +186,9 @@ export function TopBar() {
         )}
         {showGreeting && (
           <MillianGreeting onClose={() => setShowGreeting(false)} />
+        )}
+        {showFeedback && (
+          <FeedbackForm onClose={() => setShowFeedback(false)} />
         )}
       </AnimatePresence>
     </>
